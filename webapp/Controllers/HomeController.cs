@@ -15,20 +15,34 @@ namespace webapp.Controllers
 
         public IActionResult Index()
         {
-            return View();
+			return View();
         }
 
+		[Route("about")]
 		public IActionResult About()
 		{
 			return View();
 		}
 
-		public IActionResult Privacy()
+        [Route("privacy")]
+        public IActionResult Privacy()
         {
             return View();
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        [Route("faq")]
+        public IActionResult Faq()
+		{
+			return View();
+		}
+
+        [Route("contact-us")]
+        public IActionResult Contact()
+		{
+			return View();
+		}
+
+		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
