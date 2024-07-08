@@ -74,17 +74,18 @@
 								</ul>
 							</li>
 
-							<li><a asp-area="z" asp-controller="Home" asp-action="Contact">Contacts Us</a></li>
+							<li><a asp-area="" asp-controller="Home" asp-action="Contact">Contacts Us</a></li>
 
 						</ul>
 
 						<ul class="nav-menu nav-menu-social align-to-right">
-							<li class="list-buttons light">
+							<partial name="_LoginPartial" />
+							@* <li class="list-buttons light">
 								<a href="JavaScript:Void(0);" data-bs-toggle="modal" data-bs-target="#login"><i class="fas fa-sign-in-alt me-2"></i>Sign In</a>
 							</li>
 							<li class="list-buttons ms-2">
 								<a href="signup.html"><i class="fas fa-user-alt me-2"></i>Sign Up</a>
-							</li>
+							</li> *@
 						</ul>
 					</div>
 				</nav>
@@ -96,7 +97,7 @@
 		@RenderBody()
 
 		@* call to action *@
-		<section class="bg-cover call-action-container dark" style="background:#065eb5 url(assets/img/footer-bg-dark.png)no-repeat;">
+		<section class="bg-cover call-action-container dark" style="background:#065eb5 url('@Url.Content("~/img/footer-bg-dark.png")') no-repeat;">
 			<div class="container">
 				<div class="row justify-content-center">
 					<div class="col-xl-7 col-lg-10 col-md-12 col-sm-12">
@@ -210,13 +211,12 @@
 				<div class="modal-content" id="registermodal">
 					<span class="mod-close" data-bs-dismiss="modal" aria-hidden="true"><i class="fas fa-close"></i></span>
 					<div class="modal-header">
-						<div class="mdl-thumb"><img src="assets/img/ico.png" class="img-fluid" width="70" alt=""></div>
+						<div class="mdl-thumb"><img src="~/img/ico.png" class="img-fluid" width="70" alt=""></div>
 						<div class="mdl-title"><h4 class="modal-header-title">Hello, Again</h4></div>
 					</div>
 					<div class="modal-body">
 						<div class="modal-login-form">
-							<form>
-
+							<form id="loginModalForm">
 								<div class="form-floating mb-4">
 									<input type="email" class="form-control" placeholder="name@example.com">
 									<label>User Name</label>
@@ -252,12 +252,11 @@
 						</div>
 					</div>
 					<div class="modal-footer">
-						<p>Don't have an account yet?<a href="signup.html" class="theme-cl font--bold ms-1">Sign Up</a></p>
+						<p>Don't have an account yet?<a asp-area="Identity" asp-page="/Account/Register" class="theme-cl font--bold ms-1">Sign Up</a></p>
 					</div>
 				</div>
 			</div>
 		</div>
-
 		<a id="back2Top" class="top-scroll" title="Back to top" href="#"><i class="ti-arrow-up"></i></a>
     </div>
 
@@ -310,7 +309,7 @@
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false) *@
+    <script src="~/js/site.js" asp-append-version="true"></script> *@
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
