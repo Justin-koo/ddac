@@ -8,7 +8,8 @@
     <title>@ViewData["Title"] - Residence & Real Estate</title>
 
     <!-- Custom CSS -->
-    <link href="~/css/styles.css" rel="stylesheet">
+	<link href="~/css/styles.css" rel="stylesheet" asp-append-version="true" />
+	<link href="~/css/site.css" rel="stylesheet" asp-append-version="true" />
 
 </head>
 @* <head>
@@ -22,26 +23,12 @@
 
 <body>
     <div id="preloader"><div class="preloader"><span></span><span></span></div></div>
-	@{
-		// Get the current controller and action
-		var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
-		var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
-
-		// Determine the header class
-		var headerClass = (currentController == "Home" && currentAction == "Index")
-		? "header header-transparent change-logo"
-		: "header header-light head-shadow";
-	}
     <div id="main-wrapper">
-		<div class="@headerClass">
+		<div class="header header-light head-shadow">
 			<div class="container">
 				<nav id="navigation" class="navigation navigation-landscape">
 					<div class="nav-header">
-						@if (currentController == "Home" && currentAction == "Index")
-						{
-							<a class="nav-brand static-logo" asp-area="" asp-controller="Home" asp-action="Index"><img src="~/img/logo-light.png" class="logo" alt=""></a>
-						}
-						<a class="nav-brand fixed-logo" asp-area="" asp-controller="Home" asp-action="Index"><img src="~/img/logo.png" class="logo" alt=""></a>
+						<a class="nav-brand" asp-area="" asp-controller="Home" asp-action="Index"><img src="~/img/logo.png" class="logo" alt=""></a>
 						<div class="nav-toggle"></div>
 						<div class="mobile_nav">
 							<ul>

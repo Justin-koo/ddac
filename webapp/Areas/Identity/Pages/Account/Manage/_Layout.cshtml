@@ -9,20 +9,65 @@
     }
 }
 
-<h1>Manage your account</h1>
+@inject UserManager<webappUser> UserManager
 
-<div>
-    <h2>Change your account settings</h2>
-    <hr />
-    <div class="row">
-        <div class="col-md-3">
-            <partial name="_ManageNav" />
-        </div>
-        <div class="col-md-9">
-            @RenderBody()
+<div class="page-title" style="background:#017efa url('@Url.Content("~/img/page-title.png")') no-repeat;">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 col-md-12">
+
+                <h2 class="ipt-title">Hi, @UserManager.GetUserName(User)</h2>
+                <span class="ipn-subtitle">Manage your profile and view property</span>
+
+            </div>
         </div>
     </div>
 </div>
+
+<section class="gray pt-5 pb-5">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xl-3 col-lg-3 col-md-12">
+                <div class="property_dashboard_navbar">
+                    <div class="dash_user_avater">
+                        <img src="https://via.placeholder.com/650x650" class="img-fluid avater" alt="">
+                        <h4>Adam Harshvardhan</h4>
+                        <span class="font--medium small"><i class="fa-solid fa-location-dot me-2"></i>Liverpool, USA</span>
+                    </div>
+
+                    <div class="adgt-wriop-social">
+                        <ul>
+                            <li><a href="JavaScript:Void(0);" class="bg--facebook"><i class="fa-brands fa-facebook-f"></i></a></li>
+                            <li><a href="JavaScript:Void(0);" class="bg--twitter"><i class="fa-brands fa-twitter"></i></a></li>
+                            <li><a href="JavaScript:Void(0);" class="bg--googleplus"><i class="fa-brands fa-google-plus-g"></i></a></li>
+                            <li><a href="JavaScript:Void(0);" class="bg--linkedin"><i class="fa-brands fa-linkedin-in"></i></a></li>
+                        </ul>
+                    </div>
+
+                    <div class="adgt-wriop-footer py-3 px-3">
+                        <div class="single-button d-flex align-items-center justify-content-between">
+                            <button type="button" class="btn btn-md font--bold btn-light-primary me-2 full-width"><i class="fa-solid fa-phone me-2"></i>856 742 672</button>
+                            <button type="button" data-bs-toggle="modal" data-bs-target="#message" class="btn btn-md font--bold btn-light-success full-width"><i class="fa-solid fa-paper-plane me-2"></i>Send Message</button>
+                        </div>
+                    </div>
+
+				    <partial name="_ManageNav" />
+
+                    <div class="dash_user_footer">
+                        <ul>
+                            <li><a href="JavaScript:Void(0);"><i class="fa fa-power-off"></i></a></li>
+                            <li><a href="JavaScript:Void(0);"><i class="fa fa-comment"></i></a></li>
+                            <li><a href="JavaScript:Void(0);"><i class="fa fa-cog"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+			</div>
+            <div class="col-xl-9 col-lg-9 col-md-12">
+				@RenderBody()
+			</div>
+        </div>
+    </div>
+</section>
 
 @section Scripts {
     @RenderSection("Scripts", required: false)
