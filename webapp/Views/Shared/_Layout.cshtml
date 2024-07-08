@@ -2,14 +2,328 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
+    <meta name="author" content="Themezhub" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <title>@ViewData["Title"] - Residence & Real Estate</title>
+
+    <!-- Custom CSS -->
+    <link href="~/css/styles.css" rel="stylesheet">
+
+</head>
+@* <head>
+    <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - webapp</title>
+    <title>@ViewData["Title"] - Residence & Real Estate</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/webapp.styles.css" asp-append-version="true" />
-</head>
+</head> *@
+
 <body>
-    <header>
+    <div id="preloader"><div class="preloader"><span></span><span></span></div></div>
+
+    <div id="main-wrapper">
+		<div class="header header-transparent change-logo">
+			<div class="container">
+				<nav id="navigation" class="navigation navigation-landscape">
+					<div class="nav-header">
+						<a class="nav-brand static-logo" href="#"><img src="~/img/logo-light.png" class="logo" alt=""></a>
+						<a class="nav-brand fixed-logo" href="#"><img src="~/img/logo.png" class="logo" alt=""></a>
+						<div class="nav-toggle"></div>
+						<div class="mobile_nav">
+							<ul>
+								<li class="list-buttons">
+									<a href="JavaScript:Void(0);" data-bs-toggle="modal" data-bs-target="#login"><i class="fas fa-sign-in-alt me-2"></i>Log In</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+					<div class="nav-menus-wrapper" style="transition-property: none;">
+						<ul class="nav-menu">
+
+							<li class="active">
+								<a href="JavaScript:Void(0);">Home<span class="submenu-indicator"></span></a>
+								<ul class="nav-dropdown nav-submenu">
+									<li><a class="active" href="index.html">Home Layout 1</a></li>
+									<li><a href="home-2.html">Home Layout 2</a></li>
+									<li><a href="home-3.html">Home Layout 3</a></li>
+									<li><a href="home-4.html">Home Layout 4</a></li>
+									<li><a href="home-5.html">Home Layout 5</a></li>
+									<li><a href="home-6.html">Home Layout 6</a></li>
+									<li><a href="home-7.html">Home Layout 7</a></li>
+								</ul>
+							</li>
+
+							<li>
+								<a href="JavaScript:Void(0);">Searches<span class="submenu-indicator"></span></a>
+								<ul class="nav-dropdown nav-submenu">
+									<li>
+										<a href="JavaScript:Void(0);">Grid Layout<span class="submenu-indicator"></span></a>
+										<ul class="nav-dropdown nav-submenu">
+											<li><a href="grid-style-1.html">Grid Style 1</a></li>
+											<li><a href="grid-style-2.html">Grid Stle 2</a></li>
+											<li><a href="grid-style-3.html">Grid Style 3</a></li>
+											<li><a href="grid-full-style-1.html">Grid Full Style 1</a></li>
+											<li><a href="grid-full-style-2.html">Grid Full Style 2</a></li>
+										</ul>
+									</li>
+									<li>
+										<a href="JavaScript:Void(0);">List Layout<span class="submenu-indicator"></span></a>
+										<ul class="nav-dropdown nav-submenu">
+											<li><a href="list-style-1.html">List Style 1</a></li>
+											<li><a href="list-style-2.html">List Style 2</a></li>
+											<li><a href="list-full-style-1.html">List Full Style 1</a></li>
+											<li><a href="list-full-style-2.html">List Full Style 2</a></li>
+										</ul>
+									</li>
+									<li>
+										<a href="JavaScript:Void(0);">Search With Map<span class="submenu-indicator"></span></a>
+										<ul class="nav-dropdown nav-submenu">
+											<li><a href="half-map.html">Half Map Style 1</a></li>
+											<li><a href="half-map-2.html">Half Map Style 2</a></li>
+											<li><a href="half-map-3.html">Half Map Style 3</a></li>
+											<li><a href="half-map-list.html">Half Map List Search 1</a></li>
+											<li><a href="half-map-list-2.html">Half Map List Search 2</a></li>
+										</ul>
+									</li>
+								</ul>
+							</li>
+
+							<li>
+								<a href="JavaScript:Void(0);">Features<span class="submenu-indicator"></span></a>
+								<ul class="nav-dropdown nav-submenu">
+									<li>
+										<a href="JavaScript:Void(0);">Single Property<span class="submenu-indicator"></span></a>
+										<ul class="nav-dropdown nav-submenu">
+											<li><a href="single-property-1.html">Single Property 1</a></li>
+											<li><a href="single-property-2.html">Single Property 2</a></li>
+											<li><a href="single-property-3.html">Single Property 3</a></li>
+										</ul>
+									</li>
+									<li>
+										<a href="JavaScript:Void(0);">Agencies & Agents<span class="submenu-indicator"></span></a>
+										<ul class="nav-dropdown nav-submenu">
+											<li><a href="agent-grid.html">Agents Search Grid</a></li>
+											<li><a href="agent-list.html">Agent Search List</a></li>
+											<li><a href="agency-grid.html">Agency Search Grid</a></li>
+											<li><a href="agency-list.html">Agency Search List</a></li>
+											<li><a href="agent-detail.html">Agent Detail</a></li>
+											<li><a href="agency-detail.html">Agency Detail</a></li>
+										</ul>
+									</li>
+									<li>
+										<a href="JavaScript:Void(0);">My Account<span class="submenu-indicator"></span></a>
+										<ul class="nav-dropdown nav-submenu">
+											<li><a href="dashboard.html">User Dashboard</a></li>
+											<li><a href="submit-property-dashboard.html">Submit Property</a></li>
+											<li><a href="my-profile.html">My Profile</a></li>
+											<li><a href="my-property.html">Property List</a></li>
+											<li><a href="bookmark-list.html">Bookmarked Listings</a></li>
+											<li><a href="change-password.html">Change Password</a></li>
+										</ul>
+									</li>
+									<li>
+										<a href="compare-property.html">Compare Property</a>
+									</li>
+									<li>
+										<a href="submit-property.html">Submit Property</a>
+									</li>
+								</ul>
+							</li>
+
+							<li>
+								<a href="JavaScript:Void(0);">Pages<span class="submenu-indicator"></span></a>
+								<ul class="nav-dropdown nav-submenu">
+									<li><a href="about-us.html">About Us</a></li>
+									<li><a href="404.html">Error Page</a></li>
+									<li><a href="checkout.html">Checkout</a></li>
+									<li><a href="blog.html">Blogs Page</a></li>
+									<li><a href="blog-detail.html">Blog Detail</a></li>
+									<li><a href="privacy.html">Terms & Privacy</a></li>
+									<li><a href="pricing.html">Pricing</a></li>
+									<li><a href="faq.html">FAQ's</a></li>
+									<li><a href="contact.html">Contacts</a></li>
+								</ul>
+							</li>
+
+							<li><a href="https://getbootstrap.com/docs/5.3/getting-started/introduction/" target="_blank">Help</a></li>
+
+						</ul>
+
+						<ul class="nav-menu nav-menu-social align-to-right">
+							<li class="list-buttons light">
+								<a href="JavaScript:Void(0);" data-bs-toggle="modal" data-bs-target="#login"><i class="fas fa-sign-in-alt me-2"></i>Sign In</a>
+							</li>
+							<li class="list-buttons ms-2">
+								<a href="signup.html"><i class="fas fa-user-alt me-2"></i>Sign Up</a>
+							</li>
+						</ul>
+					</div>
+				</nav>
+			</div>
+		</div>
+
+		<div class="clearfix"></div>
+
+		@RenderBody()
+
+		@* footer *@
+		<footer class="skin-light-footer">
+			<div>
+				<div class="container">
+					<div class="row">
+
+						<div class="col-lg-3 col-md-4">
+							<div class="footer-widget">
+								<img src="~/img/logo.png" class="img-footer" alt="">
+								<div class="footer-add">
+									<p>Collins Street West, Victoria 8007, Australia.</p>
+									<p><span class="ftp-info"><i class="fa fa-phone" aria-hidden="true"></i>+1 246-345-0695</span></p>
+									<p><span class="ftp-info"><i class="fa fa-envelope" aria-hidden="true"></i>info@example.com</span></p>
+								</div>
+
+							</div>
+						</div>
+						<div class="col-lg-2 col-md-4">
+							<div class="footer-widget">
+								<h4 class="widget-title">Navigations</h4>
+								<ul class="footer-menu">
+									<li><a href="about-us.html">About Us</a></li>
+									<li><a href="faq.html">FAQs Page</a></li>
+									<li><a href="checkout.html">Checkout</a></li>
+									<li><a href="contact.html">Contact</a></li>
+									<li><a href="blog.html">Blog</a></li>
+								</ul>
+							</div>
+						</div>
+
+						<div class="col-lg-2 col-md-4">
+							<div class="footer-widget">
+								<h4 class="widget-title">The Highlights</h4>
+								<ul class="footer-menu">
+									<li><a href="JavaScript:Void(0);">Apartment</a></li>
+									<li><a href="JavaScript:Void(0);">My Houses</a></li>
+									<li><a href="JavaScript:Void(0);">Restaurant</a></li>
+									<li><a href="JavaScript:Void(0);">Nightlife</a></li>
+									<li><a href="JavaScript:Void(0);">Villas</a></li>
+								</ul>
+							</div>
+						</div>
+
+						<div class="col-lg-2 col-md-6">
+							<div class="footer-widget">
+								<h4 class="widget-title">My Account</h4>
+								<ul class="footer-menu">
+									<li><a href="JavaScript:Void(0);">My Profile</a></li>
+									<li><a href="JavaScript:Void(0);">My account</a></li>
+									<li><a href="JavaScript:Void(0);">My Property</a></li>
+									<li><a href="JavaScript:Void(0);">Favorites</a></li>
+									<li><a href="JavaScript:Void(0);">Cart</a></li>
+								</ul>
+							</div>
+						</div>
+
+						<div class="col-lg-3 col-md-6">
+							<div class="footer-widget">
+								<h4 class="widget-title">Download Apps</h4>
+								<div class="app-wrap">
+									<p><a href="JavaScript:Void(0);"><img src="~/img/light-play.png" class="img-fluid" alt=""></a></p>
+									<p><a href="JavaScript:Void(0);"><img src="~/img/light-ios.png" class="img-fluid" alt=""></a></p>
+								</div>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+
+			<div class="footer-bottom">
+				<div class="container">
+					<div class="row align-items-center">
+
+						<div class="col-lg-12 col-md-12">
+							<p class="mb-0">© 2023 Veshm. Designd By <a href="https://themezhub.com">Themez Hub</a> All Rights Reserved</p>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</footer>
+
+		@* login modal *@
+		<div class="modal fade" id="login" tabindex="-1" role="dialog" aria-labelledby="registermodal" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered login-pop-form" role="document">
+				<div class="modal-content" id="registermodal">
+					<span class="mod-close" data-bs-dismiss="modal" aria-hidden="true"><i class="fas fa-close"></i></span>
+					<div class="modal-header">
+						<div class="mdl-thumb"><img src="assets/img/ico.png" class="img-fluid" width="70" alt=""></div>
+						<div class="mdl-title"><h4 class="modal-header-title">Hello, Again</h4></div>
+					</div>
+					<div class="modal-body">
+						<div class="modal-login-form">
+							<form>
+
+								<div class="form-floating mb-4">
+									<input type="email" class="form-control" placeholder="name@example.com">
+									<label>User Name</label>
+								</div>
+
+								<div class="form-floating mb-4">
+									<input type="password" class="form-control" placeholder="Password">
+									<label>Password</label>
+								</div>
+
+								<div class="form-group">
+									<button type="submit" class="btn btn-primary full-width font--bold btn-lg">Log In</button>
+								</div>
+
+								<div class="modal-flex-item mb-3">
+									<div class="modal-flex-first">
+										<div class="form-check form-check-inline">
+											<input class="form-check-input" type="checkbox" id="savepassword" value="option1">
+											<label class="form-check-label" for="savepassword">Save Password</label>
+										</div>
+									</div>
+									<div class="modal-flex-last">
+										<a href="JavaScript:Void(0);">Forget Password?</a>
+									</div>
+								</div>
+							</form>
+						</div>
+						<div class="social-login">
+							<ul>
+								<li><a href="JavaScript:Void(0);" class="btn connect-fb"><i class="fa-brands fa-facebook"></i>Facebook</a></li>
+								<li><a href="JavaScript:Void(0);" class="btn connect-google"><i class="fa-brands fa-google"></i>Google+</a></li>
+							</ul>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<p>Don't have an account yet?<a href="signup.html" class="theme-cl font--bold ms-1">Sign Up</a></p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<a id="back2Top" class="top-scroll" title="Back to top" href="#"><i class="ti-arrow-up"></i></a>
+    </div>
+
+	<script src="~/js/jquery.min.js"></script>
+	<script src="~/js/popper.min.js"></script>
+	<script src="~/js/bootstrap.min.js"></script>
+	<script src="~/js/rangeslider.js"></script>
+	<script src="~/js/jquery.nice-select.min.js"></script>
+	<script src="~/js/jquery.magnific-popup.min.js"></script>
+	<script src="~/js/slick.js"></script>
+	<script src="~/js/lightbox.js"></script>
+	<script src="~/js/imagesloaded.js"></script>
+	<script src="~/js/dropzone.js"></script>
+	<script src="~/js/datedropper-javascript.js"></script>
+
+
+	<script src="~/js/custom.js"></script>
+
+@*     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">webapp</a>
@@ -34,9 +348,9 @@
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
-    </div>
+    </div> *@
 
-    <footer class="border-top footer text-muted">
+    @* <footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2024 - webapp - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
@@ -44,6 +358,6 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+    @await RenderSectionAsync("Scripts", required: false) *@
 </body>
 </html>

@@ -2,7 +2,1140 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
+@* <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
+ *@
+
+@* Hero Banner *@
+<div class="hero-header video-banner">
+	<div class="overlay"></div>
+
+	<video playsinline="playsinline" autoplay="autoplay" muted="muted" loop="loop">
+		<source src="~/img/video.mp4" type="video/mp4">
+	</video>
+	<div class="container">
+		<div class="row justify-content-center">
+			<div class="col-lg-9 col-md-11 col-sm-12">
+				<div class="inner-banner-text text-center">
+					<h1 class="text-light">Discover A Beautiful<br>Place With Us</h1>
+					<p class="text-light">Would you explore nature paradise in the world, let't find the best property in California withus.</p>
+				</div>
+				<div class="search-from-clasic mt-5">
+					<div class="hero-search-content">
+						<div class="row">
+
+							<div class="col-xl-10 col-lg-10 col-md-9 col-sm-12 pe-xl-0 pe-lg-0 pe-md-0">
+								<div class="classic-search-box">
+									<div class="form-group full">
+										<div class="input-with-icon">
+											<input type="text" class="form-control" placeholder="Search for a location">
+											<img src="~/img/pin.svg" width="20" alt="">
+										</div>
+									</div>
+									<div class="form-group">
+										<a href="JavaScript:Void(0);" data-bs-toggle="modal" data-bs-target="#filter" class="btn btn-filter-search"><i class="fa-solid fa-filter"></i>Filter</a>
+									</div>
+								</div>
+							</div>
+
+							<div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
+								<div class="form-group">
+									<button type="submit" class="btn btn-primary full-width">Search</button>
+								</div>
+							</div>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+@* partners *@
+<section class="gray-simple min">
+	<div class="container">
+
+		<div class="row justify-content-center">
+			<div class="col-lg-7 col-md-10 text-center">
+				<div class="sec-heading center mb-4">
+					<h4>Trusted by 2000+ companies</h4>
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-xl-12 col-lg-12 col-md-12 col-12">
+				<div class="brand-slide" id="brand-slide">
+
+					<div class="single-brand">
+						<figure class="thumb-figure">
+							<img src="~/img/airbnb.png" class="img-fluid" alt="">
+						</figure>
+					</div>
+
+					<div class="single-brand">
+						<figure class="thumb-figure">
+							<img src="~/img/amazon.png" class="img-fluid" alt="">
+						</figure>
+					</div>
+
+					<div class="single-brand">
+						<figure class="thumb-figure">
+							<img src="~/img/googl.png" class="img-fluid" alt="">
+						</figure>
+					</div>
+
+					<div class="single-brand">
+						<figure class="thumb-figure">
+							<img src="~/img/pp.png" class="img-fluid" alt="">
+						</figure>
+					</div>
+
+					<div class="single-brand">
+						<figure class="thumb-figure">
+							<img src="~/img/samsung.png" class="img-fluid" alt="">
+						</figure>
+					</div>
+
+					<div class="single-brand">
+						<figure class="thumb-figure">
+							<img src="~/img/slack.png" class="img-fluid" alt="">
+						</figure>
+					</div>
+
+					<div class="single-brand">
+						<figure class="thumb-figure">
+							<img src="~/img/spotify.png" class="img-fluid" alt="">
+						</figure>
+					</div>
+
+					<div class="single-brand">
+						<figure class="thumb-figure">
+							<img src="~/img/pp.png" class="img-fluid" alt="">
+						</figure>
+					</div>
+
+					<div class="single-brand">
+						<figure class="thumb-figure">
+							<img src="~/img/samsung.png" class="img-fluid" alt="">
+						</figure>
+					</div>
+
+					<div class="single-brand">
+						<figure class="thumb-figure">
+							<img src="~/img/slack.png" class="img-fluid" alt="">
+						</figure>
+					</div>
+
+					<div class="single-brand">
+						<figure class="thumb-figure">
+							<img src="~/img/spotify.png" class="img-fluid" alt="">
+						</figure>
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+	</div>
+</section>
+<div class="clearfix"></div>
+
+@* Latest Property *@
+<section class="mid">
+	<div class="container">
+
+		<div class="row justify-content-center">
+			<div class="col-lg-8 col-md-10 text-center">
+				<div class="sec-heading center mb-4">
+					<h2>Recent Property in UK</h2>
+					<p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores</p>
+				</div>
+			</div>
+		</div>
+
+		<div class="row justify-content-center gx-3 gy-4">
+
+			<!-- Single Property -->
+			<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+				<div class="veshm-list-wraps">
+					<div class="veshm-type"><span>For rent</span></div>
+
+					<div class="veshm-list-thumb">
+						<button type="button" class="compare-btn"><i class="fa-solid fa-repeat"></i>Compare</button>
+						<div class="veshm-list-img-slide">
+							<div class="veshm-list-click">
+								<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
+								<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
+								<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
+							</div>
+						</div>
+					</div>
+					<div class="veshm-list-block">
+						<div class="veshm-tags trending"><span><i class="fa-solid fa-meteor"></i>Trending</span></div>
+						<div class="veshm-list-head">
+							<div class="veshm-list-head-caption">
+								<div class="rlhc-price">
+									<h4 class="rlhc-price-name theme-cl">$7,549<span class="monthly">/Months</span></h4>
+								</div>
+								<div class="listing-short-detail-flex">
+									<h5 class="rlhc-title-name verified"><a href="single-property-1.html" class="prt-link-detail">Goldfinch Real Property</a></h5>
+									<div class="rlhc-prt-location"><img src="~/img/pin.svg" width="16" class="me-1" alt="">210 Zirak Road, Canada</div>
+								</div>
+							</div>
+							<div class="veshm-list-head-flex">
+								<button class="btn btn-like" type="button"><i class="fa-solid fa-heart-circle-check"></i></button>
+							</div>
+						</div>
+
+						<div class="veshm-list-footer">
+							<div class="veshm-list-circls">
+								<ul>
+									<li><span class="bed-inf"><i class="fa-solid fa-bed"></i></span>3 Bed</li>
+									<li><span class="bath-inf"><i class="fa-solid fa-bath"></i></span>2 Ba</li>
+									<li><span class="area-inf"><i class="fa-solid fa-vector-square"></i></span>2200 Sft</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+			<!-- End Single Property -->
+			<!-- Single Property -->
+			<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+				<div class="veshm-list-wraps">
+					<div class="veshm-type"><span>For rent</span></div>
+
+					<div class="veshm-list-thumb">
+						<button type="button" class="compare-btn"><i class="fa-solid fa-repeat"></i>Compare</button>
+						<div class="veshm-list-img-slide">
+							<div class="veshm-list-click">
+								<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
+								<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
+								<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
+							</div>
+						</div>
+					</div>
+					<div class="veshm-list-block">
+						<div class="veshm-list-head">
+							<div class="veshm-list-head-caption">
+								<div class="rlhc-price">
+									<h4 class="rlhc-price-name theme-cl">$8,540<span class="monthly">/Months</span></h4>
+								</div>
+								<div class="listing-short-detail-flex">
+									<h5 class="rlhc-title-name verified"><a href="single-property-1.html" class="prt-link-detail">Great Apex Realty Group</a></h5>
+									<div class="rlhc-prt-location"><img src="~/img/pin.svg" width="16" class="me-1" alt="">210 Zirak Road, Canada</div>
+								</div>
+							</div>
+							<div class="veshm-list-head-flex">
+								<button class="btn btn-like" type="button"><i class="fa-solid fa-heart-circle-check"></i></button>
+							</div>
+						</div>
+
+						<div class="veshm-list-footer">
+							<div class="veshm-list-circls">
+								<ul>
+									<li><span class="bed-inf"><i class="fa-solid fa-bed"></i></span>3 Bed</li>
+									<li><span class="bath-inf"><i class="fa-solid fa-bath"></i></span>1 Ba</li>
+									<li><span class="area-inf"><i class="fa-solid fa-vector-square"></i></span>2150 Sft</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+			<!-- End Single Property -->
+			<!-- Single Property -->
+			<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+				<div class="veshm-list-wraps">
+					<div class="veshm-type fr-sale"><span>For Sale</span></div>
+
+					<div class="veshm-list-thumb">
+						<button type="button" class="compare-btn"><i class="fa-solid fa-repeat"></i>Compare</button>
+						<div class="veshm-list-img-slide">
+							<div class="veshm-list-click">
+								<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
+								<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
+								<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
+							</div>
+						</div>
+					</div>
+					<div class="veshm-list-block">
+						<div class="veshm-tags featured"><span><i class="fa-solid fa-star"></i>Featured</span></div>
+						<div class="veshm-list-head">
+							<div class="veshm-list-head-caption">
+								<div class="rlhc-price">
+									<h4 class="rlhc-price-name theme-cl">$50,752</h4>
+								</div>
+								<div class="listing-short-detail-flex">
+									<h5 class="rlhc-title-name verified"><a href="single-property-1.html" class="prt-link-detail">Hearthstone Real Property</a></h5>
+									<div class="rlhc-prt-location"><img src="~/img/pin.svg" width="16" class="me-1" alt="">210 Zirak Road, Canada</div>
+								</div>
+							</div>
+							<div class="veshm-list-head-flex">
+								<button class="btn btn-like" type="button"><i class="fa-solid fa-heart-circle-check"></i></button>
+							</div>
+						</div>
+
+						<div class="veshm-list-footer">
+							<div class="veshm-list-circls">
+								<ul>
+									<li><span class="bed-inf"><i class="fa-solid fa-bed"></i></span>4 Bed</li>
+									<li><span class="bath-inf"><i class="fa-solid fa-bath"></i></span>2 Ba</li>
+									<li><span class="area-inf"><i class="fa-solid fa-vector-square"></i></span>2500 Sft</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+			<!-- End Single Property -->
+			<!-- Single Property -->
+			<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+				<div class="veshm-list-wraps">
+					<div class="veshm-type"><span>For rent</span></div>
+
+					<div class="veshm-list-thumb">
+						<button type="button" class="compare-btn"><i class="fa-solid fa-repeat"></i>Compare</button>
+						<div class="veshm-list-img-slide">
+							<div class="veshm-list-click">
+								<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
+								<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
+								<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
+							</div>
+						</div>
+					</div>
+					<div class="veshm-list-block">
+						<div class="veshm-list-head">
+							<div class="veshm-list-head-caption">
+								<div class="rlhc-price">
+									<h4 class="rlhc-price-name theme-cl">$10,890<span class="monthly">/Months</span></h4>
+								</div>
+								<div class="listing-short-detail-flex">
+									<h5 class="rlhc-title-name verified"><a href="single-property-1.html" class="prt-link-detail">The Select Brick Builders</a></h5>
+									<div class="rlhc-prt-location"><img src="~/img/pin.svg" width="16" class="me-1" alt="">210 Zirak Road, Canada</div>
+								</div>
+							</div>
+							<div class="veshm-list-head-flex">
+								<button class="btn btn-like" type="button"><i class="fa-solid fa-heart-circle-check"></i></button>
+							</div>
+						</div>
+
+						<div class="veshm-list-footer">
+							<div class="veshm-list-circls">
+								<ul>
+									<li><span class="bed-inf"><i class="fa-solid fa-bed"></i></span>3 Bed</li>
+									<li><span class="bath-inf"><i class="fa-solid fa-bath"></i></span>1 Ba</li>
+									<li><span class="area-inf"><i class="fa-solid fa-vector-square"></i></span>2000 Sft</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+			<!-- End Single Property -->
+			<!-- Single Property -->
+			<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+				<div class="veshm-list-wraps">
+					<div class="veshm-type"><span>For rent</span></div>
+
+					<div class="veshm-list-thumb">
+						<button type="button" class="compare-btn"><i class="fa-solid fa-repeat"></i>Compare</button>
+						<div class="veshm-list-img-slide">
+							<div class="veshm-list-click">
+								<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
+								<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
+								<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
+							</div>
+						</div>
+					</div>
+					<div class="veshm-list-block">
+						<div class="veshm-list-head">
+							<div class="veshm-list-head-caption">
+								<div class="rlhc-price">
+									<h4 class="rlhc-price-name theme-cl">$7,999<span class="monthly">/Months</span></h4>
+								</div>
+								<div class="listing-short-detail-flex">
+									<h5 class="rlhc-title-name verified"><a href="single-property-1.html" class="prt-link-detail">Dream Big Real Estate Group</a></h5>
+									<div class="rlhc-prt-location"><img src="~/img/pin.svg" width="16" class="me-1" alt="">210 Zirak Road, Canada</div>
+								</div>
+							</div>
+							<div class="veshm-list-head-flex">
+								<button class="btn btn-like" type="button"><i class="fa-solid fa-heart-circle-check"></i></button>
+							</div>
+						</div>
+
+						<div class="veshm-list-footer">
+							<div class="veshm-list-circls">
+								<ul>
+									<li><span class="bed-inf"><i class="fa-solid fa-bed"></i></span>4 Bed</li>
+									<li><span class="bath-inf"><i class="fa-solid fa-bath"></i></span>3 Ba</li>
+									<li><span class="area-inf"><i class="fa-solid fa-vector-square"></i></span>2300 Sft</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+			<!-- End Single Property -->
+			<!-- Single Property -->
+			<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+				<div class="veshm-list-wraps">
+					<div class="veshm-type fr-sale"><span>For Sale</span></div>
+
+					<div class="veshm-list-thumb">
+						<button type="button" class="compare-btn"><i class="fa-solid fa-repeat"></i>Compare</button>
+						<div class="veshm-list-img-slide">
+							<div class="veshm-list-click">
+								<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
+								<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
+								<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
+							</div>
+						</div>
+					</div>
+					<div class="veshm-list-block">
+						<div class="veshm-tags featured"><span><i class="fa-solid fa-star"></i>Featured</span></div>
+						<div class="veshm-list-head">
+							<div class="veshm-list-head-caption">
+								<div class="rlhc-price">
+									<h4 class="rlhc-price-name theme-cl">$80,750</h4>
+								</div>
+								<div class="listing-short-detail-flex">
+									<h5 class="rlhc-title-name verified"><a href="single-property-1.html" class="prt-link-detail">Allen Tate Real Company</a></h5>
+									<div class="rlhc-prt-location"><img src="~/img/pin.svg" width="16" class="me-1" alt="">210 Zirak Road, Canada</div>
+								</div>
+							</div>
+							<div class="veshm-list-head-flex">
+								<button class="btn btn-like" type="button"><i class="fa-solid fa-heart-circle-check"></i></button>
+							</div>
+						</div>
+
+						<div class="veshm-list-footer">
+							<div class="veshm-list-circls">
+								<ul>
+									<li><span class="bed-inf"><i class="fa-solid fa-bed"></i></span>5 Bed</li>
+									<li><span class="bath-inf"><i class="fa-solid fa-bath"></i></span>3 Ba</li>
+									<li><span class="area-inf"><i class="fa-solid fa-vector-square"></i></span>2800 Sft</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+			<!-- End Single Property -->
+			<!-- Single Property -->
+			<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+				<div class="veshm-list-wraps">
+					<div class="veshm-type"><span>For rent</span></div>
+
+					<div class="veshm-list-thumb">
+						<button type="button" class="compare-btn"><i class="fa-solid fa-repeat"></i>Compare</button>
+						<div class="veshm-list-img-slide">
+							<div class="veshm-list-click">
+								<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
+								<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
+								<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
+							</div>
+						</div>
+					</div>
+					<div class="veshm-list-block">
+						<div class="veshm-list-head">
+							<div class="veshm-list-head-caption">
+								<div class="rlhc-price">
+									<h4 class="rlhc-price-name theme-cl">$9,540<span class="monthly">/Months</span></h4>
+								</div>
+								<div class="listing-short-detail-flex">
+									<h5 class="rlhc-title-name verified"><a href="single-property-1.html" class="prt-link-detail">Arroyo Blue Real Property</a></h5>
+									<div class="rlhc-prt-location"><img src="~/img/pin.svg" width="16" class="me-1" alt="">210 Zirak Road, Canada</div>
+								</div>
+							</div>
+							<div class="veshm-list-head-flex">
+								<button class="btn btn-like" type="button"><i class="fa-solid fa-heart-circle-check"></i></button>
+							</div>
+						</div>
+
+						<div class="veshm-list-footer">
+							<div class="veshm-list-circls">
+								<ul>
+									<li><span class="bed-inf"><i class="fa-solid fa-bed"></i></span>3 Bed</li>
+									<li><span class="bath-inf"><i class="fa-solid fa-bath"></i></span>3 Ba</li>
+									<li><span class="area-inf"><i class="fa-solid fa-vector-square"></i></span>2100 Sft</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+			<!-- End Single Property -->
+			<!-- Single Property -->
+			<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+				<div class="veshm-list-wraps">
+					<div class="veshm-type"><span>For rent</span></div>
+
+					<div class="veshm-list-thumb">
+						<button type="button" class="compare-btn"><i class="fa-solid fa-repeat"></i>Compare</button>
+						<div class="veshm-list-img-slide">
+							<div class="veshm-list-click">
+								<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
+								<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
+								<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
+							</div>
+						</div>
+					</div>
+					<div class="veshm-list-block">
+						<div class="veshm-tags trending"><span><i class="fa-solid fa-meteor"></i>Trending</span></div>
+						<div class="veshm-list-head">
+							<div class="veshm-list-head-caption">
+								<div class="rlhc-price">
+									<h4 class="rlhc-price-name theme-cl">$8,570<span class="monthly">/Months</span></h4>
+								</div>
+								<div class="listing-short-detail-flex">
+									<h5 class="rlhc-title-name verified"><a href="single-property-1.html" class="prt-link-detail">Catbird Realty Advisors</a></h5>
+									<div class="rlhc-prt-location"><img src="~/img/pin.svg" width="16" class="me-1" alt="">210 Zirak Road, Canada</div>
+								</div>
+							</div>
+							<div class="veshm-list-head-flex">
+								<button class="btn btn-like" type="button"><i class="fa-solid fa-heart-circle-check"></i></button>
+							</div>
+						</div>
+
+						<div class="veshm-list-footer">
+							<div class="veshm-list-circls">
+								<ul>
+									<li><span class="bed-inf"><i class="fa-solid fa-bed"></i></span>4 Bed</li>
+									<li><span class="bath-inf"><i class="fa-solid fa-bath"></i></span>3 Ba</li>
+									<li><span class="area-inf"><i class="fa-solid fa-vector-square"></i></span>3000 Sft</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+			<!-- End Single Property -->
+
+		</div>
+
+	</div>
+</section>
+
+@* Better Service *@
+<section class="classic-bg">
+	<div class="container">
+
+		<div class="row justify-content-center">
+			<div class="col-lg-8 col-md-10 text-center">
+				<div class="sec-heading center light">
+					<h2>We Provide Better Services For You</h2>
+					<p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores qui blanditiis praesentium.</p>
+				</div>
+			</div>
+		</div>
+
+		<div class="row gy-5">
+
+			<div class="col-xl-4 col-lg-4 col-md-12 col-sm-12">
+				<div class="veshm-servs-box light">
+					<div class="veshm-servs-box-icon">
+						<div class="veshm-posted-figure"><i class="fa-solid fa-house-circle-check"></i></div>
+					</div>
+					<div class="veshm-servs-box-caption">
+						<h4>Buy properties</h4>
+						<p>Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae qui blanditiis praesentium.</p>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-xl-4 col-lg-4 col-md-12 col-sm-12">
+				<div class="veshm-servs-box light">
+					<div class="veshm-servs-box-icon">
+						<div class="veshm-posted-figure"><i class="fa-solid fa-house-user"></i></div>
+					</div>
+					<div class="veshm-servs-box-caption">
+						<h4>Sell Your House</h4>
+						<p>Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae qui blanditiis praesentium.</p>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-xl-4 col-lg-4 col-md-12 col-sm-12">
+				<div class="veshm-servs-box light">
+					<div class="veshm-servs-box-icon">
+						<div class="veshm-posted-figure"><i class="fa-solid fa-house-flood-water"></i></div>
+					</div>
+					<div class="veshm-servs-box-caption">
+						<h4>Find Mortgage</h4>
+						<p>Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae qui blanditiis praesentium.</p>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-xl-4 col-lg-4 col-md-12 col-sm-12">
+				<div class="veshm-servs-box light">
+					<div class="veshm-servs-box-icon">
+						<div class="veshm-posted-figure"><i class="fa-solid fa-fire-flame-curved"></i></div>
+					</div>
+					<div class="veshm-servs-box-caption">
+						<h4>High Quality</h4>
+						<p>Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae qui blanditiis praesentium.</p>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-xl-4 col-lg-4 col-md-12 col-sm-12">
+				<div class="veshm-servs-box light">
+					<div class="veshm-servs-box-icon">
+						<div class="veshm-posted-figure"><i class="fa-solid fa-lira-sign"></i></div>
+					</div>
+					<div class="veshm-servs-box-caption">
+						<h4>Friendly Price</h4>
+						<p>Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae qui blanditiis praesentium.</p>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-xl-4 col-lg-4 col-md-12 col-sm-12">
+				<div class="veshm-servs-box light">
+					<div class="veshm-servs-box-icon">
+						<div class="veshm-posted-figure"><i class="fa-brands fa-rocketchat"></i></div>
+					</div>
+					<div class="veshm-servs-box-caption">
+						<h4>Easy Communication</h4>
+						<p>Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae qui blanditiis praesentium.</p>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+	</div>
+</section>
+
+@* Select Your City *@
+<section>
+	<div class="container">
+
+		<div class="row justify-content-center">
+			<div class="col-lg-8 col-md-10 text-center">
+				<div class="sec-heading center">
+					<h2>Select Your City</h2>
+					<p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores</p>
+				</div>
+			</div>
+		</div>
+
+		<div class="row g-xl-3 g-lg-3">
+
+			<div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12">
+				<div class="veshm-location-prt">
+					<div class="veshm-location-lists">32 Lists</div>
+					<a href="search-property.html" class="veshm-location-figure">
+						<img src="https://via.placeholder.com/650x850" class="img-fluid" alt="">
+					</a>
+					<div class="veshm-location-content">
+						<h4>California, USA</h4>
+						<div class="vesh-aget-rates">
+							<i class="fa-solid fa-star"></i>
+							<i class="fa-solid fa-star"></i>
+							<i class="fa-solid fa-star"></i>
+							<i class="fa-solid fa-star"></i>
+							<i class="fa-solid fa-star"></i>
+							<span class="resy-98">322 Reviews</span>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12">
+				<div class="veshm-location-prt">
+					<div class="veshm-location-lists">22 Lists</div>
+					<a href="search-property.html" class="veshm-location-figure">
+						<img src="https://via.placeholder.com/650x850" class="img-fluid" alt="">
+					</a>
+					<div class="veshm-location-content">
+						<h4>Denver City, USA</h4>
+						<div class="vesh-aget-rates">
+							<i class="fa-solid fa-star"></i>
+							<i class="fa-solid fa-star"></i>
+							<i class="fa-solid fa-star"></i>
+							<i class="fa-solid fa-star"></i>
+							<i class="fa-solid fa-star"></i>
+							<span class="resy-98">410 Reviews</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12">
+				<div class="veshm-location-prt">
+					<div class="veshm-location-lists">52 Lists</div>
+					<a href="search-property.html" class="veshm-location-figure">
+						<img src="https://via.placeholder.com/650x850" class="img-fluid" alt="">
+					</a>
+					<div class="veshm-location-content">
+						<h4>Washington, USA</h4>
+						<div class="vesh-aget-rates">
+							<i class="fa-solid fa-star"></i>
+							<i class="fa-solid fa-star"></i>
+							<i class="fa-solid fa-star"></i>
+							<i class="fa-solid fa-star"></i>
+							<i class="fa-solid fa-star"></i>
+							<span class="resy-98">340 Reviews</span>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12">
+				<div class="veshm-location-prt">
+					<div class="veshm-location-lists">42 Lists</div>
+					<a href="search-property.html" class="veshm-location-figure">
+						<img src="https://via.placeholder.com/650x850" class="img-fluid" alt="">
+					</a>
+					<div class="veshm-location-content">
+						<h4>Liverpool, UK</h4>
+						<div class="vesh-aget-rates">
+							<i class="fa-solid fa-star"></i>
+							<i class="fa-solid fa-star"></i>
+							<i class="fa-solid fa-star"></i>
+							<i class="fa-solid fa-star"></i>
+							<i class="fa-solid fa-star"></i>
+							<span class="resy-98">512 Reviews</span>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+		<div class="row">
+			<div class="col-lg-12 col-md-12 col-sm-12 text-center">
+				<a href="JavaScript:Void(0);" class="btn btn-outline-gray">Explore More Cities<i class="fa-regular fa-circle-right ms-2"></i></a>
+			</div>
+		</div>
+
+	</div>
+</section>
+
+@* Explore Egents *@
+<section class="gray">
+	<div class="container">
+
+		<div class="row align-items-center">
+
+			<div class="col-xl-4 col-lg-4 col-md-12">
+				<div class="sec-heading">
+					<h2 class="mb-3">Browse Agents</h2>
+					<p class="text-paragraph">At vero eos et accusamus et iusto odio more dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti.</p>
+				</div>
+			</div>
+
+			<div class="col-xl-8 col-lg-8 col-md-12">
+				<div class="side-slide">
+
+					<!-- Single Slide -->
+					<div class="single-slide">
+						<div class="veshm-agent-wrap">
+							<button class="btn btn-like" type="button"><i class="fa-solid fa-heart-circle-check"></i></button>
+							<div class="veshm-list-75"><span>23 Property</span></div>
+							<div class="veshm-agent-thumb">
+								<img src="https://via.placeholder.com/650x650" class="img-fluid circle" alt="">
+							</div>
+							<div class="veshm-agent-content">
+								<h4 class="vesh-content-title">Amber M. Felton</h4>
+								<div class="vesh-aget-rates">
+									<i class="fa-solid fa-star"></i>
+									<i class="fa-solid fa-star"></i>
+									<i class="fa-solid fa-star"></i>
+									<i class="fa-solid fa-star"></i>
+									<i class="fa-solid fa-star"></i>
+									<span class="resy-98">410 Reviews</span>
+								</div>
+								<div class="vesh-contact">
+									<a href="agent-detail.html" class="btn rounded btn-light-success full-width">Contact Agent</a>
+								</div>
+							</div>
+							<div class="veshm-agent-footer">
+								<div class="rlhc-prt-location"><i class="fa-solid fa-location-dot me-1"></i>Liverpool</div>
+								<div class="veshm-agent-social">
+									<ul>
+										<li><a href="JavaScript:Void(0);"><i class="fa-brands fa-facebook-f"></i></a></li>
+										<li><a href="JavaScript:Void(0);"><i class="fa-brands fa-instagram"></i></a></li>
+										<li><a href="JavaScript:Void(0);"><i class="fa-brands fa-linkedin-in"></i></a></li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Single Slide -->
+					<div class="single-slide">
+						<div class="veshm-agent-wrap">
+							<button class="btn btn-like" type="button"><i class="fa-solid fa-heart-circle-check"></i></button>
+							<div class="veshm-list-75"><span>62 Property</span></div>
+							<div class="veshm-agent-thumb">
+								<img src="https://via.placeholder.com/650x650" class="img-fluid circle" alt="">
+							</div>
+							<div class="veshm-agent-content">
+								<h4 class="vesh-content-title">Agnes R. Boggess</h4>
+								<div class="vesh-aget-rates">
+									<i class="fa-solid fa-star"></i>
+									<i class="fa-solid fa-star"></i>
+									<i class="fa-solid fa-star"></i>
+									<i class="fa-solid fa-star"></i>
+									<i class="fa-solid fa-star"></i>
+									<span class="resy-98">143 Reviews</span>
+								</div>
+								<div class="vesh-contact">
+									<a href="agent-detail.html" class="btn rounded btn-light-success full-width">Contact Agent</a>
+								</div>
+							</div>
+							<div class="veshm-agent-footer">
+								<div class="rlhc-prt-location"><i class="fa-solid fa-location-dot me-1"></i>Liverpool</div>
+								<div class="veshm-agent-social">
+									<ul>
+										<li><a href="JavaScript:Void(0);"><i class="fa-brands fa-facebook-f"></i></a></li>
+										<li><a href="JavaScript:Void(0);"><i class="fa-brands fa-instagram"></i></a></li>
+										<li><a href="JavaScript:Void(0);"><i class="fa-brands fa-linkedin-in"></i></a></li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Single Slide -->
+					<div class="single-slide">
+						<div class="veshm-agent-wrap">
+							<button class="btn btn-like" type="button"><i class="fa-solid fa-heart-circle-check"></i></button>
+							<div class="veshm-list-75"><span>84 Property</span></div>
+							<div class="veshm-agent-thumb">
+								<img src="https://via.placeholder.com/650x650" class="img-fluid circle" alt="">
+							</div>
+							<div class="veshm-agent-content">
+								<h4 class="vesh-content-title">Elizabeth A. Sanchez</h4>
+								<div class="vesh-aget-rates">
+									<i class="fa-solid fa-star"></i>
+									<i class="fa-solid fa-star"></i>
+									<i class="fa-solid fa-star"></i>
+									<i class="fa-solid fa-star"></i>
+									<i class="fa-solid fa-star"></i>
+									<span class="resy-98">216 Reviews</span>
+								</div>
+								<div class="vesh-contact">
+									<a href="agent-detail.html" class="btn rounded btn-light-success full-width">Contact Agent</a>
+								</div>
+							</div>
+							<div class="veshm-agent-footer">
+								<div class="rlhc-prt-location"><i class="fa-solid fa-location-dot me-1"></i>Liverpool</div>
+								<div class="veshm-agent-social">
+									<ul>
+										<li><a href="JavaScript:Void(0);"><i class="fa-brands fa-facebook-f"></i></a></li>
+										<li><a href="JavaScript:Void(0);"><i class="fa-brands fa-instagram"></i></a></li>
+										<li><a href="JavaScript:Void(0);"><i class="fa-brands fa-linkedin-in"></i></a></li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Single Slide -->
+					<div class="single-slide">
+						<div class="veshm-agent-wrap">
+							<button class="btn btn-like" type="button"><i class="fa-solid fa-heart-circle-check"></i></button>
+							<div class="veshm-list-75"><span>34 Property</span></div>
+							<div class="veshm-agent-thumb">
+								<img src="https://via.placeholder.com/650x650" class="img-fluid circle" alt="">
+							</div>
+							<div class="veshm-agent-content">
+								<h4 class="vesh-content-title">Jerry E. Middleton</h4>
+								<div class="vesh-aget-rates">
+									<i class="fa-solid fa-star"></i>
+									<i class="fa-solid fa-star"></i>
+									<i class="fa-solid fa-star"></i>
+									<i class="fa-solid fa-star"></i>
+									<i class="fa-solid fa-star"></i>
+									<span class="resy-98">147 Reviews</span>
+								</div>
+								<div class="vesh-contact">
+									<a href="agent-detail.html" class="btn rounded btn-light-success full-width">Contact Agent</a>
+								</div>
+							</div>
+							<div class="veshm-agent-footer">
+								<div class="rlhc-prt-location"><i class="fa-solid fa-location-dot me-1"></i>Liverpool</div>
+								<div class="veshm-agent-social">
+									<ul>
+										<li><a href="JavaScript:Void(0);"><i class="fa-brands fa-facebook-f"></i></a></li>
+										<li><a href="JavaScript:Void(0);"><i class="fa-brands fa-instagram"></i></a></li>
+										<li><a href="JavaScript:Void(0);"><i class="fa-brands fa-linkedin-in"></i></a></li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Single Slide -->
+					<div class="single-slide">
+						<div class="veshm-agent-wrap">
+							<button class="btn btn-like" type="button"><i class="fa-solid fa-heart-circle-check"></i></button>
+							<div class="veshm-list-75"><span>89 Property</span></div>
+							<div class="veshm-agent-thumb">
+								<img src="https://via.placeholder.com/650x650" class="img-fluid circle" alt="">
+							</div>
+							<div class="veshm-agent-content">
+								<h4 class="vesh-content-title">Lamont B. Morrissey</h4>
+								<div class="vesh-aget-rates">
+									<i class="fa-solid fa-star"></i>
+									<i class="fa-solid fa-star"></i>
+									<i class="fa-solid fa-star"></i>
+									<i class="fa-solid fa-star"></i>
+									<i class="fa-solid fa-star"></i>
+									<span class="resy-98">432 Reviews</span>
+								</div>
+								<div class="vesh-contact">
+									<a href="agent-detail.html" class="btn rounded btn-light-success full-width">Contact Agent</a>
+								</div>
+							</div>
+							<div class="veshm-agent-footer">
+								<div class="rlhc-prt-location"><i class="fa-solid fa-location-dot me-1"></i>Liverpool</div>
+								<div class="veshm-agent-social">
+									<ul>
+										<li><a href="JavaScript:Void(0);"><i class="fa-brands fa-facebook-f"></i></a></li>
+										<li><a href="JavaScript:Void(0);"><i class="fa-brands fa-instagram"></i></a></li>
+										<li><a href="JavaScript:Void(0);"><i class="fa-brands fa-linkedin-in"></i></a></li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Single Slide -->
+					<div class="single-slide">
+						<div class="veshm-agent-wrap">
+							<button class="btn btn-like" type="button"><i class="fa-solid fa-heart-circle-check"></i></button>
+							<div class="veshm-list-75"><span>22 Property</span></div>
+							<div class="veshm-agent-thumb">
+								<img src="https://via.placeholder.com/650x650" class="img-fluid circle" alt="">
+							</div>
+							<div class="veshm-agent-content">
+								<h4 class="vesh-content-title">Bryan H. Radley</h4>
+								<div class="vesh-aget-rates">
+									<i class="fa-solid fa-star"></i>
+									<i class="fa-solid fa-star"></i>
+									<i class="fa-solid fa-star"></i>
+									<i class="fa-solid fa-star"></i>
+									<i class="fa-solid fa-star"></i>
+									<span class="resy-98">370 Reviews</span>
+								</div>
+								<div class="vesh-contact">
+									<a href="agent-detail.html" class="btn rounded btn-light-success full-width">Contact Agent</a>
+								</div>
+							</div>
+							<div class="veshm-agent-footer">
+								<div class="rlhc-prt-location"><i class="fa-solid fa-location-dot me-1"></i>Liverpool</div>
+								<div class="veshm-agent-social">
+									<ul>
+										<li><a href="JavaScript:Void(0);"><i class="fa-brands fa-facebook-f"></i></a></li>
+										<li><a href="JavaScript:Void(0);"><i class="fa-brands fa-instagram"></i></a></li>
+										<li><a href="JavaScript:Void(0);"><i class="fa-brands fa-linkedin-in"></i></a></li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+
+		</div>
+	</div>
+</section>
+
+@* Review *@
+<section>
+	<div class="container">
+
+		<div class="row justify-content-center">
+			<div class="col-lg-7 col-md-10 text-center">
+				<div class="sec-heading center">
+					<h2>Good Reviews By Customers</h2>
+					<p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores</p>
+				</div>
+			</div>
+		</div>
+
+		<div class="row justify-content-center gx-4 gy-4">
+
+			<!-- Single Review -->
+			<div class="col-xl-4 col-lg-4 col-md-6">
+				<div class="veshm-reviews-box">
+					<div class="veshm-reviews-flex">
+						<div class="veshm-reviews-thumb">
+							<div class="veshm-reviews-figure"><img src="https://via.placeholder.com/650x650" class="img-fluid circle" alt=""></div>
+						</div>
+						<div class="veshm-reviews-caption">
+							<div class="veshm-reviews-title"><h4>Lucia E. Nugent</h4></div>
+							<div class="veshm-reviews-designation"><span>CEO of Climber</span></div>
+							<div class="veshm-reviews-rates">
+								<i class="fa-solid fa-star"></i>
+								<i class="fa-solid fa-star"></i>
+								<i class="fa-solid fa-star"></i>
+								<i class="fa-solid fa-star"></i>
+								<i class="fa-solid fa-star deactive"></i>
+							</div>
+						</div>
+					</div>
+					<div class="veshm-reviews-desc">
+						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim.</p>
+						<figure class="mt-2 mb-0"><img src="~/img/brand/a.webp" class="img-fluid" width="120" alt=""></figure>
+					</div>
+				</div>
+			</div>
+
+			<!-- Single Review -->
+			<div class="col-xl-4 col-lg-4 col-md-6">
+				<div class="veshm-reviews-box">
+					<div class="veshm-reviews-flex">
+						<div class="veshm-reviews-thumb">
+							<div class="veshm-reviews-figure"><img src="https://via.placeholder.com/650x650" class="img-fluid circle" alt=""></div>
+						</div>
+						<div class="veshm-reviews-caption">
+							<div class="veshm-reviews-title"><h4>Brenda R. Smith</h4></div>
+							<div class="veshm-reviews-designation"><span>Founder of Yeloower</span></div>
+							<div class="veshm-reviews-rates">
+								<i class="fa-solid fa-star"></i>
+								<i class="fa-solid fa-star"></i>
+								<i class="fa-solid fa-star"></i>
+								<i class="fa-solid fa-star"></i>
+								<i class="fa-solid fa-star"></i>
+							</div>
+						</div>
+					</div>
+					<div class="veshm-reviews-desc">
+						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim.</p>
+						<figure class="mt-2 mb-0"><img src="~/img/brand/b.webp" class="img-fluid" width="120" alt=""></figure>
+					</div>
+				</div>
+			</div>
+
+			<!-- Single Review -->
+			<div class="col-xl-4 col-lg-4 col-md-6">
+				<div class="veshm-reviews-box">
+					<div class="veshm-reviews-flex">
+						<div class="veshm-reviews-thumb">
+							<div class="veshm-reviews-figure"><img src="https://via.placeholder.com/650x650" class="img-fluid circle" alt=""></div>
+						</div>
+						<div class="veshm-reviews-caption">
+							<div class="veshm-reviews-title"><h4>Brian B. Wilkerson</h4></div>
+							<div class="veshm-reviews-designation"><span>CEO of Mark Soft</span></div>
+							<div class="veshm-reviews-rates">
+								<i class="fa-solid fa-star"></i>
+								<i class="fa-solid fa-star"></i>
+								<i class="fa-solid fa-star"></i>
+								<i class="fa-solid fa-star"></i>
+								<i class="fa-solid fa-star"></i>
+							</div>
+						</div>
+					</div>
+					<div class="veshm-reviews-desc">
+						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim.</p>
+						<figure class="mt-2 mb-0"><img src="~/img/brand/c.webp" class="img-fluid" width="120" alt=""></figure>
+					</div>
+				</div>
+			</div>
+
+			<!-- Single Review -->
+			<div class="col-xl-4 col-lg-4 col-md-6">
+				<div class="veshm-reviews-box">
+					<div class="veshm-reviews-flex">
+						<div class="veshm-reviews-thumb">
+							<div class="veshm-reviews-figure"><img src="https://via.placeholder.com/650x650" class="img-fluid circle" alt=""></div>
+						</div>
+						<div class="veshm-reviews-caption">
+							<div class="veshm-reviews-title"><h4>Miguel L. Benbow</h4></div>
+							<div class="veshm-reviews-designation"><span>Founder of Mitche LTD</span></div>
+							<div class="veshm-reviews-rates">
+								<i class="fa-solid fa-star"></i>
+								<i class="fa-solid fa-star"></i>
+								<i class="fa-solid fa-star"></i>
+								<i class="fa-solid fa-star"></i>
+								<i class="fa-solid fa-star deactive"></i>
+							</div>
+						</div>
+					</div>
+					<div class="veshm-reviews-desc">
+						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim.</p>
+						<figure class="mt-2 mb-0"><img src="~/img/brand/h.webp" class="img-fluid" width="120" alt=""></figure>
+					</div>
+				</div>
+			</div>
+
+			<!-- Single Review -->
+			<div class="col-xl-4 col-lg-4 col-md-6">
+				<div class="veshm-reviews-box">
+					<div class="veshm-reviews-flex">
+						<div class="veshm-reviews-thumb">
+							<div class="veshm-reviews-figure"><img src="https://via.placeholder.com/650x650" class="img-fluid circle" alt=""></div>
+						</div>
+						<div class="veshm-reviews-caption">
+							<div class="veshm-reviews-title"><h4>Hilda A. Sheppard</h4></div>
+							<div class="veshm-reviews-designation"><span>CEO of Doodle</span></div>
+							<div class="veshm-reviews-rates">
+								<i class="fa-solid fa-star"></i>
+								<i class="fa-solid fa-star"></i>
+								<i class="fa-solid fa-star"></i>
+								<i class="fa-solid fa-star"></i>
+								<i class="fa-solid fa-star"></i>
+							</div>
+						</div>
+					</div>
+					<div class="veshm-reviews-desc">
+						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim.</p>
+						<figure class="mt-2 mb-0"><img src="~/img/brand/g.webp" class="img-fluid" width="120" alt=""></figure>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+	</div>
+</section>
+
+@* Call to Action *@
+<section class="bg-cover call-action-container dark" style="background:#065eb5 url(~/img/footer-bg-dark.png)no-repeat;">
+	<div class="container">
+		<div class="row justify-content-center">
+			<div class="col-xl-7 col-lg-10 col-md-12 col-sm-12">
+
+				<div class="call-action-wrap">
+					<div class="call-action-caption">
+						<h2 class="text-light">Are You Already Working With Us?</h2>
+						<p class="text-light">At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias</p>
+					</div>
+					<div class="call-action-form">
+						<form>
+							<div class="newsltr-form">
+								<input type="text" class="form-control" placeholder="Enter Your email">
+								<button type="button" class="btn btn-subscribe">Subscribe</button>
+							</div>
+						</form>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+</section>
+
+
+
+
+
