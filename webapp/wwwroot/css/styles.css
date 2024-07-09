@@ -2893,8 +2893,8 @@ nav a {
     border-radius: 50%;
 }
 .account-drop .dropdown-menu {
-    top:70px !important;
-    right: 0 !important;
+    /*top:70px !important;
+    right: 0 !important;*/
     background: #fff;
     box-shadow: none;
     min-width:300px;
