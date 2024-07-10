@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using webapp.Data;
 
@@ -11,9 +12,11 @@ using webapp.Data;
 namespace webapp.Migrations
 {
     [DbContext(typeof(webappContext))]
-    partial class webappContextModelSnapshot : ModelSnapshot
+    [Migration("20240709130945_addNewProperty")]
+    partial class addNewProperty
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -232,6 +235,10 @@ namespace webapp.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("AgentId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -246,17 +253,60 @@ namespace webapp.Migrations
                     b.Property<int>("Bedrooms")
                         .HasColumnType("int");
 
+                    b.Property<string>("BuildingAge")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ContactEmail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ContactName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("ContactPhone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<bool>("GDPRConsent")
+                        .HasColumnType("bit");
+
                     b.Property<string>("GalleryPath")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Garage")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("ListingDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("OtherFeatures")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18, 2)");
 
                     b.Property<string>("PropertyType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Rooms")
+                        .HasColumnType("int");
+
+                    b.Property<string>("State")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -269,84 +319,15 @@ namespace webapp.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("AgentId");
-
-                    b.ToTable("Properties");
-                });
-
-            modelBuilder.Entity("webapp.Models.PropertyAddress", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AddressLine")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("City")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("PropertyId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("State")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("ZipCode")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PropertyId")
-                        .IsUnique();
+                    b.HasIndex("AgentId");
 
-                    b.ToTable("PropertyAddresses");
-                });
-
-            modelBuilder.Entity("webapp.Models.PropertyDetail", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("BuildingAge")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<int>("Garage")
-                        .HasColumnType("int");
-
-                    b.Property<string>("OtherFeatures")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("PropertyId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Rooms")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PropertyId")
-                        .IsUnique();
-
-                    b.ToTable("PropertyDetails");
+                    b.ToTable("Properties");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -409,37 +390,6 @@ namespace webapp.Migrations
                         .IsRequired();
 
                     b.Navigation("Agent");
-                });
-
-            modelBuilder.Entity("webapp.Models.PropertyAddress", b =>
-                {
-                    b.HasOne("webapp.Models.Property", "Property")
-                        .WithOne("Address")
-                        .HasForeignKey("webapp.Models.PropertyAddress", "PropertyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Property");
-                });
-
-            modelBuilder.Entity("webapp.Models.PropertyDetail", b =>
-                {
-                    b.HasOne("webapp.Models.Property", "Property")
-                        .WithOne("Detail")
-                        .HasForeignKey("webapp.Models.PropertyDetail", "PropertyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Property");
-                });
-
-            modelBuilder.Entity("webapp.Models.Property", b =>
-                {
-                    b.Navigation("Address")
-                        .IsRequired();
-
-                    b.Navigation("Detail")
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

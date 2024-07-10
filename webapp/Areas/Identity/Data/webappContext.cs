@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using webapp.Areas.Identity.Data;
+using webapp.Models;
 
 namespace webapp.Data;
 
@@ -11,6 +12,10 @@ public class webappContext : IdentityDbContext<webappUser>
         : base(options)
     {
     }
+
+    public DbSet<Property> Properties { get; set; }
+    public DbSet<PropertyAddress> PropertyAddresses { get; set; }
+    public DbSet<PropertyDetail> PropertyDetails { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
