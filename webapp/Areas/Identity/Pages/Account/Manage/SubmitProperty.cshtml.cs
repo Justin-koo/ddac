@@ -7,6 +7,7 @@ using webapp.Models;
 using webapp.Areas.Identity.Data;
 using System.Threading.Tasks;
 using webapp.Data;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Shared;
 
 namespace webapp.Areas.Identity.Pages.Account.Manage
 {
@@ -24,7 +25,10 @@ namespace webapp.Areas.Identity.Pages.Account.Manage
 		[BindProperty]
 		public PropertyViewModel Property { get; set; }
 
-		public void OnGet()
+        [TempData]
+        public string StatusMessage { get; set; }
+
+        public void OnGet()
 		{
 			ViewData["ActivePage"] = ManageNavPages.SubmitProperty;
 		}
@@ -90,8 +94,9 @@ namespace webapp.Areas.Identity.Pages.Account.Manage
 
 			_context.Properties.Add(property);
 			await _context.SaveChangesAsync();
+            StatusMessage = "Property created successfully.";
 
-			return RedirectToPage("./Index");
+            return RedirectToPage();
 		}
 	}
 }
