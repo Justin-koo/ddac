@@ -1,0 +1,339 @@
+﻿@model PropertyViewModel
+@{
+    Layout = "~/Views/Shared/_AccountLayout.cshtml";
+}   
+
+<div class="dashboard-body">
+
+    <div class="dashboard-wraper">
+        <div class="row">
+
+            <!-- Submit Form -->
+            <div class="col-lg-12 col-md-12">
+
+                <form id="submitPropertyForm" class="submit-page" method="post" enctype="multipart/form-data">
+
+                    <!-- Basic Information -->
+                    <div class="frm_submit_block">
+                        <h3>Basic Information</h3>
+                        <div class="frm_submit_wrap">
+                            @* <partial name="_StatusMessage" for="StatusMessage" /> *@
+                            <div class="row">
+
+                                <div class="form-group col-md-12">
+                                    <label asp-for="Title">Property Title</label>
+                                    <input asp-for="Title" class="form-control" />
+                                    <span asp-validation-for="Title" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    <label asp-for="Status">Status</label>
+                                    <select asp-for="Status" class="form-control">
+                                        <option value="Rent">For Rent</option>
+                                        <option value="Sale">For Sale</option>
+                                    </select>
+                                    <span asp-validation-for="Status" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    <label asp-for="PropertyType">Property Type</label>
+                                    <select asp-for="PropertyType" class="form-control">
+                                        <option value="Houses">Houses</option>
+                                        <option value="Apartment">Apartment</option>
+                                        <option value="Villas">Villas</option>
+                                        <option value="Commercial">Commercial</option>
+                                        <option value="Offices">Offices</option>
+                                        <option value="Garage">Garage</option>
+                                    </select>
+                                    <span asp-validation-for="PropertyType" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    <label asp-for="Price">Price</label>
+                                    <input asp-for="Price" class="form-control" />
+                                    <span asp-validation-for="Price" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    <label asp-for="Area">Area</label>
+                                    <input asp-for="Area" class="form-control" />
+                                    <span asp-validation-for="Area" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    <label asp-for="Bedrooms">Bedrooms</label>
+                                    <input asp-for="Bedrooms" class="form-control" />
+                                    <span asp-validation-for="Bedrooms" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    <label asp-for="Bathrooms">Bathrooms</label>
+                                    <input asp-for="Bathrooms" class="form-control" />
+                                    <span asp-validation-for="Bathrooms" class="text-danger"></span>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gallery -->
+                    <div class="frm_submit_block">
+                        <h3>Gallery</h3>
+                        <div class="frm_submit_wrap">
+                            <div class="row">
+
+                                <div class="form-group col-md-12">
+                                    <label>Upload Gallery</label>
+                                    <div class="previews"></div>
+                                    <div class="dropzone dz-clickable primary-dropzone" id="galleryDropzone">
+                                        <div class="dz-default dz-message">
+                                            <i class="fa-solid fa-images"></i>
+                                            <span>Drag & Drop To Upload Images</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Location -->
+                    <div class="frm_submit_block">
+                        <h3>Location</h3>
+                        <div class="frm_submit_wrap">
+                            <div class="row">
+
+                                <div class="form-group col-md-6">
+                                    <label asp-for="AddressLine">Address</label>
+                                    <input asp-for="AddressLine" class="form-control" />
+                                    <span asp-validation-for="AddressLine" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    <label asp-for="City">City</label>
+                                    <input asp-for="City" class="form-control" />
+                                    <span asp-validation-for="City" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    <label asp-for="State">State</label>
+                                    <input asp-for="State" class="form-control" />
+                                    <span asp-validation-for="State" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    <label asp-for="ZipCode">Zip Code</label>
+                                    <input asp-for="ZipCode" class="form-control" />
+                                    <span asp-validation-for="ZipCode" class="text-danger"></span>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Detailed Information -->
+                    <div class="frm_submit_block">
+                        <h3>Detailed Information</h3>
+                        <div class="frm_submit_wrap">
+                            <div class="row">
+
+                                <div class="form-group col-md-12">
+                                    <label asp-for="Description">Description</label>
+                                    <textarea asp-for="Description" class="form-control h-120"></textarea>
+                                    <span asp-validation-for="Description" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group col-md-4">
+                                    <label asp-for="BuildingAge">Building Age (optional)</label>
+                                    <select asp-for="BuildingAge" class="form-control">
+                                        <option value="">&nbsp;</option>
+                                        <option value="0-5 Years">0 - 5 Years</option>
+                                        <option value="0-10 Years">0 - 10 Years</option>
+                                        <option value="0-15 Years">0 - 15 Years</option>
+                                        <option value="0-20 Years">0 - 20 Years</option>
+                                        <option value="20+ Years">20+ Years</option>
+                                    </select>
+                                    <span asp-validation-for="BuildingAge" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group col-md-4">
+                                    <label asp-for="Garage">Garage (optional)</label>
+                                    <select asp-for="Garage" class="form-control">
+                                        <option value="0">&nbsp;</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                    </select>
+                                    <span asp-validation-for="Garage" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group col-md-4">
+                                    <label asp-for="Rooms">Rooms (optional)</label>
+                                    <select asp-for="Rooms" class="form-control">
+                                        <option value="0">&nbsp;</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                    </select>
+                                    <span asp-validation-for="Rooms" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group col-md-12">
+                                    <strong>Other Features (optional)</strong>
+                                    <div class="o-features mt-2">
+                                        <ul class="no-ul-list row">
+                                            <li class="col-xl-4 col-lg-4 col-md-6 col-6">
+                                                <input name="Features" type="checkbox" value="Air Condition" class="form-check-input" id="a-1">
+                                                <label class="form-check-label" for="a-1">Air Condition</label>
+                                            </li>
+                                            <li class="col-xl-4 col-lg-4 col-md-6 col-6">
+                                                <input name="Features" type="checkbox" value="Bedding" class="form-check-input" id="a-2">
+                                                <label class="form-check-label" for="a-2">Bedding</label>
+                                            </li>
+                                            <li class="col-xl-4 col-lg-4 col-md-6 col-6">
+                                                <input name="Features" type="checkbox" value="Heating" class="form-check-input" id="a-3">
+                                                <label class="form-check-label" for="a-3">Heating</label>
+                                            </li>
+                                            <li class="col-xl-4 col-lg-4 col-md-6 col-6">
+                                                <input name="Features" type="checkbox" value="Internet" class="form-check-input" id="a-4">
+                                                <label class="form-check-label" for="a-4">Internet</label>
+                                            </li>
+                                            <li class="col-xl-4 col-lg-4 col-md-6 col-6">
+                                                <input name="Features" type="checkbox" value="Microwave" class="form-check-input" id="a-5">
+                                                <label class="form-check-label" for="a-5">Microwave</label>
+                                            </li>
+                                            <li class="col-xl-4 col-lg-4 col-md-6 col-6">
+                                                <input name="Features" type="checkbox" value="Smoking Allow" class="form-check-input" id="a-6">
+                                                <label class="form-check-label" for="a-6">Smoking Allow</label>
+                                            </li>
+                                            <li class="col-xl-4 col-lg-4 col-md-6 col-6">
+                                                <input name="Features" type="checkbox" value="Terrace" class="form-check-input" id="a-7">
+                                                <label class="form-check-label" for="a-7">Terrace</label>
+                                            </li>
+                                            <li class="col-xl-4 col-lg-4 col-md-6 col-6">
+                                                <input name="Features" type="checkbox" value="Balcony" class="form-check-input" id="a-8">
+                                                <label class="form-check-label" for="a-8">Balcony</label>
+                                            </li>
+                                            <li class="col-xl-4 col-lg-4 col-md-6 col-6">
+                                                <input name="Features" type="checkbox" value="Icon" class="form-check-input" id="a-9">
+                                                <label class="form-check-label" for="a-9">Icon</label>
+                                            </li>
+                                            <li class="col-xl-4 col-lg-4 col-md-6 col-6">
+                                                <input name="Features" type="checkbox" value="Wi-Fi" class="form-check-input" id="a-10">
+                                                <label class="form-check-label" for="a-10">Wi-Fi</label>
+                                            </li>
+                                            <li class="col-xl-4 col-lg-4 col-md-6 col-6">
+                                                <input name="Features" type="checkbox" value="Beach" class="form-check-input" id="a-11">
+                                                <label class="form-check-label" for="a-11">Beach</label>
+                                            </li>
+                                            <li class="col-xl-4 col-lg-4 col-md-6 col-6">
+                                                <input name="Features" type="checkbox" value="Parking" class="form-check-input" id="a-12">
+                                                <label class="form-check-label" for="a-12">Parking</label>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contact Information -->
+                    @*<div class="frm_submit_block">
+                    <h3>Contact Information</h3>
+                    <div class="frm_submit_wrap">
+                    <div class="row">
+
+                    <div class="form-group col-md-4">
+                    <label asp-for="ContactName">Name</label>
+                    <input asp-for="ContactName" class="form-control" />
+                    <span asp-validation-for="ContactName" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group col-md-4">
+                    <label asp-for="ContactEmail">Email</label>
+                    <input asp-for="ContactEmail" class="form-control" />
+                    <span asp-validation-for="ContactEmail" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group col-md-4">
+                    <label asp-for="ContactPhone">Phone (optional)</label>
+                    <input asp-for="ContactPhone" class="form-control" />
+                    <span asp-validation-for="ContactPhone" class="text-danger"></span>
+                    </div>
+
+                    </div>
+                    </div>
+                    </div>
+
+                    <div class="form-group col-lg-12 col-md-12">
+                    <div class="form-check form-check-inline">
+                    <input asp-for="Consent" class="form-check-input" />
+                    <label class="form-check-label" asp-for="Consent">I consent to having this website store my submitted information so they can respond to my inquiry.</label>
+                    </div>
+                    <span asp-validation-for="Consent" class="text-danger"></span>
+                    </div> *@
+
+                    <div class="form-group col-lg-12 col-md-12">
+                        <button class="btn btn-primary" type="submit">Submit & Preview</button>
+                    </div>
+
+                </form>
+            </div>
+
+        </div>
+    </div>
+    <!-- row -->
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        Dropzone.options.galleryDropzone = {
+            url: "/path/to/your/upload/handler",
+            autoProcessQueue: false,
+            paramName: "file",
+            maxFilesize: 2,
+            acceptedFiles: "image/*",
+            init: function () {
+                var myDropzone = this;
+                // Capture the form submit
+                $("#submitPropertyForm").submit(function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (myDropzone.getQueuedFiles().length > 0) {
+                        myDropzone.processQueue();
+                    } else {
+                        this.submit();
+                    }
+                });
+
+                myDropzone.on("sending", function (file, xhr, formData) {
+                    // Append all form fields to the formData object
+                    var formElements = document.querySelector("#submitPropertyForm").elements;
+                    for (var i = 0; i < formElements.length; i++) {
+                        var element = formElements[i];
+                        if (element.name) {
+                            formData.append(element.name, element.value);
+                        }
+                    }
+                });
+
+                // When all files are uploaded, submit the form
+                myDropzone.on("queuecomplete", function () {
+                    $("#submitPropertyForm")[0].submit();
+                });
+
+                // If there's an error
+                myDropzone.on("error", function (file, response) {
+                    console.error("File upload error: ", response);
+                });
+            }
+        };
+    </script>
+}

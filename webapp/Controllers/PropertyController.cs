@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.Net.NetworkInformation;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using webapp.Areas.Identity.Data;
 using webapp.Data;
+using webapp.Models;
+using webapp.Areas.Identity.Pages.Account.Manage;
 
 namespace webapp.Controllers
 {
@@ -15,9 +18,12 @@ namespace webapp.Controllers
             _userManager = userManager;
             _context = context;
         }
-        public IActionResult Submit()
+
+        public IActionResult SubmitProperty()
         {
-            return View();
+            ViewData["Title"] = "Submit Property";
+            ViewData["ActivePage"] = ManageNavPages.SubmitProperty;
+            return View(new PropertyViewModel());
         }
     }
 }
