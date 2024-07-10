@@ -3,10 +3,43 @@
     ViewData["Title"] = "Error";
 }
 
-<h1 class="text-danger">Error.</h1>
-<h2 class="text-danger">An error occurred while processing your request.</h2>
+<div class="page-title" style="background:#017efa url('@Url.Content("~/img/page-title.png")') no-repeat;">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-12 col-md-12">
+							
+				<h2 class="ipt-title">Error</h2>
+				<span class="ipn-subtitle">An error occurred while processing your request.</span>
+							
+			</div>
+		</div>
+	</div>
+</div>
 
-@if (Model.ShowRequestId)
+@* <h1 class="text-danger">Error.</h1>
+<h2 class="text-danger">An error occurred while processing your request.</h2> *@
+
+<section class="error-wrap">
+	<div class="container">
+		<div class="row justify-content-center">
+
+			<div class="col-lg-6 col-md-10">
+				<div class="text-center">
+
+					<img src="~/img/404.png" class="img-fluid" alt="">
+					<p>
+						This page isn't available. Sorry about that.
+					</p>
+					<a class="btn btn-primary" asp-area="" asp-controller="Home" asp-action="Index">Back To Home</a>
+
+				</div>
+			</div>
+
+		</div>
+	</div>
+</section>
+
+@* @if (Model.ShowRequestId)
 {
     <p>
         <strong>Request ID:</strong> <code>@Model.RequestId</code>
@@ -22,4 +55,4 @@
     It can result in displaying sensitive information from exceptions to end users.
     For local debugging, enable the <strong>Development</strong> environment by setting the <strong>ASPNETCORE_ENVIRONMENT</strong> environment variable to <strong>Development</strong>
     and restarting the app.
-</p>
+</p> *@
