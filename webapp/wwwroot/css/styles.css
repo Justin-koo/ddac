@@ -109,7 +109,7 @@
     opacity: 0;
   }
 }
-form.dropzone.dz-clickable.primary-dropzone {
+.dropzone.dz-clickable.primary-dropzone {
     background: rgb(1 126 250 / 10%);
     border: 1px solid rgb(1 126 250 / 20%);
     border-radius: 0.4rem;
