@@ -63,6 +63,8 @@ namespace  webapp.Areas.Identity.Pages.Account.Manage
 
 		public static string SubmitProperty => "SubmitProperty";
 
+		public static string PropertyList => "PropertyList";
+
 		/// <summary>
 		///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
 		///     directly from your code. This API may change or be removed in future releases.
@@ -112,6 +114,8 @@ namespace  webapp.Areas.Identity.Pages.Account.Manage
         public static string TwoFactorAuthenticationNavClass(ViewContext viewContext) => PageNavClass(viewContext, TwoFactorAuthentication);
 
 		public static string SubmitPropertyNavClass(ViewContext viewContext) => PageNavClass(viewContext, SubmitProperty);
+
+		public static string PropertyListNavClass(ViewContext viewContext) => PageNavClass(viewContext, PropertyList);
 
 		/// <summary>
 		///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used

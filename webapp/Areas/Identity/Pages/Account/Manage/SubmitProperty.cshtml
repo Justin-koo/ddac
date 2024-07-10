@@ -296,46 +296,46 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
-        // Dropzone.options.galleryDropzone = {
-        //     url: "/path/to/your/upload/handler",
-        //     autoProcessQueue: false,
-        //     paramName: "file",
-        //     maxFilesize: 2,
-        //     acceptedFiles: "image/*",
-        //     init: function () {
-        //         var myDropzone = this;
-        //         // Capture the form submit
-        //         $("#submitPropertyForm").submit(function (e) {
-        //             e.preventDefault();
-        //             e.stopPropagation();
-        //             if (myDropzone.getQueuedFiles().length > 0) {
-        //                 myDropzone.processQueue();
-        //             } else {
-        //                 this.submit();
-        //             }
-        //         });
+        Dropzone.options.galleryDropzone = {
+            url: "/path/to/your/upload/handler",
+            autoProcessQueue: false,
+            paramName: "file",
+            maxFilesize: 2,
+            acceptedFiles: "image/*",
+            init: function () {
+                var myDropzone = this;
+                // Capture the form submit
+                $("#submitPropertyForm").submit(function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (myDropzone.getQueuedFiles().length > 0) {
+                        myDropzone.processQueue();
+                    } else {
+                        this.submit();
+                    }
+                });
 
-        //         myDropzone.on("sending", function (file, xhr, formData) {
-        //             // Append all form fields to the formData object
-        //             var formElements = document.querySelector("#submitPropertyForm").elements;
-        //             for (var i = 0; i < formElements.length; i++) {
-        //                 var element = formElements[i];
-        //                 if (element.name) {
-        //                     formData.append(element.name, element.value);
-        //                 }
-        //             }
-        //         });
+                myDropzone.on("sending", function (file, xhr, formData) {
+                    // Append all form fields to the formData object
+                    var formElements = document.querySelector("#submitPropertyForm").elements;
+                    for (var i = 0; i < formElements.length; i++) {
+                        var element = formElements[i];
+                        if (element.name) {
+                            formData.append(element.name, element.value);
+                        }
+                    }
+                });
 
-        //         // When all files are uploaded, submit the form
-        //         myDropzone.on("queuecomplete", function () {
-        //             $("#submitPropertyForm")[0].submit();
-        //         });
+                // When all files are uploaded, submit the form
+                myDropzone.on("queuecomplete", function () {
+                    $("#submitPropertyForm")[0].submit();
+                });
 
-        //         // If there's an error
-        //         myDropzone.on("error", function (file, response) {
-        //             console.error("File upload error: ", response);
-        //         });
-        //     }
-        // };
+                // If there's an error
+                myDropzone.on("error", function (file, response) {
+                    console.error("File upload error: ", response);
+                });
+            }
+        };
     </script>
 }
