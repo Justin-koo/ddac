@@ -20,6 +20,7 @@ namespace webapp.Models
         public string PropertyType { get; set; }  // Houses, Apartment, Villas, etc.
 
         [Required]
+        [DataType(DataType.Currency)]
         [Column(TypeName = "decimal(18, 2)")]
         public decimal Price { get; set; }
 
@@ -35,47 +36,13 @@ namespace webapp.Models
         public string GalleryPath { get; set; }  // Path to the gallery images
 
         [Required]
-        public string Address { get; set; }
-
-        [Required]
-        public string City { get; set; }
-
-        [Required]
-        public string State { get; set; }
-
-        [Required]
-        public string ZipCode { get; set; }
-
-        [Required]
-        [StringLength(500)]
-        public string Description { get; set; }
-
-        public string BuildingAge { get; set; }  // 0 - 5 Years, 0 - 10 Years, etc.
-
-        public int Garage { get; set; }
-
-        public int Rooms { get; set; }
-
-        public string OtherFeatures { get; set; }  // Comma-separated list of features
-
-        [Required]
-        [StringLength(100)]
-        public string ContactName { get; set; }
-
-        [Required]
-        [EmailAddress]
-        public string ContactEmail { get; set; }
-
-        public string ContactPhone { get; set; }
-
-        public bool GDPRConsent { get; set; }
-
-        [Required]
         public DateTime ListingDate { get; set; }
 
         public string AgentId { get; set; }
 
         [ForeignKey("AgentId")]
         public webappUser Agent { get; set; }
+        public virtual PropertyAddress Address { get; set; }
+        public virtual PropertyDetail Detail { get; set; }
     }
 }

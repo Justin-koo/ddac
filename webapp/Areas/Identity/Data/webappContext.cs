@@ -14,6 +14,8 @@ public class webappContext : IdentityDbContext<webappUser>
     }
 
     public DbSet<Property> Properties { get; set; }
+    public DbSet<PropertyAddress> PropertyAddresses { get; set; }
+    public DbSet<PropertyDetail> PropertyDetails { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
