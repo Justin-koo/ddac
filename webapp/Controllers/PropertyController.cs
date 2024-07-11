@@ -1,6 +1,7 @@
 ﻿using System.Net.NetworkInformation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Shared;
 using webapp.Areas.Identity.Data;
 using webapp.Data;
@@ -29,10 +30,36 @@ namespace webapp.Controllers
             return View(new PropertyViewModel());
         }
 
-        public IActionResult AgentPropertyList()
+		[HttpGet]
+		public async Task<IActionResult> AgentPropertyList()
         {
-            ViewData["Title"] = "My Property";
-            return View(new PropertyViewModel());
+			var properties = await _context.Properties
+				.Select(p => new PropertyViewModel
+				{
+					Title = p.Title,
+					Status = p.Status,
+					PropertyType = p.PropertyType,
+					Price = p.Price,
+					Area = p.Area,
+					Bedrooms = p.Bedrooms,
+					Bathrooms = p.Bathrooms,
+					GalleryPath = p.GalleryPath,
+					ListingDate = p.ListingDate,
+					AgentId = p.AgentId,
+					AddressLine = p.Address.AddressLine,
+					City = p.Address.City,
+					State = p.Address.State,
+					ZipCode = p.Address.ZipCode,
+					Description = p.Detail.Description,
+					BuildingAge = p.Detail.BuildingAge,
+					Garage = p.Detail.Garage,
+					Rooms = p.Detail.Rooms,
+					//Features = p.Detail.Features.Split(", ").ToList()
+				})
+				.ToListAsync();
+
+			ViewData["Title"] = "My Property";
+            return View(properties);
         }
 
 		[HttpPost]
