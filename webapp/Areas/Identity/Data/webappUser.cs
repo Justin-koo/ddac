@@ -12,8 +12,6 @@ public class webappUser : IdentityUser
     [PersonalData]
     public string? FullName { get; set; }
 
-    [PersonalData]
-    public string? JobTitle { get; set; }
 
     [PersonalData]
     public string? Address { get; set; }
@@ -41,5 +39,8 @@ public class webappUser : IdentityUser
 
     [PersonalData]
     public string? LinkedInLink { get; set; }
+
+    [PersonalData]
+    public string? Country { get; set; }
 
 }
