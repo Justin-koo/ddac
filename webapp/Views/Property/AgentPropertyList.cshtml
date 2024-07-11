@@ -70,7 +70,18 @@
 							@foreach (var property in Model)
 							{
 								<tr>
-									<td>123</td>
+									<td>
+										<div class="dash_prt_wrap">
+											<div class="dash_prt_thumb">
+												<img src="https://via.placeholder.com/1280x880" class="img-fluid" alt="">
+											</div>
+											<div class="dash_prt_caption">
+												<h5>@property.Title</h5>
+												<div class="prt_dashb_lot">@property.AddressLine</div>
+												<div class="prt_dash_rate"><span>$@property.Price</span></div>
+											</div>
+										</div>
+									</td>
 									<td>123</td>
 									<td>123</td>
 									<td>123</td>
