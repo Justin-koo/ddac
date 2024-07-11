@@ -293,10 +293,10 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-    <script>
+    @* <script>
         Dropzone.options.galleryDropzone = {
-            url: "/path/to/your/upload/handler",
-            autoProcessQueue: false,
+            url: '@Url.Action("UploadImage", "Property")',
+            autoProcessQueue: true,
             paramName: "file",
             maxFilesize: 2,
             acceptedFiles: "image/*",
@@ -335,5 +335,5 @@
                 });
             }
         };
-    </script>
+    </script> *@
 }

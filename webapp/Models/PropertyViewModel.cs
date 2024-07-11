@@ -1,8 +1,10 @@
-﻿namespace webapp.Models
-{
-    using System;
+﻿    using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+    
+    namespace webapp.Models
+    {
+    
 
     public class PropertyViewModel
     {
@@ -59,5 +61,7 @@
         public int? Rooms { get; set; }
 
         public List<string> Features { get; set; } = new List<string>();
+
+        public IFormFile? ImageFile { get; set; }  // For file upload
     }
 }
