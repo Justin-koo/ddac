@@ -2,7 +2,7 @@
 @using webapp.Areas.Identity.Data
 @using webapp.Areas.Identity.Pages.Account.Manage
 @{
-    Layout = "/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 @inject UserManager<webappUser> UserManager
@@ -79,5 +79,5 @@
 
 @* @await RenderSectionAsync("Scripts", required: false) *@
 @section Scripts {
-    @RenderSection("Scripts", required: false)
+    @RenderSection("NestedScripts", required: false)
 }

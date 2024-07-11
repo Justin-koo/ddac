@@ -2,7 +2,6 @@
 @{
     Layout = "~/Views/Shared/_AccountLayout.cshtml";
 }   
-
 <div class="dashboard-body">
 
     <div class="dashboard-wraper">
@@ -10,8 +9,7 @@
 
             <!-- Submit Form -->
             <div class="col-lg-12 col-md-12">
-
-                <form id="submitPropertyForm" class="submit-page" method="post" enctype="multipart/form-data">
+                <form id="submitPropertyForm" asp-controller="Property" asp-action="SubmitProperty" class="submit-page" method="post" enctype="multipart/form-data">
 
                     <!-- Basic Information -->
                     <div class="frm_submit_block">
@@ -84,7 +82,6 @@
 
                                 <div class="form-group col-md-12">
                                     <label>Upload Gallery</label>
-                                    <div class="previews"></div>
                                     <div class="dropzone dz-clickable primary-dropzone" id="galleryDropzone">
                                         <div class="dz-default dz-message">
                                             <i class="fa-solid fa-images"></i>
@@ -291,49 +288,56 @@
 
 </div>
 
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-    @* <script>
-        Dropzone.options.galleryDropzone = {
-            url: '@Url.Action("UploadImage", "Property")',
-            autoProcessQueue: true,
-            paramName: "file",
-            maxFilesize: 2,
-            acceptedFiles: "image/*",
-            init: function () {
-                var myDropzone = this;
-                // Capture the form submit
-                $("#submitPropertyForm").submit(function (e) {
+@section NestedScripts {
+    <script>
+        Dropzone.autoDiscover = false; // Disable auto mode
+
+        var myDropzone = new Dropzone("div#galleryDropzone", {
+            url: "/Property/SubmitProperty",
+            uploadMultiple: true,
+            parallelUploads: 10, // Adjust based on your needs
+            maxFiles: 10,
+            addRemoveLinks: true,
+            acceptedFiles: 'image/*',
+            paramName: "files"
+            @* init: function() {
+                var myDropzone = this; *@
+
+                // To handle submitting the form with files
+                @* document.getElementById("submitPropertyForm").addEventListener("submit", function(e) {
+                    console.log('Handling prevent submit');
                     e.preventDefault();
                     e.stopPropagation();
-                    if (myDropzone.getQueuedFiles().length > 0) {
-                        myDropzone.processQueue();
+                    if (myDropzone.files.length) {
+                        myDropzone.processQueue(); // Process uploaded files
                     } else {
-                        this.submit();
+                        e.currentTarget.submit();
                     }
+                }); *@
+
+                @* this.on("sendingmultiple", function(files, xhr, formData) {
+                    // Append all form fields to formData
+                    console.log('Handling file');
+                    var data = $('#submitPropertyForm').serializeArray();
+                    $.each(data, function(key, el) {
+                        formData.append(el.name, el.value);
+                    });
                 });
 
-                myDropzone.on("sending", function (file, xhr, formData) {
-                    // Append all form fields to the formData object
-                    var formElements = document.querySelector("#submitPropertyForm").elements;
-                    for (var i = 0; i < formElements.length; i++) {
-                        var element = formElements[i];
-                        if (element.name) {
-                            formData.append(element.name, element.value);
-                        }
-                    }
+                this.on("successmultiple", function(files, response) {
+                    // Handle success
+                    console.log('Files uploaded!');
                 });
 
-                // When all files are uploaded, submit the form
-                myDropzone.on("queuecomplete", function () {
-                    $("#submitPropertyForm")[0].submit();
+                this.on("queuecomplete", function () {
+                    document.getElementById("submitPropertyForm").submit(); // Submit the form after all files are uploaded
                 });
 
-                // If there's an error
-                myDropzone.on("error", function (file, response) {
-                    console.error("File upload error: ", response);
+                this.on("errormultiple", function(files, response) {
+                    // Handle error
+                    console.error('Error uploading files!');
                 });
-            }
-        };
-    </script> *@
+            } *@
+        });
+    </script>
 }
