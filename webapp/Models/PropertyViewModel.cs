@@ -55,7 +55,7 @@
         [Required(ErrorMessage = "The description is required.")]
         public string Description { get; set; }
 
-        public string BuildingAge { get; set; }
+        public string? BuildingAge { get; set; }
 
         public int? Garage { get; set; }
 

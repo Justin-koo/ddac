@@ -1,4 +1,4 @@
-﻿@page "/account/manage"
+﻿@page
 @model IndexModel
 @{
     ViewData["Title"] = "Profile";
@@ -7,20 +7,77 @@
 
 <div class="dashboard-body">
     <div class="dashboard-wraper">
-        <h3>@ViewData["Title"]</h3>
-        <partial name="_StatusMessage" for="StatusMessage" />
-        <div class="row">
-            <div class="col-md-6">
-                <form id="profile-form" method="post">
+        <div class="frm_submit_block">
+            <h3>@ViewData["Title"]</h3>
+            <partial name="_StatusMessage" for="StatusMessage" />
+            <div class="frm_submit_wrap">
+                <form id="profile-form" method="post"  class="row">
                     <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-                    <div class="form-floating mb-3">
-                        <input asp-for="Username" class="form-control" placeholder="Please choose your username." disabled />
-                        <label asp-for="Username" class="form-label"></label>
+                    <div class="form-group col-md-6">
+                        <label asp-for="Input.FullName" class="form-label"></label>
+                        <input asp-for="Input.FullName" class="form-control" placeholder="Please enter your Full Name." />
+                        <span asp-validation-for="Input.FullName" class="text-danger"></span>
                     </div>
-                    <div class="form-floating mb-3">
-                        <input asp-for="Input.PhoneNumber" class="form-control" placeholder="Please enter your phone number."/>
+                    <div class="form-group col-md-6">
+                        <label asp-for="Username" class="form-label"></label>
+                        <input asp-for="Username" class="form-control" placeholder="Please choose your Email." disabled />
+                    </div>
+                    <div class="form-group col-md-6">
                         <label asp-for="Input.PhoneNumber" class="form-label"></label>
+                        <input asp-for="Input.PhoneNumber" class="form-control" placeholder="Please enter your phone number."/>
                         <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label asp-for="Input.Country" class="form-label"></label>
+                        <input asp-for="Input.Country" class="form-control" placeholder="Please enter your Country." />
+                        <span asp-validation-for="Input.Country" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label asp-for="Input.Address" class="form-label"></label>
+                        <input asp-for="Input.Address" class="form-control" placeholder="Please enter your Address." />
+                        <span asp-validation-for="Input.Address" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label asp-for="Input.State" class="form-label"></label>
+                        <input asp-for="Input.State" class="form-control" placeholder="Please enter your State." />
+                        <span asp-validation-for="Input.State" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label asp-for="Input.City" class="form-label"></label>
+                        <input asp-for="Input.City" class="form-control" placeholder="Please enter your City." />
+                        <span asp-validation-for="Input.City" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label asp-for="Input.Zip" class="form-label"></label>
+                        <input asp-for="Input.Zip" class="form-control" placeholder="Please enter your Zip." />
+                        <span asp-validation-for="Input.Zip" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-12">
+                        <label asp-for="Input.About" class="form-label"></label>
+@*                             <textarea asp-for="Input.About" class="form-control"></textarea>
+                        *@                            <textarea asp-for="Input.About" class="form-control"></textarea>
+                        <span asp-validation-for="Input.About" class="text-danger"></span>
+                    </div>
+                    <h3>Social Media</h3>
+                    <div class="form-group col-md-6">
+                        <label asp-for="Input.FacebookLink" class="form-label"></label>
+                        <input asp-for="Input.FacebookLink" class="form-control" placeholder="please enter your facebooklink." />
+                        <span asp-validation-for="Input.FacebookLink" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label asp-for="Input.XLink" class="form-label"></label>
+                        <input asp-for="Input.XLink" class="form-control" placeholder="please enter your xlink." />
+                        <span asp-validation-for="Input.XLink" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label asp-for="Input.LinkedInLink" class="form-label"></label>
+                        <input asp-for="Input.LinkedInLink" class="form-control" placeholder="please enter your linkedinlink." />
+                        <span asp-validation-for="Input.LinkedInLink" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label asp-for="Input.GoogleLink" class="form-label"></label>
+                        <input asp-for="Input.GoogleLink" class="form-control" placeholder="please enter your googlelink." />
+                        <span asp-validation-for="Input.GoogleLink" class="text-danger"></span>
                     </div>
                     <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
                 </form>

@@ -1841,7 +1841,7 @@ table.table tr th {
     border-color:#017efa;
 }
 
-.pagination li:first-child a {
+/*.pagination li:first-child a {
     background:#017efa;
     border: 1px solid #017efa;
     border-radius:2px;
@@ -1853,7 +1853,7 @@ table.table tr th {
     border: 1px solid #35434e;
     border-radius:2px;
     color: #fff
-}
+}*/
 .pagination>li {
     display: inline;
 }

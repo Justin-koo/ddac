@@ -1,6 +1,8 @@
 ﻿using System.Net.NetworkInformation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Shared;
 using webapp.Areas.Identity.Data;
 using webapp.Data;
 using webapp.Models;
@@ -27,12 +29,53 @@ namespace webapp.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
 
-        public IActionResult SubmitProperty()
+		[BindProperty]
+		public PropertyViewModel Property { get; set; }
+
+		[HttpGet]
+		public IActionResult SubmitProperty()
         {
             ViewData["Title"] = "Submit Property";
-            ViewData["ActivePage"] = ManageNavPages.SubmitProperty;
             return View(new PropertyViewModel());
         }
+
+		[HttpGet]
+		public async Task<IActionResult> AgentPropertyList()
+        {
+			var properties = await _context.Properties
+				.Include(p => p.Address)
+				.Include(p => p.Detail)
+				.ToListAsync();
+
+			//ViewData["Title"] = "My Property";
+			return View(properties);
+        }
+
+		[HttpPost]
+		public async Task<IActionResult> DeleteProperty(int id)
+		{
+			try
+			{
+				var property = await _context.Properties.FindAsync(id);
+				if (property == null)
+				{
+					TempData["Message"] = "Error: Property not found.";
+					return RedirectToAction("AgentPropertyList");
+				}
+
+				_context.Properties.Remove(property);
+				await _context.SaveChangesAsync();
+
+				TempData["Message"] = "Property deleted successfully!";
+			}
+			catch (Exception ex)
+			{
+				TempData["Message"] = "Error: Unable to delete property.";
+				// Log the exception (ex) here if necessary
+			}
+
+			return RedirectToAction("AgentPropertyList");
+		}
 
         [HttpPost]
         public async Task<IActionResult> SubmitProperty(PropertyViewModel model, List<IFormFile> files)
@@ -154,5 +197,5 @@ namespace webapp.Controllers
 
             return View(model);
         }
-    }
+	}
 }
