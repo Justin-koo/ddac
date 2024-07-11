@@ -11,7 +11,7 @@
             <!-- Submit Form -->
             <div class="col-lg-12 col-md-12">
 
-                <form id="submitPropertyForm" class="submit-page" method="post" enctype="multipart/form-data">
+                <form id="submitPropertyForm" asp-action="SubmitProperty" class="submit-page" method="post" enctype="multipart/form-data">
 
                     <!-- Basic Information -->
                     <div class="frm_submit_block">
@@ -293,7 +293,7 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-    <script>
+    @* <script>
         Dropzone.options.galleryDropzone = {
             url: "/path/to/your/upload/handler",
             autoProcessQueue: false,
@@ -335,5 +335,5 @@
                 });
             }
         };
-    </script>
+    </script> *@
 }

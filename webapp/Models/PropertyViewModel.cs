@@ -29,11 +29,11 @@
         [Required(ErrorMessage = "The number of bathrooms is required.")]
         public int Bathrooms { get; set; }
 
-        public string GalleryPath { get; set; }  // Path to the gallery images
+        public string? GalleryPath { get; set; }  // Path to the gallery images
 
         public DateTime ListingDate { get; set; } = DateTime.Now;
 
-        public string AgentId { get; set; }
+        public string? AgentId { get; set; }
 
         // Address fields
         [Required(ErrorMessage = "The address field is required.")]
@@ -52,7 +52,7 @@
         [Required(ErrorMessage = "The description is required.")]
         public string Description { get; set; }
 
-        public string BuildingAge { get; set; }
+        public string? BuildingAge { get; set; }
 
         public int? Garage { get; set; }
 

@@ -10,6 +10,7 @@
     <!-- Custom CSS -->
 	<link href="~/css/styles.css" rel="stylesheet" asp-append-version="true" />
 	<link href="~/css/site.css" rel="stylesheet" asp-append-version="true" />
+	<link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.bootstrap5.css" asp-append-version="true" />
 
 </head>
 @* <head>
@@ -261,6 +262,12 @@
 
 
 	<script src="~/js/custom.js"></script>
+	<script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
+	<script src="https://cdn.datatables.net/2.0.8/js/dataTables.bootstrap5.js"></script>
+	<script>
+		// $.fn.DataTable.ext.classes.search.input = "form-control form-control-sm"
+		// $.fn.DataTable.ext.classes.length.select = "";
+	</script>
 
 @*     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
