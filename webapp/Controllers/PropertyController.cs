@@ -112,14 +112,27 @@ namespace webapp.Controllers
 		[HttpPost]
 		public async Task<IActionResult> DeleteProperty(int id)
 		{
-			var property = await _context.Properties.FindAsync(id);
-			if (property != null)
+			try
 			{
+				var property = await _context.Properties.FindAsync(id);
+				if (property == null)
+				{
+					TempData["Message"] = "Error: Property not found.";
+					return RedirectToAction("AgentPropertyList");
+				}
+
 				_context.Properties.Remove(property);
 				await _context.SaveChangesAsync();
+
+				TempData["Message"] = "Property deleted successfully!";
+			}
+			catch (Exception ex)
+			{
+				TempData["Message"] = "Error: Unable to delete property.";
+				// Log the exception (ex) here if necessary
 			}
 
-			return RedirectToAction(nameof(AgentPropertyList));
+			return RedirectToAction("AgentPropertyList");
 		}
 	}
 }

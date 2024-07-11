@@ -34,6 +34,15 @@
 		</div>
 	</div>
 
+	@if (TempData["Message"] != null)
+	{
+		var statusMessageClass = TempData["Message"]?.ToString()?.StartsWith("Error") == true ? "danger" : "success";
+		<div class="alert alert-@statusMessageClass alert-dismissible" role="alert">
+			<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+			@TempData["Message"]
+		</div>
+	}
+
 	<div class="row g-3 align-items-center mb-3">
 		<div class="col-md-auto">
 			<select name="propertyTable_length" aria-controls="propertyTable" class="form-control" id="dt-length">
@@ -124,10 +133,11 @@
 									<td>
 										<div class="_leads_action">
 											<a href="#"><i class="fas fa-edit"></i></a>
-											<a asp-action="DeleteProperty" asp-controller="Property" asp-route-Id="@property.Id"><i class="fas fa-trash"></i></a>
-											@* <form asp-action="DeleteData" asp-controller="Property" asp-route-Id="@property.Id">
-												<a asp-action="DeleteData" asp-controller="Property" asp-route-Id="@property.Id"><i class="fas fa-trash"></i></a>
-											</form> *@
+											<form asp-action="DeleteProperty" asp-controller="Property" asp-route-id="@property.Id" method="post" class="delete-property-form" style="display:inline;">
+												<a role="button" class="delete-property-button">
+													<i class="fas fa-trash"></i>
+												</a>
+											</form>
 										</div>
 									</td>
 								</tr>
@@ -161,6 +171,23 @@
 
 @section Scripts {
 	<script>
+		$(document).on('click', '.delete-property-button', function () {
+			var form = $(this).closest('form');
+			Swal.fire({
+				title: 'Are you sure?',
+				text: "You won't be able to revert this!",
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonColor: '#017efa',
+				cancelButtonColor: '#d33',
+				confirmButtonText: 'Yes, delete it!'
+			}).then((result) => {
+				if (result.isConfirmed) {
+					form.submit();
+				}
+			})
+		});
+
 		let table = new DataTable('#propertyTable', {
 			order: [[3, 'desc']],
 			layout: null,
