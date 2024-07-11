@@ -34,32 +34,12 @@ namespace webapp.Controllers
 		public async Task<IActionResult> AgentPropertyList()
         {
 			var properties = await _context.Properties
-				.Select(p => new PropertyViewModel
-				{
-					Title = p.Title,
-					Status = p.Status,
-					PropertyType = p.PropertyType,
-					Price = p.Price,
-					Area = p.Area,
-					Bedrooms = p.Bedrooms,
-					Bathrooms = p.Bathrooms,
-					GalleryPath = p.GalleryPath,
-					ListingDate = p.ListingDate,
-					AgentId = p.AgentId,
-					AddressLine = p.Address.AddressLine,
-					City = p.Address.City,
-					State = p.Address.State,
-					ZipCode = p.Address.ZipCode,
-					Description = p.Detail.Description,
-					BuildingAge = p.Detail.BuildingAge,
-					Garage = p.Detail.Garage,
-					Rooms = p.Detail.Rooms,
-					//Features = p.Detail.Features.Split(", ").ToList()
-				})
+				.Include(p => p.Address)
+				.Include(p => p.Detail)
 				.ToListAsync();
 
-			ViewData["Title"] = "My Property";
-            return View(properties);
+			//ViewData["Title"] = "My Property";
+			return View(properties);
         }
 
 		[HttpPost]
@@ -127,6 +107,19 @@ namespace webapp.Controllers
 			//StatusMessage = "Property created successfully.";
 
 			return RedirectToPage("/Property/SubmitProperty");
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> DeleteProperty(int id)
+		{
+			var property = await _context.Properties.FindAsync(id);
+			if (property != null)
+			{
+				_context.Properties.Remove(property);
+				await _context.SaveChangesAsync();
+			}
+
+			return RedirectToAction(nameof(AgentPropertyList));
 		}
 	}
 }
