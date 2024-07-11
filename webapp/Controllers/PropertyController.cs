@@ -163,7 +163,7 @@ namespace webapp.Controllers
                     BuildingAge = model.BuildingAge,
                     Garage = model.Garage,
                     Rooms = model.Rooms,
-                    // OtherFeatures = 'hello world',
+                    OtherFeatures = string.Join(";", model.Features),
                     PropertyId = property.Id
                 };
 
