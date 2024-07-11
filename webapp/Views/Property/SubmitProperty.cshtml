@@ -87,6 +87,7 @@
                                             <i class="fa-solid fa-images"></i>
                                             <span>Drag & Drop To Upload Images</span>
                                         </div>
+                                        <input type="file" id="fileInput" name="files" multiple style="display: none;">
                                     </div>
                                 </div>
 
@@ -276,7 +277,7 @@
                     </div> *@
 
                     <div class="form-group col-lg-12 col-md-12">
-                        <button class="btn btn-primary" type="submit">Submit & Preview</button>
+                        <button id="submit-button" class="btn btn-primary" type="submit">Submit & Preview</button>
                     </div>
 
                 </form>
@@ -290,54 +291,60 @@
 
 @section NestedScripts {
     <script>
-        Dropzone.autoDiscover = false; // Disable auto mode
+        Dropzone.autoDiscover = false;
 
-        var myDropzone = new Dropzone("div#galleryDropzone", {
-            url: "/Property/SubmitProperty",
-            uploadMultiple: true,
-            parallelUploads: 10, // Adjust based on your needs
+        var myDropzone = new Dropzone("#galleryDropzone", {
+            url: "/Property/SubmitProperty", // Ensure this is the correct endpoint
+            method: "post", // Explicitly set the method
+            uploadMultiple: true, // If you want to allow uploading multiple files
+            parallelUploads: 10,
             maxFiles: 10,
+            autoProcessQueue: false, // Consider processing the queue manually if needed
             addRemoveLinks: true,
             acceptedFiles: 'image/*',
-            paramName: "files"
-            @* init: function() {
-                var myDropzone = this; *@
-
-                // To handle submitting the form with files
-                @* document.getElementById("submitPropertyForm").addEventListener("submit", function(e) {
-                    console.log('Handling prevent submit');
+            paramName: "files", // This should match with your controller's parameter
+            init: function() {
+                var form = document.getElementById('submitPropertyForm');
+                form.addEventListener("submit", function(e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    if (myDropzone.files.length) {
-                        myDropzone.processQueue(); // Process uploaded files
+
+                    if (myDropzone.getQueuedFiles().length > 0) {
+                        // Create FormData object manually
+                        var formData = new FormData(form);
+
+                        // Append files manually
+                        myDropzone.files.forEach(function(file) {
+                            formData.append('files', file, file.name);
+                        });
+
+                        for (var pair of formData.entries()) {
+                            console.log(`${pair[0]}: ${pair[1]}`);
+                        }
+
+                        fetch(form.action, {
+                            method: 'POST',
+                            body: formData
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log('Success:', data);
+                            if (data.success) {
+                                // Redirect if server processed the data successfully
+                                window.location.href = data.redirectUrl; // Assuming 'redirectUrl' is provided by the server
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+
                     } else {
-                        e.currentTarget.submit();
+                        form.submit(); // If no files to upload, submit the form directly
                     }
-                }); *@
-
-                @* this.on("sendingmultiple", function(files, xhr, formData) {
-                    // Append all form fields to formData
-                    console.log('Handling file');
-                    var data = $('#submitPropertyForm').serializeArray();
-                    $.each(data, function(key, el) {
-                        formData.append(el.name, el.value);
-                    });
                 });
+            }
 
-                this.on("successmultiple", function(files, response) {
-                    // Handle success
-                    console.log('Files uploaded!');
-                });
-
-                this.on("queuecomplete", function () {
-                    document.getElementById("submitPropertyForm").submit(); // Submit the form after all files are uploaded
-                });
-
-                this.on("errormultiple", function(files, response) {
-                    // Handle error
-                    console.error('Error uploading files!');
-                });
-            } *@
         });
+
     </script>
 }

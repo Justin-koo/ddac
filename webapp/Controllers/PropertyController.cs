@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.CodeAnalysis.Elfie.Extensions;
 
 namespace webapp.Controllers
 {
@@ -34,7 +35,7 @@ namespace webapp.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SubmitProperty(PropertyViewModel model, IFormFileCollection files)
+        public async Task<IActionResult> SubmitProperty(PropertyViewModel model, List<IFormFile> files)
         {
 
             if (ModelState.IsValid) {
@@ -46,6 +47,25 @@ namespace webapp.Controllers
                     return RedirectToPage("/Account/Login", new { area = "Identity" });
                 }
 
+                var property = new Property
+                {
+                    Title = model.Title,
+                    Status = model.Status,
+                    PropertyType = model.PropertyType,
+                    Price = model.Price,
+                    Area = model.Area,
+                    Bedrooms = model.Bedrooms,
+                    Bathrooms = model.Bathrooms,
+                    ListingDate = model.ListingDate,
+                    AgentId = user.Id,
+                    // GalleryPath = string.Join(";", model.GalleryPath),
+                };
+
+                _context.Properties.Add(property);
+                await _context.SaveChangesAsync();
+
+                var propertyIdString = property.Id.ToString();
+
                 Console.WriteLine("Files: " + (files != null ? files.Count.ToString() : "null"));
                 var uploadUrls = new List<string>();
                 foreach (var file in files)
@@ -53,8 +73,8 @@ namespace webapp.Controllers
                     Console.WriteLine("In handle file");
                     if (file.Length > 0)
                     {
-                        var uniqueFileName = Guid.NewGuid().ToString() + "_" + file.FileName;
-                        var uploadsFolder = Path.Combine("wwwroot", "uploads");
+                        var uniqueFileName = Guid.NewGuid().ToString() + ".png";
+                        var uploadsFolder = Path.Combine("wwwroot", "uploads", propertyIdString.ToSHA256String());
                         var filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
                         // Ensure the uploads folder exists
@@ -68,7 +88,7 @@ namespace webapp.Controllers
                             await file.CopyToAsync(fileStream);
                         }
 
-                        uploadUrls.Add(filePath); // or a URL if needed
+                        uploadUrls.Add(uniqueFileName); // or a URL if needed
                     }
                     else {
                         Console.WriteLine("No file to handle");
@@ -77,23 +97,9 @@ namespace webapp.Controllers
 
                 model.GalleryPath = uploadUrls;
 
-                Console.WriteLine("This is the url ::" + string.Join(";", model.GalleryPath));
-
-                var property = new Property
-                {
-                    Title = model.Title,
-                    Status = model.Status,
-                    PropertyType = model.PropertyType,
-                    Price = model.Price,
-                    Area = model.Area,
-                    Bedrooms = model.Bedrooms,
-                    Bathrooms = model.Bathrooms,
-                    ListingDate = model.ListingDate,
-                    AgentId = user.Id,
-                    GalleryPath = string.Join(";", model.GalleryPath),
-                };
-
-                _context.Properties.Add(property);
+                // Update property with gallery path
+                property.GalleryPath = string.Join(";", model.GalleryPath);
+                _context.Properties.Update(property);
                 await _context.SaveChangesAsync();
 
                 var propertyAddress = new PropertyAddress
@@ -121,7 +127,12 @@ namespace webapp.Controllers
                 _context.PropertyDetails.Add(propertyDetail);
                 await _context.SaveChangesAsync();
 
-                return RedirectToAction("SubmitProperty");
+                var redirectUrl = Url.Action("SubmitProperty", "Property");
+                return Json(new
+                {
+                    success = true,
+                    redirectUrl
+                });
             }
             var errors = ModelState
                     .Where(ms => ms.Value.Errors.Count > 0)
