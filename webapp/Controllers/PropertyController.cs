@@ -47,7 +47,7 @@ namespace webapp.Controllers
 				.Include(p => p.Detail)
 				.ToListAsync();
 
-			//ViewData["Title"] = "My Property";
+			ViewData["Title"] = "My Property";
 			return View(properties);
         }
 
