@@ -1,0 +1,20 @@
+
+{
+    "region" : "us-east-1",
+    "configuration" : "Debug",
+    "framework"     : "net8.0",
+    "self-contained" : true,
+    "application"    : "webapp",
+    "environment"    : "webapp-dev",
+    "enable-xray"    : false,
+    "enhanced-health-type" : "basic",
+    "additional-options"   : "\"aws:autoscaling:launchconfiguration,SecurityGroups\"=\"sg-0ccb9f4e484b1ba20\";\"aws:ec2:vpc,Subnets\"=\"subnet-0f038ee72bf4141d5\"",
+    "solution-stack"       : "64bit Amazon Linux 2 v2.7.3 running .NET Core",
+    "environment-type"     : "SingleInstance",
+    "cname"                : "webapp-dev",
+    "instance-type"        : "t2.micro",
+    "key-pair"             : "",
+    "instance-profile"     : "LabInstanceProfile",
+    "service-role"         : "LabRole",
+    "proxy-server"         : "nginx"
+}
