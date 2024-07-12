@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.Elfie.Extensions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace webapp.Controllers
 {
@@ -32,7 +33,8 @@ namespace webapp.Controllers
 		[BindProperty]
 		public PropertyViewModel Property { get; set; }
 
-		[HttpGet]
+        [Authorize]
+        [HttpGet]
 		public IActionResult SubmitProperty()
         {
             ViewData["Title"] = "Submit Property";
@@ -170,6 +172,7 @@ namespace webapp.Controllers
                 _context.PropertyDetails.Add(propertyDetail);
                 await _context.SaveChangesAsync();
 
+                TempData["Message"] = "Property created successfully!";
                 var redirectUrl = Url.Action("SubmitProperty", "Property");
                 return Json(new
                 {
