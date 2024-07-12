@@ -1,11 +1,9 @@
-﻿    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-    
-    namespace webapp.Models
-    {
-    
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
+namespace webapp.Models
+{
     public class PropertyViewModel
     {
         [Required(ErrorMessage = "The property title is required.")]
