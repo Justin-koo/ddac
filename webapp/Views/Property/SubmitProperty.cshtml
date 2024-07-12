@@ -1,5 +1,6 @@
 ﻿@model PropertyViewModel
 @{
+    ViewData["Title"] = "Submit Property";
     Layout = "~/Views/Shared/_AccountLayout.cshtml";
 }   
 <div class="dashboard-body">
@@ -21,7 +22,7 @@
                                 <div class="form-group col-md-12">
                                     <label asp-for="Title">Property Title</label>
                                     <input asp-for="Title" class="form-control" />
-                                    <span asp-validation-for="Title" class="text-danger"></span>
+                                    <span asp-validation-for="Title"></span>
                                 </div>
 
                                 <div class="form-group col-md-6">
@@ -30,7 +31,7 @@
                                         <option value="Rent">For Rent</option>
                                         <option value="Sale">For Sale</option>
                                     </select>
-                                    <span asp-validation-for="Status" class="text-danger"></span>
+                                    <span asp-validation-for="Status"></span>
                                 </div>
 
                                 <div class="form-group col-md-6">
@@ -43,31 +44,31 @@
                                         <option value="Offices">Offices</option>
                                         <option value="Garage">Garage</option>
                                     </select>
-                                    <span asp-validation-for="PropertyType" class="text-danger"></span>
+                                    <span asp-validation-for="PropertyType"></span>
                                 </div>
 
                                 <div class="form-group col-md-6">
                                     <label asp-for="Price">Price</label>
                                     <input asp-for="Price" class="form-control" />
-                                    <span asp-validation-for="Price" class="text-danger"></span>
+                                    <span asp-validation-for="Price"></span>
                                 </div>
 
                                 <div class="form-group col-md-6">
                                     <label asp-for="Area">Area</label>
                                     <input asp-for="Area" class="form-control" />
-                                    <span asp-validation-for="Area" class="text-danger"></span>
+                                    <span asp-validation-for="Area"></span>
                                 </div>
 
                                 <div class="form-group col-md-6">
                                     <label asp-for="Bedrooms">Bedrooms</label>
                                     <input asp-for="Bedrooms" class="form-control" />
-                                    <span asp-validation-for="Bedrooms" class="text-danger"></span>
+                                    <span asp-validation-for="Bedrooms"></span>
                                 </div>
 
                                 <div class="form-group col-md-6">
                                     <label asp-for="Bathrooms">Bathrooms</label>
                                     <input asp-for="Bathrooms" class="form-control" />
-                                    <span asp-validation-for="Bathrooms" class="text-danger"></span>
+                                    <span asp-validation-for="Bathrooms"></span>
                                 </div>
 
                             </div>
@@ -104,25 +105,25 @@
                                 <div class="form-group col-md-6">
                                     <label asp-for="AddressLine">Address</label>
                                     <input asp-for="AddressLine" class="form-control" />
-                                    <span asp-validation-for="AddressLine" class="text-danger"></span>
+                                    <span asp-validation-for="AddressLine"></span>
                                 </div>
 
                                 <div class="form-group col-md-6">
                                     <label asp-for="City">City</label>
                                     <input asp-for="City" class="form-control" />
-                                    <span asp-validation-for="City" class="text-danger"></span>
+                                    <span asp-validation-for="City"></span>
                                 </div>
 
                                 <div class="form-group col-md-6">
                                     <label asp-for="State">State</label>
                                     <input asp-for="State" class="form-control" />
-                                    <span asp-validation-for="State" class="text-danger"></span>
+                                    <span asp-validation-for="State"></span>
                                 </div>
 
                                 <div class="form-group col-md-6">
                                     <label asp-for="ZipCode">Zip Code</label>
                                     <input asp-for="ZipCode" class="form-control" />
-                                    <span asp-validation-for="ZipCode" class="text-danger"></span>
+                                    <span asp-validation-for="ZipCode"></span>
                                 </div>
 
                             </div>
@@ -138,7 +139,7 @@
                                 <div class="form-group col-md-12">
                                     <label asp-for="Description">Description</label>
                                     <textarea asp-for="Description" class="form-control h-120"></textarea>
-                                    <span asp-validation-for="Description" class="text-danger"></span>
+                                    <span asp-validation-for="Description"></span>
                                 </div>
 
                                 <div class="form-group col-md-4">
@@ -151,7 +152,7 @@
                                         <option value="0-20 Years">0 - 20 Years</option>
                                         <option value="20+ Years">20+ Years</option>
                                     </select>
-                                    <span asp-validation-for="BuildingAge" class="text-danger"></span>
+                                    <span asp-validation-for="BuildingAge"></span>
                                 </div>
 
                                 <div class="form-group col-md-4">
@@ -164,7 +165,7 @@
                                         <option value="4">4</option>
                                         <option value="5">5</option>
                                     </select>
-                                    <span asp-validation-for="Garage" class="text-danger"></span>
+                                    <span asp-validation-for="Garage"></span>
                                 </div>
 
                                 <div class="form-group col-md-4">
@@ -177,7 +178,7 @@
                                         <option value="4">4</option>
                                         <option value="5">5</option>
                                     </select>
-                                    <span asp-validation-for="Rooms" class="text-danger"></span>
+                                    <span asp-validation-for="Rooms"></span>
                                 </div>
 
                                 <div class="form-group col-md-12">
@@ -249,19 +250,19 @@
                     <div class="form-group col-md-4">
                     <label asp-for="ContactName">Name</label>
                     <input asp-for="ContactName" class="form-control" />
-                    <span asp-validation-for="ContactName" class="text-danger"></span>
+                    <span asp-validation-for="ContactName"></span>
                     </div>
 
                     <div class="form-group col-md-4">
                     <label asp-for="ContactEmail">Email</label>
                     <input asp-for="ContactEmail" class="form-control" />
-                    <span asp-validation-for="ContactEmail" class="text-danger"></span>
+                    <span asp-validation-for="ContactEmail"></span>
                     </div>
 
                     <div class="form-group col-md-4">
                     <label asp-for="ContactPhone">Phone (optional)</label>
                     <input asp-for="ContactPhone" class="form-control" />
-                    <span asp-validation-for="ContactPhone" class="text-danger"></span>
+                    <span asp-validation-for="ContactPhone"></span>
                     </div>
 
                     </div>
@@ -273,7 +274,7 @@
                     <input asp-for="Consent" class="form-check-input" />
                     <label class="form-check-label" asp-for="Consent">I consent to having this website store my submitted information so they can respond to my inquiry.</label>
                     </div>
-                    <span asp-validation-for="Consent" class="text-danger"></span>
+                    <span asp-validation-for="Consent"></span>
                     </div> *@
 
                     <div class="form-group col-lg-12 col-md-12">
@@ -290,6 +291,7 @@
 </div>
 
 @section Scripts {
+    <partial name="_ValidationScriptsPartial" />
     <script>
         Dropzone.autoDiscover = false;
 
@@ -309,38 +311,34 @@
                     e.preventDefault();
                     e.stopPropagation();
 
-                    if (myDropzone.getQueuedFiles().length > 0) {
-                        // Create FormData object manually
-                        var formData = new FormData(form);
+                    var formData = new FormData(form);
 
+                    if (myDropzone.getQueuedFiles().length > 0) {
                         // Append files manually
                         myDropzone.files.forEach(function(file) {
                             formData.append('files', file, file.name);
                         });
 
-                        for (var pair of formData.entries()) {
-                            console.log(`${pair[0]}: ${pair[1]}`);
-                        }
-
-                        fetch(form.action, {
-                            method: 'POST',
-                            body: formData
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            console.log('Success:', data);
-                            if (data.success) {
-                                // Redirect if server processed the data successfully
-                                window.location.href = data.redirectUrl; // Assuming 'redirectUrl' is provided by the server
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                        });
-
-                    } else {
-                        form.submit(); // If no files to upload, submit the form directly
+                        // for (var pair of formData.entries()) {
+                        //     console.log(`${pair[0]}: ${pair[1]}`);
+                        // }
                     }
+
+                    fetch(form.action, {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Success:', data);
+                        if (data.success) {
+                            // Redirect if server processed the data successfully
+                            window.location.href = data.redirectUrl; // Assuming 'redirectUrl' is provided by the server
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
                 });
             }
 
