@@ -12,13 +12,13 @@ namespace webapp.Models
         [StringLength(500)]
         public string Description { get; set; }
 
-        public string BuildingAge { get; set; }  // 0 - 5 Years, 0 - 10 Years, etc.
+        public string? BuildingAge { get; set; }  // 0 - 5 Years, 0 - 10 Years, etc.
 
-        public int Garage { get; set; }
+        public int? Garage { get; set; }
 
-        public int Rooms { get; set; }
+        public int? Rooms { get; set; }
 
-        public string OtherFeatures { get; set; }  // Comma-separated list of features
+        public string? OtherFeatures { get; set; }  // Comma-separated list of features
 
         public int PropertyId { get; set; }
 

@@ -13,11 +13,13 @@ namespace webapp.Controllers
     {
         private readonly UserManager<webappUser> _userManager;
         private readonly webappContext _context;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public PropertyController(UserManager<webappUser> userManager, webappContext context)
+        public PropertyController(UserManager<webappUser> userManager, webappContext context, IWebHostEnvironment webHostEnvironment)
         {
             _userManager = userManager;
             _context = context;
+            _webHostEnvironment = webHostEnvironment;
         }
 
 		[BindProperty]
@@ -43,72 +45,121 @@ namespace webapp.Controllers
         }
 
 		[HttpPost]
-		public async Task<IActionResult> SubmitProperty(PropertyViewModel model, List<IFormFile> files)
-		{
-			if (!ModelState.IsValid)
-			{
-                return View(model);
+        public async Task<IActionResult> SubmitProperty(PropertyViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                string uniqueFileName = null;
+
+                if (model.ImageFile != null)
+                {
+                    string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
+                    uniqueFileName = Guid.NewGuid().ToString() + "_" + model.ImageFile.FileName;
+                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await model.ImageFile.CopyToAsync(fileStream);
+                    }
+                }
+
+                var property = new Property
+                {
+                    Title = model.Title,
+                    Status = model.Status,
+                    PropertyType = model.PropertyType,
+                    Price = model.Price,
+                    Area = model.Area,
+                    Bedrooms = model.Bedrooms,
+                    Bathrooms = model.Bathrooms,
+                    GalleryPath = uniqueFileName,
+                    AgentId = model.AgentId,
+                    ListingDate = DateTime.Now,
+                    Address = new PropertyAddress
+                    {
+                        AddressLine = model.AddressLine,
+                        City = model.City,
+                        State = model.State,
+                        ZipCode = model.ZipCode
+                    },
+                    Detail = new PropertyDetail
+                    {
+                        Description = model.Description,
+                        BuildingAge = model.BuildingAge ?? string.Empty,
+                        Garage = model.Garage ?? 0,
+                        Rooms = model.Rooms ?? 0,
+                        OtherFeatures = string.Join(", ", model.Features)
+                    }
+                };
+
+                // var property = new Property
+                // {
+                //     Title = model.Title,
+                //     Status = model.Status,
+                //     PropertyType = model.PropertyType,
+                //     Price = model.Price,
+                //     Area = model.Area,
+                //     Bedrooms = model.Bedrooms,
+                //     Bathrooms = model.Bathrooms,
+                //     ListingDate = model.ListingDate,
+                //     AgentId = model.AgentId,
+                //     GalleryPath = uniqueFileName,
+                //     // ImagePath = uniqueFileName // Store the unique file name in the database
+                // };
+
+                // _context.Properties.Add(property);
+                // await _context.SaveChangesAsync();
+
+                // var propertyAddress = new PropertyAddress
+                // {
+                //     AddressLine = model.AddressLine,
+                //     City = model.City,
+                //     State = model.State,
+                //     ZipCode = model.ZipCode,
+                //     PropertyId = property.Id
+                // };
+
+                // _context.PropertyAddresses.Add(propertyAddress);
+                // await _context.SaveChangesAsync();
+
+                // var propertyDetail = new PropertyDetail
+                // {
+                //     Description = model.Description,
+                //     BuildingAge = model.BuildingAge,
+                //     Garage = model.Garage,
+                //     Rooms = model.Rooms,
+                //     OtherFeatures = model.Features[0],
+                //     PropertyId = property.Id
+                // };
+
+                // _context.PropertyDetails.Add(propertyDetail);
+                // await _context.SaveChangesAsync();
+
+                return RedirectToAction(nameof(Index));
+            }
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UploadImage(IFormFile ImageFile)
+        {
+            if (ImageFile != null && ImageFile.Length > 0)
+            {
+                string uniqueFileName = null;
+                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
+                uniqueFileName = Guid.NewGuid().ToString() + "_" + ImageFile.FileName;
+                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await ImageFile.CopyToAsync(fileStream);
+                }
+
+                // // Return the file path to the client (if needed)
+                // return Json(new { filePath = "/uploads/" + uniqueFileName });
             }
 
-			var user = await _userManager.GetUserAsync(User);
-
-			if (user == null)
-			{
-				// Handle the case where the user is not found.
-				return RedirectToPage("/Account/Login", new { area = "Identity" });
-			}
-
-			var filePaths = new List<string>();
-			foreach (var file in files)
-			{
-				if (file.Length > 0)
-				{
-					var filePath = Path.Combine("wwwroot/uploads", Path.GetFileName(file.FileName));
-					using (var stream = new FileStream(filePath, FileMode.Create))
-					{
-						await file.CopyToAsync(stream);
-					}
-					filePaths.Add(filePath);
-				}
-			}
-
-
-			var property = new Property
-			{
-				Title = Property.Title,
-				Status = Property.Status,
-				PropertyType = Property.PropertyType,
-				Price = Property.Price,
-				Area = Property.Area,
-				Bedrooms = Property.Bedrooms,
-				Bathrooms = Property.Bathrooms,
-				GalleryPath = string.Join(";", filePaths),
-				AgentId = user.Id,
-				ListingDate = DateTime.Now,
-				Address = new PropertyAddress
-				{
-					AddressLine = Property.AddressLine,
-					City = Property.City,
-					State = Property.State,
-					ZipCode = Property.ZipCode
-				},
-				Detail = new PropertyDetail
-				{
-					Description = Property.Description,
-					BuildingAge = Property.BuildingAge ?? string.Empty,
-					Garage = Property.Garage ?? 0,
-					Rooms = Property.Rooms ?? 0,
-					OtherFeatures = string.Join(", ", Property.Features)
-				}
-			};
-
-			_context.Properties.Add(property);
-			await _context.SaveChangesAsync();
-			//StatusMessage = "Property created successfully.";
-
-			return RedirectToPage("/Property/SubmitProperty");
-		}
-
+            return BadRequest("Image upload failed.");
+        }
+        
 		[HttpPost]
 		public async Task<IActionResult> DeleteProperty(int id)
 		{
@@ -134,5 +185,6 @@ namespace webapp.Controllers
 
 			return RedirectToAction("AgentPropertyList");
 		}
-	}
+	
+    }
 }
