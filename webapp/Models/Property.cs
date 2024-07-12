@@ -33,7 +33,7 @@ namespace webapp.Models
         [Required]
         public int Bathrooms { get; set; }
 
-        public string? GalleryPath { get; set; }  // Path to the gallery images
+        public string GalleryPath { get; set; }  // Path to the gallery images
 
         [Required]
         public DateTime ListingDate { get; set; }

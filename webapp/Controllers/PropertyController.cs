@@ -1,10 +1,18 @@
 ﻿using System.Net.NetworkInformation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Shared;
 using webapp.Areas.Identity.Data;
 using webapp.Data;
 using webapp.Models;
 using webapp.Areas.Identity.Pages.Account.Manage;
+using Microsoft.AspNetCore.Http;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
+using Microsoft.CodeAnalysis.Elfie.Extensions;
 
 namespace webapp.Controllers
 {
@@ -21,29 +29,65 @@ namespace webapp.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
 
-        public IActionResult SubmitProperty()
+		[BindProperty]
+		public PropertyViewModel Property { get; set; }
+
+		[HttpGet]
+		public IActionResult SubmitProperty()
         {
             ViewData["Title"] = "Submit Property";
-            ViewData["ActivePage"] = ManageNavPages.SubmitProperty;
             return View(new PropertyViewModel());
         }
 
-        [HttpPost]
-        public async Task<IActionResult> SubmitProperty(PropertyViewModel model)
+		[HttpGet]
+		public async Task<IActionResult> AgentPropertyList()
         {
-            if (ModelState.IsValid)
-            {
-                string uniqueFileName = null;
+			var properties = await _context.Properties
+				.Include(p => p.Address)
+				.Include(p => p.Detail)
+				.ToListAsync();
 
-                if (model.ImageFile != null)
+			ViewData["Title"] = "My Property";
+			return View(properties);
+        }
+
+		[HttpPost]
+		public async Task<IActionResult> DeleteProperty(int id)
+		{
+			try
+			{
+				var property = await _context.Properties.FindAsync(id);
+				if (property == null)
+				{
+					TempData["Message"] = "Error: Property not found.";
+					return RedirectToAction("AgentPropertyList");
+				}
+
+				_context.Properties.Remove(property);
+				await _context.SaveChangesAsync();
+
+				TempData["Message"] = "Property deleted successfully!";
+			}
+			catch (Exception ex)
+			{
+				TempData["Message"] = "Error: Unable to delete property.";
+				// Log the exception (ex) here if necessary
+			}
+
+			return RedirectToAction("AgentPropertyList");
+		}
+
+        [HttpPost]
+        public async Task<IActionResult> SubmitProperty(PropertyViewModel model, List<IFormFile> files)
+        {
+
+            if (ModelState.IsValid) {
+                var user = await _userManager.GetUserAsync(User);
+
+                if (user == null)
                 {
-                    string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
-                    uniqueFileName = Guid.NewGuid().ToString() + "_" + model.ImageFile.FileName;
-                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-                    using (var fileStream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await model.ImageFile.CopyToAsync(fileStream);
-                    }
+                    // Handle the case where the user is not found.
+                    return RedirectToPage("/Account/Login", new { area = "Identity" });
                 }
 
                 var property = new Property
@@ -55,93 +99,103 @@ namespace webapp.Controllers
                     Area = model.Area,
                     Bedrooms = model.Bedrooms,
                     Bathrooms = model.Bathrooms,
-                    GalleryPath = uniqueFileName,
-                    AgentId = model.AgentId,
-                    ListingDate = DateTime.Now,
-                    Address = new PropertyAddress
-                    {
-                        AddressLine = model.AddressLine,
-                        City = model.City,
-                        State = model.State,
-                        ZipCode = model.ZipCode
-                    },
-                    Detail = new PropertyDetail
-                    {
-                        Description = model.Description,
-                        BuildingAge = model.BuildingAge ?? string.Empty,
-                        Garage = model.Garage ?? 0,
-                        Rooms = model.Rooms ?? 0,
-                        OtherFeatures = string.Join(", ", model.Features)
-                    }
+                    ListingDate = model.ListingDate,
+                    AgentId = user.Id,
+                    // GalleryPath = string.Join(";", model.GalleryPath),
                 };
 
-                // var property = new Property
-                // {
-                //     Title = model.Title,
-                //     Status = model.Status,
-                //     PropertyType = model.PropertyType,
-                //     Price = model.Price,
-                //     Area = model.Area,
-                //     Bedrooms = model.Bedrooms,
-                //     Bathrooms = model.Bathrooms,
-                //     ListingDate = model.ListingDate,
-                //     AgentId = model.AgentId,
-                //     GalleryPath = uniqueFileName,
-                //     // ImagePath = uniqueFileName // Store the unique file name in the database
-                // };
+                _context.Properties.Add(property);
+                await _context.SaveChangesAsync();
 
-                // _context.Properties.Add(property);
-                // await _context.SaveChangesAsync();
+                var propertyIdString = property.Id.ToString();
 
-                // var propertyAddress = new PropertyAddress
-                // {
-                //     AddressLine = model.AddressLine,
-                //     City = model.City,
-                //     State = model.State,
-                //     ZipCode = model.ZipCode,
-                //     PropertyId = property.Id
-                // };
-
-                // _context.PropertyAddresses.Add(propertyAddress);
-                // await _context.SaveChangesAsync();
-
-                // var propertyDetail = new PropertyDetail
-                // {
-                //     Description = model.Description,
-                //     BuildingAge = model.BuildingAge,
-                //     Garage = model.Garage,
-                //     Rooms = model.Rooms,
-                //     OtherFeatures = model.Features[0],
-                //     PropertyId = property.Id
-                // };
-
-                // _context.PropertyDetails.Add(propertyDetail);
-                // await _context.SaveChangesAsync();
-
-                return RedirectToAction(nameof(Index));
-            }
-            return View(model);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> UploadImage(IFormFile ImageFile)
-        {
-            if (ImageFile != null && ImageFile.Length > 0)
-            {
-                string uniqueFileName = null;
-                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
-                uniqueFileName = Guid.NewGuid().ToString() + "_" + ImageFile.FileName;
-                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                Console.WriteLine("Files: " + (files != null ? files.Count.ToString() : "null"));
+                var uploadUrls = new List<string>();
+                foreach (var file in files)
                 {
-                    await ImageFile.CopyToAsync(fileStream);
+                    Console.WriteLine("In handle file");
+                    if (file.Length > 0)
+                    {
+                        var uniqueFileName = Guid.NewGuid().ToString() + ".png";
+                        var uploadsFolder = Path.Combine("wwwroot", "uploads", propertyIdString.ToSHA256String());
+                        var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                        // Ensure the uploads folder exists
+                        if (!Directory.Exists(uploadsFolder))
+                        {
+                            Directory.CreateDirectory(uploadsFolder);
+                        }
+
+                        using (var fileStream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await file.CopyToAsync(fileStream);
+                        }
+
+                        uploadUrls.Add(uniqueFileName); // or a URL if needed
+                    }
+                    else {
+                        Console.WriteLine("No file to handle");
+                    }
                 }
 
-                // // Return the file path to the client (if needed)
-                // return Json(new { filePath = "/uploads/" + uniqueFileName });
-            }
+                model.GalleryPath = uploadUrls;
 
-            return BadRequest("Image upload failed.");
+                // Update property with gallery path
+                property.GalleryPath = string.Join(";", model.GalleryPath);
+                _context.Properties.Update(property);
+                await _context.SaveChangesAsync();
+
+                var propertyAddress = new PropertyAddress
+                {
+                    AddressLine = model.AddressLine,
+                    City = model.City,
+                    State = model.State,
+                    ZipCode = model.ZipCode,
+                    PropertyId = property.Id
+                };
+
+                _context.PropertyAddresses.Add(propertyAddress);
+                await _context.SaveChangesAsync();
+
+                var propertyDetail = new PropertyDetail
+                {
+                    Description = model.Description,
+                    BuildingAge = model.BuildingAge,
+                    Garage = model.Garage,
+                    Rooms = model.Rooms,
+                    OtherFeatures = string.Join(";", model.Features),
+                    PropertyId = property.Id
+                };
+
+                _context.PropertyDetails.Add(propertyDetail);
+                await _context.SaveChangesAsync();
+
+                var redirectUrl = Url.Action("SubmitProperty", "Property");
+                return Json(new
+                {
+                    success = true,
+                    redirectUrl
+                });
+            }
+            var errors = ModelState
+                    .Where(ms => ms.Value.Errors.Count > 0)
+                    .Select(ms => new
+                    {
+                        Field = ms.Key,
+                        Errors = ms.Value.Errors.Select(e => e.ErrorMessage).ToArray()
+                    });
+
+                // Optionally log the errors
+                foreach (var error in errors)
+                {
+                    Console.WriteLine($"Field: {error.Field}");
+                    foreach (var errorMessage in error.Errors)
+                    {
+                        Console.WriteLine($"Error: {errorMessage}");
+                    }
+                }
+
+            return View(model);
         }
-    }
+	}
 }
