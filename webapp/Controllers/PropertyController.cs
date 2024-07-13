@@ -49,11 +49,38 @@ namespace webapp.Controllers
 				.Include(p => p.Detail)
 				.ToListAsync();
 
+			var propertyViewModels = properties.Select(p => new PropertyViewModel
+			{
+				Id = p.Id,
+				Title = p.Title,
+				Status = p.Status,
+				PropertyType = p.PropertyType,
+				Price = p.Price,
+				Area = p.Area,
+				Bedrooms = p.Bedrooms,
+				Bathrooms = p.Bathrooms,
+				GalleryPath = p.GalleryPath.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList(),
+				ListingDate = p.ListingDate,
+				AgentId = p.AgentId,
+				AddressLine = p.Address.AddressLine,
+				City = p.Address.City,
+				State = p.Address.State,
+				ZipCode = p.Address.ZipCode,
+				Description = p.Detail.Description,
+				BuildingAge = p.Detail.BuildingAge,
+				Garage = p.Detail.Garage,
+				Rooms = p.Detail.Rooms,
+                Features = p.Detail.OtherFeatures?.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList() ?? new List<string>(),
+				GalleryFolder = p.Id.ToString().ToSHA256String()
+			}).ToList();
+
 			ViewData["Title"] = "My Property";
-			return View(properties);
+			return View(propertyViewModels);
         }
 
+        [Authorize]
 		[HttpPost]
+		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> DeleteProperty(int id)
 		{
 			try
