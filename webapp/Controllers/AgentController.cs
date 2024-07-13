@@ -30,6 +30,14 @@ namespace webapp.Controllers
 			return View();
 		}
 
+		[Route("agents/details")]
+		[HttpGet]
+		public IActionResult AgentDetails()
+		{
+			ViewData["Title"] = "Agent Details";
+			return View();
+		}
+
 
 		[Authorize]
         [HttpGet]
