@@ -71,7 +71,8 @@ namespace webapp.Controllers
 				Garage = p.Detail.Garage,
 				Rooms = p.Detail.Rooms,
                 Features = p.Detail.OtherFeatures?.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList() ?? new List<string>(),
-				GalleryFolder = p.Id.ToString().ToSHA256String()
+				GalleryFolder = p.Id.ToString().ToSHA256String(),
+				SubmissionStatus = p.SubmissionStatus,
 			}).ToList();
 
 			ViewData["Title"] = "My Property";
