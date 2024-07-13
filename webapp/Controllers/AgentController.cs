@@ -38,6 +38,28 @@ namespace webapp.Controllers
 			return View();
 		}
 
+        [HttpGet]
+		public async Task<IActionResult> PropertyDetails(int id)
+        {
+			var property_details = await _context.Properties
+				.Include(p => p.Address)
+				.Include(p => p.Detail)
+				.FirstOrDefaultAsync(p => p.Id == id);
+
+			if (property_details == null)
+			{
+				return NotFound();
+			}
+
+			var viewModel = new PropertyDetailsViewModel
+			{
+				Property = property_details
+			};
+
+			ViewData["Title"] = property_details.Title;
+			return View(viewModel);
+		}
+
 
 		[Authorize]
         [HttpGet]
