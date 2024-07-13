@@ -317,9 +317,13 @@
             paramName: "files", // This should match with your controller's parameter
             init: function() {
                 var form = document.getElementById('submitPropertyForm');
+                var $submitButton = $('#submit-button');
+
                 form.addEventListener("submit", function(e) {
                     e.preventDefault();
                     e.stopPropagation();
+
+                    $submitButton.addClass('placeholder disabled')
 
                     var formData = new FormData(form);
 
@@ -340,6 +344,8 @@
                     })
                     .then(response => response.json())
                     .then(data => {
+                        $submitButton.removeClass('placeholder disabled')
+
                         if (data.success) {
                             Swal.fire({
                                 title: 'Success!',
@@ -354,16 +360,26 @@
                                 }
                             });
                         }else{
+                            let errors = data.errors.join('\n');
                             Swal.fire({
                                 title: 'Error!',
-                                text: 'There was an issue submitting your property. Please try again.',
+                                text: errors,
                                 icon: 'error',
+                                confirmButtonColor: '#017efa',
                                 confirmButtonText: 'OK'
                             });
                         }
                     })
                     .catch(error => {
-                        console.error('Error:', error);
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'An unexpected error occurred. Please try again.',
+                            icon: 'error',
+                            confirmButtonColor: '#017efa',
+                            confirmButtonText: 'OK'
+                        });
+
+                        $submitButton.removeClass('placeholder disabled')
                     });
                 });
             }
