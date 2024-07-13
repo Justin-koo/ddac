@@ -22,8 +22,16 @@ namespace webapp.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
 
+		[Route("agents")]
+		[HttpGet]
+		public IActionResult AgentList()
+		{
+			ViewData["Title"] = "Find an Agent";
+			return View();
+		}
 
-        [Authorize]
+
+		[Authorize]
         [HttpGet]
         public IActionResult SubmitProperty()
         {
