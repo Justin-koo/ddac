@@ -101,126 +101,134 @@ namespace webapp.Controllers
 			return RedirectToAction("AgentPropertyList");
 		}
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> SubmitProperty(PropertyViewModel model, List<IFormFile> files)
         {
 
-            if (ModelState.IsValid) {
-                var user = await _userManager.GetUserAsync(User);
+            if (!ModelState.IsValid)
+            {
+				var errors = ModelState.Values.SelectMany(v => v.Errors)
+									  .Select(e => e.ErrorMessage)
+									  .ToList();
 
-                if (user == null)
+				return Json(new
+				{
+					success = false,
+					errors
+				});
+			}
+
+            var user = await _userManager.GetUserAsync(User);
+
+            var property = new Property
+            {
+                Title = model.Title,
+                Status = model.Status,
+                PropertyType = model.PropertyType,
+                Price = model.Price,
+                Area = model.Area,
+                Bedrooms = model.Bedrooms,
+                Bathrooms = model.Bathrooms,
+                ListingDate = model.ListingDate,
+                AgentId = user.Id,
+                SubmissionStatus = "Pending",
+                // GalleryPath = string.Join(";", model.GalleryPath),
+            };
+
+            _context.Properties.Add(property);
+            await _context.SaveChangesAsync();
+
+            var propertyIdString = property.Id.ToString();
+
+            //Console.WriteLine("Files: " + (files != null ? files.Count.ToString() : "null"));
+            var uploadUrls = new List<string>();
+            foreach (var file in files)
+            {
+                //Console.WriteLine("In handle file");
+                if (file.Length > 0)
                 {
-                    // Handle the case where the user is not found.
-                    return RedirectToPage("/Account/Login", new { area = "Identity" });
-                }
+                    var uniqueFileName = Guid.NewGuid().ToString() + ".png";
+					var uploadsFolder = Path.Combine("wwwroot", "uploads", "property", propertyIdString.ToSHA256String());
+					var filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
-                var property = new Property
-                {
-                    Title = model.Title,
-                    Status = model.Status,
-                    PropertyType = model.PropertyType,
-                    Price = model.Price,
-                    Area = model.Area,
-                    Bedrooms = model.Bedrooms,
-                    Bathrooms = model.Bathrooms,
-                    ListingDate = model.ListingDate,
-                    AgentId = user.Id,
-                    // GalleryPath = string.Join(";", model.GalleryPath),
-                };
-
-                _context.Properties.Add(property);
-                await _context.SaveChangesAsync();
-
-                var propertyIdString = property.Id.ToString();
-
-                Console.WriteLine("Files: " + (files != null ? files.Count.ToString() : "null"));
-                var uploadUrls = new List<string>();
-                foreach (var file in files)
-                {
-                    Console.WriteLine("In handle file");
-                    if (file.Length > 0)
+					// Ensure the uploads folder exists
+					if (!Directory.Exists(uploadsFolder))
                     {
-                        var uniqueFileName = Guid.NewGuid().ToString() + ".png";
-                        var uploadsFolder = Path.Combine("wwwroot", "uploads", propertyIdString.ToSHA256String());
-                        var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                        // Ensure the uploads folder exists
-                        if (!Directory.Exists(uploadsFolder))
-                        {
-                            Directory.CreateDirectory(uploadsFolder);
-                        }
-
-                        using (var fileStream = new FileStream(filePath, FileMode.Create))
-                        {
-                            await file.CopyToAsync(fileStream);
-                        }
-
-                        uploadUrls.Add(uniqueFileName); // or a URL if needed
+                        Directory.CreateDirectory(uploadsFolder);
                     }
-                    else {
-                        Console.WriteLine("No file to handle");
+
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await file.CopyToAsync(fileStream);
                     }
+
+                    uploadUrls.Add(uniqueFileName); // or a URL if needed
                 }
-
-                model.GalleryPath = uploadUrls;
-
-                // Update property with gallery path
-                property.GalleryPath = string.Join(";", model.GalleryPath);
-                _context.Properties.Update(property);
-                await _context.SaveChangesAsync();
-
-                var propertyAddress = new PropertyAddress
-                {
-                    AddressLine = model.AddressLine,
-                    City = model.City,
-                    State = model.State,
-                    ZipCode = model.ZipCode,
-                    PropertyId = property.Id
-                };
-
-                _context.PropertyAddresses.Add(propertyAddress);
-                await _context.SaveChangesAsync();
-
-                var propertyDetail = new PropertyDetail
-                {
-                    Description = model.Description,
-                    BuildingAge = model.BuildingAge,
-                    Garage = model.Garage,
-                    Rooms = model.Rooms,
-                    OtherFeatures = string.Join(";", model.Features),
-                    PropertyId = property.Id
-                };
-
-                _context.PropertyDetails.Add(propertyDetail);
-                await _context.SaveChangesAsync();
-
-                TempData["Message"] = "Property created successfully!";
-                var redirectUrl = Url.Action("SubmitProperty", "Property");
-                return Json(new
-                {
-                    success = true,
-                    redirectUrl
-                });
+                //else {
+                //    Console.WriteLine("No file to handle");
+                //}
             }
-            var errors = ModelState
-                    .Where(ms => ms.Value.Errors.Count > 0)
-                    .Select(ms => new
-                    {
-                        Field = ms.Key,
-                        Errors = ms.Value.Errors.Select(e => e.ErrorMessage).ToArray()
-                    });
 
-                // Optionally log the errors
-                foreach (var error in errors)
-                {
-                    Console.WriteLine($"Field: {error.Field}");
-                    foreach (var errorMessage in error.Errors)
-                    {
-                        Console.WriteLine($"Error: {errorMessage}");
-                    }
-                }
+            model.GalleryPath = uploadUrls;
 
-            return View(model);
+            // Update property with gallery path
+            property.GalleryPath = string.Join(";", model.GalleryPath);
+            _context.Properties.Update(property);
+            await _context.SaveChangesAsync();
+
+            var propertyAddress = new PropertyAddress
+            {
+                AddressLine = model.AddressLine,
+                City = model.City,
+                State = model.State,
+                ZipCode = model.ZipCode,
+                PropertyId = property.Id
+            };
+
+            _context.PropertyAddresses.Add(propertyAddress);
+            await _context.SaveChangesAsync();
+
+            var propertyDetail = new PropertyDetail
+            {
+                Description = model.Description,
+                BuildingAge = model.BuildingAge,
+                Garage = model.Garage,
+                Rooms = model.Rooms,
+                OtherFeatures = string.Join(";", model.Features),
+                PropertyId = property.Id
+            };
+
+            _context.PropertyDetails.Add(propertyDetail);
+            await _context.SaveChangesAsync();
+
+            TempData["Message"] = "Property created successfully!";
+            var redirectUrl = Url.Action("SubmitProperty", "Property");
+
+            return Json(new
+            {
+                success = true,
+                redirectUrl
+            });
+            //var errors = ModelState
+            //        .Where(ms => ms.Value.Errors.Count > 0)
+            //        .Select(ms => new
+            //        {
+            //            Field = ms.Key,
+            //            Errors = ms.Value.Errors.Select(e => e.ErrorMessage).ToArray()
+            //        });
+
+            //    // Optionally log the errors
+            //    foreach (var error in errors)
+            //    {
+            //        Console.WriteLine($"Field: {error.Field}");
+            //        foreach (var errorMessage in error.Errors)
+            //        {
+            //            Console.WriteLine($"Error: {errorMessage}");
+            //        }
+            //    }
+
+            //return View(model);
         }
 	}
 }
