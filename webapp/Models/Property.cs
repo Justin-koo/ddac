@@ -44,5 +44,8 @@ namespace webapp.Models
         public webappUser Agent { get; set; }
         public virtual PropertyAddress Address { get; set; }
         public virtual PropertyDetail Detail { get; set; }
+
+        [Required]
+        public string SubmissionStatus { get; set; }
     }
 }

@@ -62,5 +62,7 @@
         public int? Rooms { get; set; }
 
         public List<string> Features { get; set; } = new List<string>();
+
+        public string SubmissionStatus { get; set; }
     }
 }
