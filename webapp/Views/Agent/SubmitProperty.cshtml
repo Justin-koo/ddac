@@ -315,11 +315,11 @@
             addRemoveLinks: true,
             acceptedFiles: 'image/*',
             paramName: "files", // This should match with your controller's parameter
-            init: function() {
+            init: function () {
                 var form = document.getElementById('submitPropertyForm');
                 var $submitButton = $('#submit-button');
 
-                form.addEventListener("submit", function(e) {
+                form.addEventListener("submit", function (e) {
                     e.preventDefault();
                     e.stopPropagation();
 
@@ -329,7 +329,7 @@
 
                     if (myDropzone.getQueuedFiles().length > 0) {
                         // Append files manually
-                        myDropzone.files.forEach(function(file) {
+                        myDropzone.files.forEach(function (file) {
                             formData.append('files', file, file.name);
                         });
 
@@ -342,48 +342,47 @@
                         method: 'POST',
                         body: formData
                     })
-                    .then(response => response.json())
-                    .then(data => {
-                        $submitButton.removeClass('placeholder disabled')
+                        .then(response => response.json())
+                        .then(data => {
+                            $submitButton.removeClass('placeholder disabled')
 
-                        if (data.success) {
-                            Swal.fire({
-                                title: 'Success!',
-                                text: 'Your property has been submitted successfully.',
-                                icon: 'success',
-                                confirmButtonText: 'OK',
-                                confirmButtonColor: '#017efa',
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    // Redirect if the user clicks "OK"
-                                    window.location.href = data.redirectUrl; // Assuming 'redirectUrl' is provided by the server
-                                }
-                            });
-                        }else{
-                            let errors = data.errors.join('\n');
+                            if (data.success) {
+                                Swal.fire({
+                                    title: 'Success!',
+                                    text: 'Your property has been submitted successfully.',
+                                    icon: 'success',
+                                    confirmButtonText: 'OK',
+                                    confirmButtonColor: '#017efa',
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        // Redirect if the user clicks "OK"
+                                        window.location.href = data.redirectUrl; // Assuming 'redirectUrl' is provided by the server
+                                    }
+                                });
+                            } else {
+                                let errors = data.errors.join('\n');
+                                Swal.fire({
+                                    title: 'Error!',
+                                    text: errors,
+                                    icon: 'error',
+                                    confirmButtonColor: '#017efa',
+                                    confirmButtonText: 'OK'
+                                });
+                            }
+                        })
+                        .catch(error => {
                             Swal.fire({
                                 title: 'Error!',
-                                text: errors,
+                                text: 'An unexpected error occurred. Please try again.',
                                 icon: 'error',
                                 confirmButtonColor: '#017efa',
                                 confirmButtonText: 'OK'
                             });
-                        }
-                    })
-                    .catch(error => {
-                        Swal.fire({
-                            title: 'Error!',
-                            text: 'An unexpected error occurred. Please try again.',
-                            icon: 'error',
-                            confirmButtonColor: '#017efa',
-                            confirmButtonText: 'OK'
-                        });
 
-                        $submitButton.removeClass('placeholder disabled')
-                    });
+                            $submitButton.removeClass('placeholder disabled')
+                        });
                 });
             }
-
         });
 
     </script>

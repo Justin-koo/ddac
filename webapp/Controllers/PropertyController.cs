@@ -14,6 +14,9 @@ using System.IO;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.Elfie.Extensions;
 using Microsoft.AspNetCore.Authorization;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
+using SixLabors.ImageSharp.Formats.Jpeg; //used only for the Jpeg encoder below
 
 namespace webapp.Controllers
 {
