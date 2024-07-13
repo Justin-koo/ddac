@@ -1,9 +1,42 @@
 ﻿@model PropertyDetailsViewModel
+
+@using System;
+@using System.Security.Cryptography;
+@using System.Text;
+
 @{
-    ViewData["Title"] = "PropertyDetails";
+	ViewData["Title"] = "PropertyDetails";
+
 	var property = Model.Property;
+	var propertyIdString = property.Id.ToString(); // Ensure this is a string
+	string ToSHA256String(string input)
+	{
+		var inputBytes = Encoding.UTF8.GetBytes(input);
+		var inputHash = SHA256.HashData(inputBytes);
+		return Convert.ToHexString(inputHash);
+	}
+
+	var property_folder = ToSHA256String(property.Id.ToString());
+	Console.WriteLine("Directory: " + property_folder.ToLower());
+
 }
 
+<!-- ============================ Hero Banner  Start================================== -->
+<div class="featured_slick_gallery gray m-0">
+	<div class="featured_slick_gallery-slide">
+		@foreach (var galleryPath in property.GalleryPath.Split(";"))
+		{
+			<div class="featured_slick_padd"><a href="~/uploads/property/@(property_folder.ToLower())/@(galleryPath)" class="mfp-gallery"><img src="~/uploads/property/@(property_folder.ToLower())/@(galleryPath)" class="img-fluid mx-auto" alt=""></a></div>
+		}
+@*  		<div class="featured_slick_padd"><a href="https://via.placeholder.com/1920x1250" class="mfp-gallery"><img src="https://via.placeholder.com/1920x1250" class="img-fluid mx-auto" alt=""></a></div>
+		<div class="featured_slick_padd"><a href="https://via.placeholder.com/1920x1250" class="mfp-gallery"><img src="https://via.placeholder.com/1920x1250" class="img-fluid mx-auto" alt=""></a></div>
+		<div class="featured_slick_padd"><a href="https://via.placeholder.com/1920x1250" class="mfp-gallery"><img src="https://via.placeholder.com/1920x1250" class="img-fluid mx-auto" alt=""></a></div>
+		<div class="featured_slick_padd"><a href="https://via.placeholder.com/1920x1250" class="mfp-gallery"><img src="https://via.placeholder.com/1920x1250" class="img-fluid mx-auto" alt=""></a></div>
+		<div class="featured_slick_padd"><a href="https://via.placeholder.com/1920x1250" class="mfp-gallery"><img src="https://via.placeholder.com/1920x1250" class="img-fluid mx-auto" alt=""></a></div>
+		<div class="featured_slick_padd"><a href="https://via.placeholder.com/1920x1250" class="mfp-gallery"><img src="https://via.placeholder.com/1920x1250" class="img-fluid mx-auto" alt=""></a></div> *@
+	</div>
+</div>
+<!-- ============================ Hero Banner End ================================== -->
 <!-- ============================ Property Detail Start ================================== -->
 			<section>
 				<div class="container">
@@ -72,15 +105,12 @@
 											<div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-6"><div class="ilio-icon-wrap"><div class="ilio-icon"><i class="fa-solid fa-bed"></i></div><div class="ilio-text">3 Bedrooms</div></div></div>
 											<div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-6"><div class="ilio-icon-wrap"><div class="ilio-icon"><i class="fa-solid fa-bath"></i></div><div class="ilio-text">2 Bathrooms</div></div></div>
 											<div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-6"><div class="ilio-icon-wrap"><div class="ilio-icon"><i class="fa-solid fa-layer-group"></i></div><div class="ilio-text">4,240 sq ft</div></div></div>
-											<div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-6"><div class="ilio-icon-wrap"><div class="ilio-icon"><i class="fa-solid fa-warehouse"></i></div><div class="ilio-text">1 Garage</div></div></div>
-											<div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-6"><div class="ilio-icon-wrap"><div class="ilio-icon"><i class="fa-regular fa-building"></i></div><div class="ilio-text">Apartment</div></div></div>
-											<div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-6"><div class="ilio-icon-wrap"><div class="ilio-icon"><i class="fa-solid fa-building-wheat"></i></div><div class="ilio-text">Built 1982</div></div></div>
+											<div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-6"><div class="ilio-icon-wrap"><div class="ilio-icon"><i class="fa-solid fa-building-wheat"></i></div><div class="ilio-text">Well Maintained</div></div></div>
 											<div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-6"><div class="ilio-icon-wrap"><div class="ilio-icon"><i class="fa-solid fa-building-circle-check"></i></div><div class="ilio-text">Active</div></div></div>
-											<div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-6"><div class="ilio-icon-wrap"><div class="ilio-icon"><i class="fa-solid fa-fan"></i></div><div class="ilio-text">Central A/C</div></div></div>
-											<div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-6"><div class="ilio-icon-wrap"><div class="ilio-icon"><i class="fa-regular fa-snowflake"></i></div><div class="ilio-text">Forced Air</div></div></div>
+											@* <div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-6"><div class="ilio-icon-wrap"><div class="ilio-icon"><i class="fa-solid fa-fan"></i></div><div class="ilio-text">Central A/C</div></div></div> *@
+											<div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-6"><div class="ilio-icon-wrap"><div class="ilio-icon"><i class="fa-regular fa-snowflake"></i></div><div class="ilio-text">Air Conditioner</div></div></div>
 											<div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-6"><div class="ilio-icon-wrap"><div class="ilio-icon"><i class="fa-solid fa-bowl-food"></i></div><div class="ilio-text">Kitchen Facilities</div></div></div>
-											<div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-6"><div class="ilio-icon-wrap"><div class="ilio-icon"><i class="fa-solid fa-martini-glass-citrus"></i></div><div class="ilio-text">Bar & Drinks</div></div></div>
-											<div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-6"><div class="ilio-icon-wrap"><div class="ilio-icon"><i class="fa-regular fa-building"></i></div><div class="ilio-text">4 Floor</div></div></div>
+								<div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-6"><div class="ilio-icon-wrap"><div class="ilio-icon"><i class="fa-solid fa-shower"></i></div><div class="ilio-text">Water Heater</div></div></div>
 										</div>
 									</div>
 								</div>
@@ -93,8 +123,13 @@
 								</div>
 								<div id="amenitiesinfo" class="panel-collapse collapse" aria-labelledby="amenitiesinfo">
 									<div class="vesh-detail-bloc-body">
+									@if (!string.IsNullOrEmpty(property.Detail.OtherFeatures)) {
 										<ul class="avl-features third color">
-											<li>Air Conditioning</li>
+											@foreach (var feature in property.Detail.OtherFeatures.Split(";"))
+											{
+												<li>@feature</li>
+											}
+											<!-- <li>Air Conditioning</li>
 											<li>Swimming Pool</li>
 											<li>Central Heating</li>
 											<li>Laundry Room</li>
@@ -105,8 +140,12 @@
 											<li>Pets Allow</li>
 											<li>Free WiFi</li>
 											<li>Car Parking</li>
-											<li>Spa & Massage</li>
+											<li>Spa & Massage</li>-->
 										</ul>
+										} else
+										{
+											<p>No extra Amenties</p>
+										}
 									</div>
 								</div>
 							</div>

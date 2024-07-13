@@ -14,6 +14,9 @@ using System.IO;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.Elfie.Extensions;
 using Microsoft.AspNetCore.Authorization;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
+using SixLabors.ImageSharp.Formats.Jpeg; //used only for the Jpeg encoder below
 
 namespace webapp.Controllers
 {
@@ -143,32 +146,82 @@ namespace webapp.Controllers
 
             //Console.WriteLine("Files: " + (files != null ? files.Count.ToString() : "null"));
             var uploadUrls = new List<string>();
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "property", propertyIdString.ToSHA256String());
+
+            if (!Directory.Exists(uploadsFolder))
+            {
+                Directory.CreateDirectory(uploadsFolder);
+            }
+
             foreach (var file in files)
             {
-                //Console.WriteLine("In handle file");
                 if (file.Length > 0)
                 {
-                    var uniqueFileName = Guid.NewGuid().ToString() + ".png";
-					var uploadsFolder = Path.Combine("wwwroot", "uploads", "property", propertyIdString.ToSHA256String());
-					var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                    var uniqueFileName = Guid.NewGuid().ToString() + ".jpeg";
+                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
-					// Ensure the uploads folder exists
-					if (!Directory.Exists(uploadsFolder))
+                    using (var inStream = file.OpenReadStream())
+                    using (Image image = Image.Load(inStream))
                     {
-                        Directory.CreateDirectory(uploadsFolder);
+                        // Calculate new width to maintain the aspect ratio
+                        int originalWidth = image.Width;
+                        int originalHeight = image.Height;
+
+                        // Desired fixed height
+                        int fixedHeight = 1250;
+                        int calculatedWidth = (originalWidth * fixedHeight) / originalHeight;
+                        Console.WriteLine("H: " + fixedHeight + " W :  " + calculatedWidth);
+
+                        image.Mutate(x => x.Resize(1920, 1250));
+
+                        var encoder = new JpegEncoder
+                        {
+                            Quality = 75
+                        };
+
+                        using (var fileStream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await image.SaveAsJpegAsync(fileStream, encoder);
+                        }
                     }
 
-                    using (var fileStream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await file.CopyToAsync(fileStream);
-                    }
-
-                    uploadUrls.Add(uniqueFileName); // or a URL if needed
+                    uploadUrls.Add(uniqueFileName); // Store only the file name or change to a URL if needed
                 }
-                //else {
-                //    Console.WriteLine("No file to handle");
-                //}
             }
+            //       foreach (var file in files)
+            //       {
+            //           //Console.WriteLine("In handle file");
+            //           if (file.Length > 0)
+            //           {
+            //               using (var inStream = file.OpenReadStream()) {                     
+            //                   using (Image image = Image.Load(inStream))
+            //                   {
+            //                       image.Mutate(x => x.Resize(1920, 1250, KnownResamplers.Lanczos3));
+
+            //                       image.Save(outPath);
+            //                   }
+            //               }
+            //               var uniqueFileName = Guid.NewGuid().ToString() + ".png";
+            //var uploadsFolder = Path.Combine("wwwroot", "uploads", "property", propertyIdString.ToSHA256String());
+            //var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+            //// Ensure the uploads folder exists
+            //if (!Directory.Exists(uploadsFolder))
+            //               {
+            //                   Directory.CreateDirectory(uploadsFolder);
+            //               }
+
+            //               using (var fileStream = new FileStream(filePath, FileMode.Create))
+            //               {
+            //                   await file.CopyToAsync(fileStream);
+            //               }
+
+            //               uploadUrls.Add(uniqueFileName); // or a URL if needed
+            //           }
+            //           //else {
+            //           //    Console.WriteLine("No file to handle");
+            //           //}
+            //       }
 
             model.GalleryPath = uploadUrls;
 
