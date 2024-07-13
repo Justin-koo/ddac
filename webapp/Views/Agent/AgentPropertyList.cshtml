@@ -166,7 +166,7 @@
 									<td>
 										<div class="_leads_action">
 											<a href="#"><i class="fas fa-edit"></i></a>
-											<form asp-action="DeleteProperty" asp-controller="Property" asp-route-id="@property.Id" method="post" class="delete-property-form" style="display:inline;">
+											<form asp-action="DeleteProperty" asp-controller="Agent" asp-route-id="@property.Id" method="post" class="delete-property-form" style="display:inline;">
 												@Html.AntiForgeryToken()
 												<a role="button" class="delete-property-button">
 													<i class="fas fa-trash"></i>

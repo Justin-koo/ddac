@@ -20,7 +20,7 @@
 
             <!-- Submit Form -->
             <div class="col-lg-12 col-md-12">
-                <form id="submitPropertyForm" asp-controller="Property" asp-action="SubmitProperty" class="submit-page" method="post" enctype="multipart/form-data">
+                <form id="submitPropertyForm" asp-controller="Agent" asp-action="SubmitProperty" class="submit-page" method="post" enctype="multipart/form-data">
 
                     <!-- Basic Information -->
                     <div class="frm_submit_block">
@@ -306,7 +306,7 @@
         Dropzone.autoDiscover = false;
 
         var myDropzone = new Dropzone("#galleryDropzone", {
-            url: "/Property/SubmitProperty", // Ensure this is the correct endpoint
+            url: "/Agent/SubmitProperty", // Ensure this is the correct endpoint
             method: "post", // Explicitly set the method
             uploadMultiple: true, // If you want to allow uploading multiple files
             parallelUploads: 10,

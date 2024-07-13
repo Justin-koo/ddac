@@ -63,9 +63,9 @@
 
         public List<string> Features { get; set; } = new List<string>();
 
-		public string GalleryFolder { get; set; }
+		public string? GalleryFolder { get; set; }
 
-		public string SubmissionStatus { get; set; }
+		public string? SubmissionStatus { get; set; }
 
 		public int Id { get; set; }
 	}
