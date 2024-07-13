@@ -113,8 +113,20 @@
 										<div class="_leads_view_title">
 											<span>
 												@{
-													var daysAgo = (DateTime.Now - property.ListingDate).TotalDays;
-													if (daysAgo < 1)
+													var timeDifference = DateTime.Now - property.ListingDate;
+													var daysAgo = timeDifference.TotalDays;
+													var hoursAgo = timeDifference.TotalHours;
+													var minutesAgo = timeDifference.TotalMinutes;
+
+													if (minutesAgo < 1)
+													{
+														<text>Just now</text>
+													}
+													else if (hoursAgo < 1)
+													{
+														<text>Less than an hour ago</text>
+													}
+													else if (daysAgo < 1)
 													{
 														<text>Less than a day ago</text>
 													}
@@ -127,8 +139,21 @@
 										</div>
 									</td>
 									<td>
-										<div class="_leads_status"><span class="active">Active</span></div>
-										<div class="_leads_view_title"><span>Till 12 Oct</span></div>
+										<div class="_leads_status">
+											@if (property.SubmissionStatus == "Pending")
+											{
+												<span class="pending">@property.SubmissionStatus</span>
+											}
+											else if (property.SubmissionStatus == "Approved")
+											{
+												<span class="active">@property.SubmissionStatus</span>
+											}
+											else if (property.SubmissionStatus == "Rejected")
+											{
+												<span class="expired">@property.SubmissionStatus</span>
+											}
+										</div>
+										@* <div class="_leads_view_title"><span>Till 12 Oct</span></div> *@
 									</td>
 									<td>
 										<div class="_leads_action">
