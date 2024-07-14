@@ -27,12 +27,6 @@
 		{
 			<div class="featured_slick_padd"><a href="~/uploads/property/@(property_folder.ToLower())/@(galleryPath)" class="mfp-gallery"><img src="~/uploads/property/@(property_folder.ToLower())/@(galleryPath)" class="img-fluid mx-auto" alt=""></a></div>
 		}
-@*  		<div class="featured_slick_padd"><a href="https://via.placeholder.com/1920x1250" class="mfp-gallery"><img src="https://via.placeholder.com/1920x1250" class="img-fluid mx-auto" alt=""></a></div>
-		<div class="featured_slick_padd"><a href="https://via.placeholder.com/1920x1250" class="mfp-gallery"><img src="https://via.placeholder.com/1920x1250" class="img-fluid mx-auto" alt=""></a></div>
-		<div class="featured_slick_padd"><a href="https://via.placeholder.com/1920x1250" class="mfp-gallery"><img src="https://via.placeholder.com/1920x1250" class="img-fluid mx-auto" alt=""></a></div>
-		<div class="featured_slick_padd"><a href="https://via.placeholder.com/1920x1250" class="mfp-gallery"><img src="https://via.placeholder.com/1920x1250" class="img-fluid mx-auto" alt=""></a></div>
-		<div class="featured_slick_padd"><a href="https://via.placeholder.com/1920x1250" class="mfp-gallery"><img src="https://via.placeholder.com/1920x1250" class="img-fluid mx-auto" alt=""></a></div>
-		<div class="featured_slick_padd"><a href="https://via.placeholder.com/1920x1250" class="mfp-gallery"><img src="https://via.placeholder.com/1920x1250" class="img-fluid mx-auto" alt=""></a></div> *@
 	</div>
 </div>
 <!-- ============================ Hero Banner End ================================== -->
@@ -74,7 +68,7 @@
 										</div>
 									</div>
 									<div class="vesh-detail-headup-last">
-										<h3 class="prt-price-fix theme-cl">RM @property.Price<span>One Time</span></h3>
+										<h3 class="prt-price-fix theme-cl">@property.Price.ToString("C")<span>One Time</span></h3>
 									</div>
 								</div>
 							</div>
@@ -116,7 +110,7 @@
 							</div>
 							
 							<!-- Amenties Detail -->
-							<div class="vesh-detail-bloc style_2">
+							@* <div class="vesh-detail-bloc style_2">
 								<div class="vesh-detail-bloc_header">
 									<a data-bs-toggle="collapse" data-parent="#amenitiesinfo" data-bs-target="#amenitiesinfo" aria-controls="amenitiesinfo" href="javascript:void(0);" aria-expanded="false"><h4 class="property_block_title">Amenties</h4></a>
 								</div>
@@ -128,18 +122,6 @@
 											{
 												<li>@feature</li>
 											}
-											<!-- <li>Air Conditioning</li>
-											<li>Swimming Pool</li>
-											<li>Central Heating</li>
-											<li>Laundry Room</li>
-											<li>Gym</li>
-											<li>Alarm</li>
-											<li>Window Covering</li>
-											<li>Internet</li>
-											<li>Pets Allow</li>
-											<li>Free WiFi</li>
-											<li>Car Parking</li>
-											<li>Spa & Massage</li>-->
 										</ul>
 										} else
 										{
@@ -147,7 +129,7 @@
 										}
 									</div>
 								</div>
-							</div>
+							</div> *@
 							
 							
 							<!-- All features Detail -->

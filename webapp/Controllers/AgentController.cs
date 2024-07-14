@@ -117,7 +117,7 @@ namespace webapp.Controllers
 		}
 
 
-		[Authorize(Roles = "Agent")]
+        //[Authorize(Roles = "Agent")]
         [HttpGet]
         public IActionResult SubmitProperty()
         {
@@ -125,7 +125,7 @@ namespace webapp.Controllers
             return View(new PropertyViewModel());
         }
 
-        [Authorize(Roles = "Agent")]
+        //[Authorize(Roles = "Agent")]
         [HttpPost]
         public async Task<IActionResult> SubmitProperty(PropertyViewModel model, List<IFormFile> files)
         {

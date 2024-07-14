@@ -191,7 +191,82 @@
                                     <span class="text-danger" asp-validation-for="Rooms"></span>
                                 </div>
 
-                                <div class="form-group col-md-12">
+                                <!-- All features Detail -->
+                                <div class="form-group col-md-12 mb-4">
+                                    <h3>Other Features (optional)</h3>
+                                    <div id="featuresinfo" class="panel-collapse mx-2" aria-labelledby="featuresinfo">
+                                        <div class="vesh-detail-bloc-body">
+                                            <div class="lvs-detail mb-4">
+                                                <div class="row mt-2">
+                                                    <div class="col-xl-12 col-lg-12 col-md-12"><h6>Interior Details</h6></div>
+                                                </div>
+                                                <div class="row gy-3">
+                                                    <div class="col-xl-4 col-lg-4 col-md-4 col-12"><div class="lvs-caption">
+                                                        <input name="Features" type="checkbox" value="Equipped Kitchen" class="form-check-input" id="a-1">
+                                                        <label class="form-check-label" for="a-1">Equipped Kitchen</label>
+                                                    </div></div>
+                                                    <div class="col-xl-4 col-lg-4 col-md-4 col-12"><div class="lvs-caption">
+                                                        <input name="Features" type="checkbox" value="Gym" class="form-check-input" id="a-2">
+                                                        <label class="form-check-label" for="a-2">Gym</label>
+                                                    </div></div>
+                                                    <div class="col-xl-4 col-lg-4 col-md-4 col-12"><div class="lvs-caption">
+                                                        <input name="Features" type="checkbox" value="Laundry" class="form-check-input" id="a-3">
+                                                        <label class="form-check-label" for="a-3">Laundry</label>
+                                                    </div></div>
+                                                    <div class="col-xl-4 col-lg-4 col-md-4 col-12"><div class="lvs-caption">
+                                                        <input name="Features" type="checkbox" value="Media Room" class="form-check-input" id="a-4">
+                                                        <label class="form-check-label" for="a-4">Media Room</label>
+                                                    </div></div>
+                                                    <div class="col-xl-4 col-lg-4 col-md-4 col-12"><div class="lvs-caption">
+                                                        <input name="Features" type="checkbox" value="TV Set" class="form-check-input" id="a-5">
+                                                        <label class="form-check-label" for="a-5">TV Set</label>
+                                                    </div></div>
+                                                </div>
+                                            </div>
+                                            <div class="lvs-detail mb-4">
+                                                <div class="row">
+                                                    <div class="col-xl-12 col-lg-12 col-md-12"><h6>Outdoor Details</h6></div>
+                                                </div>
+                                                <div class="row gy-3">
+                                                    <div class="col-xl-4 col-lg-4 col-md-4 col-12"><div class="lvs-caption"><i class="fa-brands fa-canadian-maple-leaf"></i>Back yard</div></div>
+                                                    <div class="col-xl-4 col-lg-4 col-md-4 col-12"><div class="lvs-caption"><i class="fa-solid fa-basketball"></i>Basketball court</div></div>
+                                                    <div class="col-xl-4 col-lg-4 col-md-4 col-12"><div class="lvs-caption"><i class="fa-solid fa-seedling"></i>Front yard</div></div>
+                                                    <div class="col-xl-4 col-lg-4 col-md-4 col-12"><div class="lvs-caption"><i class="fa-solid fa-square-parking"></i>Garage Attached</div></div>
+                                                    <div class="col-xl-4 col-lg-4 col-md-4 col-12"><div class="lvs-caption"><i class="fa-solid fa-shower"></i>Hot Bath</div></div>
+                                                    <div class="col-xl-4 col-lg-4 col-md-4 col-12"><div class="lvs-caption"><i class="fa-solid fa-water-ladder"></i>Pool</div></div>
+                                                </div>
+                                            </div>
+                                            <div class="lvs-detail mb-4">
+                                                <div class="row">
+                                                    <div class="col-xl-12 col-lg-12 col-md-12"><h6>Utilities</h6></div>
+                                                </div>
+                                                <div class="row gy-3">
+                                                    <div class="col-xl-4 col-lg-4 col-md-4 col-12"><div class="lvs-caption"><i class="fa-solid fa-fan"></i>Central Air</div></div>
+                                                    <div class="col-xl-4 col-lg-4 col-md-4 col-12"><div class="lvs-caption"><i class="fa-solid fa-plug"></i>Electricity</div></div>
+                                                    <div class="col-xl-4 col-lg-4 col-md-4 col-12"><div class="lvs-caption"><i class="fa-solid fa-fire"></i>Heating</div></div>
+                                                    <div class="col-xl-4 col-lg-4 col-md-4 col-12"><div class="lvs-caption"><i class="fa-solid fa-fire-flame-simple"></i>Natural Gas</div></div>
+                                                    <div class="col-xl-4 col-lg-4 col-md-4 col-12"><div class="lvs-caption"><i class="fa-solid fa-snowflake"></i>Ventilation</div></div>
+                                                    <div class="col-xl-4 col-lg-4 col-md-4 col-12"><div class="lvs-caption"><i class="fa-solid fa-droplet"></i>Water</div></div>
+                                                </div>
+                                            </div>
+                                            <div class="lvs-detail">
+                                                <div class="row">
+                                                    <div class="col-xl-12 col-lg-12 col-md-12"><h6>Other Features</h6></div>
+                                                </div>
+                                                <div class="row gy-3">
+                                                    <div class="col-xl-4 col-lg-4 col-md-4 col-12"><div class="lvs-caption"><i class="fa-solid fa-wheelchair"></i>Chair Accessible</div></div>
+                                                    <div class="col-xl-4 col-lg-4 col-md-4 col-12"><div class="lvs-caption"><i class="fa-solid fa-elevator"></i>Elevator</div></div>
+                                                    <div class="col-xl-4 col-lg-4 col-md-4 col-12"><div class="lvs-caption"><i class="fa-solid fa-fire-extinguisher"></i>Fireplace</div></div>
+                                                    <div class="col-xl-4 col-lg-4 col-md-4 col-12"><div class="lvs-caption"><i class="fa-solid fa-smoking"></i>Smoke detectors</div></div>
+                                                    <div class="col-xl-4 col-lg-4 col-md-4 col-12"><div class="lvs-caption"><i class="fa-solid fa-bacon"></i>Washer and dryer</div></div>
+                                                    <div class="col-xl-4 col-lg-4 col-md-4 col-12"><div class="lvs-caption"><i class="fa-solid fa-wifi"></i>WiFi</div></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @* <div class="form-group col-md-12">
                                     <strong>Other Features (optional)</strong>
                                     <div class="o-features mt-2">
                                         <ul class="no-ul-list row">
@@ -245,7 +320,7 @@
                                             </li>
                                         </ul>
                                     </div>
-                                </div>
+                                </div> *@
 
                             </div>
                         </div>
