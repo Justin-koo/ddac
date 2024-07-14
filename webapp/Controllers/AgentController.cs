@@ -24,10 +24,56 @@ namespace webapp.Controllers
 
 		[Route("agents")]
 		[HttpGet]
-		public IActionResult AgentList()
+		public async Task<IActionResult> AgentList(AgentViewModel filters)
 		{
+			var query = _userManager.Users.AsQueryable();
+
+			if (!string.IsNullOrEmpty(filters.Location))
+			{
+				query = query.Where(u => u.City.Contains(filters.Location) || u.State.Contains(filters.Location));
+			}
+
+			if (!string.IsNullOrEmpty(filters.Name))
+			{
+				query = query.Where(u => u.FullName.Contains(filters.Name));
+			}
+
+			var agents = await query
+				.Select(u => new AgentViewModel
+				{
+					Id = u.Id,
+					Name = u.FullName, // Use FullName if available in your user model
+					Email = u.Email,
+					PhoneNumber = u.PhoneNumber,
+					About = u.About,
+					City = u.City,
+					State = u.State,
+					FacebookLink = u.FacebookLink,
+					XLink = u.XLink,
+					LinkedInLink = u.LinkedInLink,
+					PropertyCount = _context.Properties.Count(p => p.AgentId == u.Id),
+					Location = filters.Location
+				})
+				.ToListAsync();
+
 			ViewData["Title"] = "Find an Agent";
-			return View();
+			return View(agents);
+		}
+
+		[HttpGet]
+		public JsonResult GetLocations(string term)
+		{
+			var locations = _userManager.Users
+			.Where(u => u.City.Contains(term) || u.State.Contains(term))
+			.Select(u => new
+			{
+				label = u.City + ", " + u.State,
+				value = u.City
+			})
+			.Distinct()
+			.ToList();
+
+			return Json(locations);
 		}
 
 		[Route("agents/details")]
