@@ -6,7 +6,7 @@ namespace webapp.Models
 {
     public class HomepageViewModel
     {
-        public List<Property> Property { get; set; }
+        public List<PropertyViewModel> HomepagePropertyViewModel { get; set; }
         // public List<Property> SimilarProperties { get; set; }
     }
 }

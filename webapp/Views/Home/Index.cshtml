@@ -1,4 +1,7 @@
 ﻿@model HomepageViewModel
+@using System;
+@using System.Security.Cryptography;
+@using System.Text;
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -159,58 +162,74 @@
 		</div>
 
 		<div class="row justify-content-center gx-3 gy-4">
-			@foreach (var property in Model.Property) 
-			{	
-				<!-- Single Property -->
-				<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
-					<div class="veshm-list-wraps">
-						<div class="veshm-type"><span>For rent</span></div>
+			@foreach (var property in Model.HomepagePropertyViewModel) 
+			{
+				@if (property.SubmissionStatus == "Approved")
+					{<!-- Single Property -->
+					<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+						<div class="veshm-list-wraps">
+							<div class="veshm-type"><span>For @property.Status</span></div>
 
-						<div class="veshm-list-thumb">
-							<button type="button" class="compare-btn"><i class="fa-solid fa-repeat"></i>Compare</button>
-							<div class="veshm-list-img-slide">
-								<div class="veshm-list-click">
-									<div>
-										<a asp-controller="Agent" asp-action="PropertyDetails" asp-route-id="@property.Id">
-											<img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt="">
-										</a>
+							<div class="veshm-list-thumb">
+								<button type="button" class="compare-btn"><i class="fa-solid fa-repeat"></i>Compare</button>
+								<div class="veshm-list-img-slide">
+									<div class="veshm-list-click">
+										@if (property.GalleryPath.All(string.IsNullOrWhiteSpace))
+										{
+											<div>
+												<a asp-controller="Agent" asp-action="PropertyDetails" asp-route-id="@property.Id">
+													<img src="uploads/property/default/default_property.jpeg" class="img-fluid mx-auto" alt="">
+												</a>
+											</div>
+										}
+										@foreach (var img in property.GalleryPath) {
+
+											<div>
+												<a asp-controller="Agent" asp-action="PropertyDetails" asp-route-id="@property.Id">
+													<img src="/uploads/property/@(property.GalleryFolder)/@img" class="img-fluid mx-auto" alt="">
+												</a>
+											</div>
+										}
 									</div>
-									<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
-									<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
 								</div>
 							</div>
+							<div class="veshm-list-block">
+								<div class="veshm-tags trending"><span><i class="fa-solid fa-meteor"></i>Trending</span></div>
+								<div class="veshm-list-head">
+									<div class="veshm-list-head-caption">
+										<div class="rlhc-price">
+											<h4 class="rlhc-price-name theme-cl">@property.Price.ToString("C")
+												@if(property.Status == "Rent") {<span class="monthly">/Months</span>}
+												else {
+													<span class="monthly">One Time</span>
+												}
+											</h4>
+										</div>
+										<div class="listing-short-detail-flex">
+											<h5 class="rlhc-title-name verified"><a asp-controller="Agent" asp-action="PropertyDetails" asp-route-id="@property.Id"class="prt-link-detail">@property.Title</a></h5>
+											<div class="rlhc-prt-location"><img src="~/img/pin.svg" width="16" class="me-1" alt="">@property.AddressLine</div>
+										</div>
+									</div>
+									<div class="veshm-list-head-flex">
+										<button class="btn btn-like" type="button"><i class="fa-solid fa-heart-circle-check"></i></button>
+									</div>
+								</div>
+
+								<div class="veshm-list-footer">
+									<div class="veshm-list-circls">
+										<ul>
+											<li><span class="bed-inf"><i class="fa-solid fa-bed"></i></span>@property.Bedrooms Bed</li>
+											<li><span class="bath-inf"><i class="fa-solid fa-bath"></i></span>@property.Bathrooms Ba</li>
+											<li><span class="area-inf"><i class="fa-solid fa-vector-square"></i></span>@property.Area Sft</li>
+										</ul>
+									</div>
+								</div>
+							</div>
+
 						</div>
-						<div class="veshm-list-block">
-							<div class="veshm-tags trending"><span><i class="fa-solid fa-meteor"></i>Trending</span></div>
-							<div class="veshm-list-head">
-								<div class="veshm-list-head-caption">
-									<div class="rlhc-price">
-										<h4 class="rlhc-price-name theme-cl">@property.Price<span class="monthly">/Months</span></h4>
-									</div>
-									<div class="listing-short-detail-flex">
-										<h5 class="rlhc-title-name verified"><a href="single-property-1.html" class="prt-link-detail">@property.Title</a></h5>
-										<div class="rlhc-prt-location"><img src="~/img/pin.svg" width="16" class="me-1" alt="">@property.Address.AddressLine</div>
-									</div>
-								</div>
-								<div class="veshm-list-head-flex">
-									<button class="btn btn-like" type="button"><i class="fa-solid fa-heart-circle-check"></i></button>
-								</div>
-							</div>
-
-							<div class="veshm-list-footer">
-								<div class="veshm-list-circls">
-									<ul>
-										<li><span class="bed-inf"><i class="fa-solid fa-bed"></i></span>@property.Bedrooms Bed</li>
-										<li><span class="bath-inf"><i class="fa-solid fa-bath"></i></span>@property.Bathrooms Ba</li>
-										<li><span class="area-inf"><i class="fa-solid fa-vector-square"></i></span>@property.Area Sft</li>
-									</ul>
-								</div>
-							</div>
-						</div>
-
 					</div>
-				</div>
-				<!-- End Single Property -->
+					<!-- End Single Property -->
+				}
 			}
 		</div>
 

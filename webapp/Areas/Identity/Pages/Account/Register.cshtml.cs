@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using webapp.Areas.Identity.Data;
+using webapp.Services;
 
 namespace webapp.Areas.Identity.Pages.Account
 {
@@ -30,13 +31,15 @@ namespace webapp.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<webappUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+		private readonly SendEmailService _emailService;
 
-        public RegisterModel(
+		public RegisterModel(
             UserManager<webappUser> userManager,
             IUserStore<webappUser> userStore,
             SignInManager<webappUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+			SendEmailService emailService,
+			IEmailSender emailSender)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -44,7 +47,8 @@ namespace webapp.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
-        }
+			_emailService = emailService;
+		}
 
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -134,10 +138,11 @@ namespace webapp.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+					//await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
+					//    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+					await _emailService.SendAsync(user.Email, "Confirm your email", $"Please confirm your account by <a href='{callbackUrl}'>clicking here</a>.");
 
-                    if (_userManager.Options.SignIn.RequireConfirmedAccount)
+					if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
                         return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
                     }

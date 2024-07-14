@@ -9,7 +9,7 @@ namespace webapp.Models
         public int Id { get; set; }
 
         [Required]
-        [StringLength(500)]
+        [StringLength(5000)]
         public string Description { get; set; }
 
         public string? BuildingAge { get; set; }  // 0 - 5 Years, 0 - 10 Years, etc.

@@ -14,6 +14,7 @@ using webapp.Areas.Identity.Data;
 using webapp.Data;
 using webapp.Models;
 using webapp.Areas.Identity.Pages.Account.Manage;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
 
 
 namespace webapp.Controllers
@@ -35,14 +36,38 @@ namespace webapp.Controllers
             var properties = await _context.Properties
             .Include(p => p.Address)
             .Include(p => p.Detail)
-            .ToListAsync();
+			.ToListAsync();
 
-            var viewModel = new HomepageViewModel
-            {
-                Property = properties
-            };
+			var viewModel = new HomepageViewModel
+			{
+				HomepagePropertyViewModel = properties.Select(p => new PropertyViewModel
+				{
+					Id = p.Id,
+					Title = p.Title,
+					Status = p.Status,
+					PropertyType = p.PropertyType,
+					Price = p.Price,
+					Area = p.Area,
+					Bedrooms = p.Bedrooms,
+					Bathrooms = p.Bathrooms,
+					GalleryPath = p.GalleryPath.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList(),
+					ListingDate = p.ListingDate,
+					AgentId = p.AgentId,
+					AddressLine = p.Address.AddressLine,
+					City = p.Address.City,
+					State = p.Address.State,
+					ZipCode = p.Address.ZipCode,
+					Description = p.Detail.Description,
+					BuildingAge = p.Detail.BuildingAge,
+					Garage = p.Detail.Garage,
+					Rooms = p.Detail.Rooms,
+					Features = p.Detail.OtherFeatures?.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList() ?? new List<string>(),
+					GalleryFolder = p.Id.ToString().ToSHA256String(),
+					SubmissionStatus = p.SubmissionStatus,
+				}).ToList()
+			};
 
-            ViewData["Title"] = "My Property";
+			ViewData["Title"] = "My Property";
             return View(viewModel);
         }
 
