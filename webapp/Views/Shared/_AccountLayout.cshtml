@@ -6,6 +6,9 @@
 }
 
 @inject UserManager<webappUser> UserManager
+@{
+    var user = await UserManager.GetUserAsync(User);
+}
 
 <div class="page-title" style="background:#017efa url('@Url.Content("~/img/page-title.png")') no-repeat;">
     <div class="container">
@@ -26,23 +29,24 @@
             <div class="col-xl-3 col-lg-3 col-md-12">
                 <div class="property_dashboard_navbar">
                     <div class="dash_user_avater">
-                        <img src="https://via.placeholder.com/650x650" class="img-fluid avater" alt="">
-                        <h4>Adam Harshvardhan</h4>
-                        <span class="font--medium small"><i class="fa-solid fa-location-dot me-2"></i>Liverpool, USA</span>
+                        <img src="~/uploads/agent/@user.ProfilePicture" class="img-fluid avater" alt="">
+                
+                        <h4>@user.FullName</h4>
+                        <span class="font--medium small"><i class="fa-solid fa-location-dot me-2"></i>@user.City, @user.Country</span>
                     </div>
 
                     <div class="adgt-wriop-social">
                         <ul>
-                            <li><a href="JavaScript:Void(0);" class="bg--facebook"><i class="fa-brands fa-facebook-f"></i></a></li>
-                            <li><a href="JavaScript:Void(0);" class="bg--twitter"><i class="fa-brands fa-twitter"></i></a></li>
-                            <li><a href="JavaScript:Void(0);" class="bg--googleplus"><i class="fa-brands fa-google-plus-g"></i></a></li>
-                            <li><a href="JavaScript:Void(0);" class="bg--linkedin"><i class="fa-brands fa-linkedin-in"></i></a></li>
+                            <li><a href="@user.FacebookLink" class="bg--facebook" target="_blank"><i class="fa-brands fa-facebook-f"></i></a></li>
+                            <li><a href="@user.XLink" class="bg--twitter" target="_blank"><i class="fa-brands fa-twitter"></i></a></li>
+                            <li><a href="@user.GoogleLink" class="bg--googleplus" target="_blank"><i class="fa-brands fa-google-plus-g"></i></a></li>
+                            <li><a href="@user.LinkedInLink" class="bg--linkedin" target="_blank"><i class="fa-brands fa-linkedin-in"></i></a></li>
                         </ul>
                     </div>
 
                     <div class="adgt-wriop-footer py-3 px-3">
                         <div class="single-button d-flex align-items-center justify-content-between">
-                            <button type="button" class="btn btn-md font--bold btn-light-primary me-2 full-width"><i class="fa-solid fa-phone me-2"></i>856 742 672</button>
+                            <button type="button" class="btn btn-md font--bold btn-light-primary me-2 full-width"><i class="fa-solid fa-phone me-2"></i>@user.PhoneNumber</button>
                             <button type="button" data-bs-toggle="modal" data-bs-target="#message" class="btn btn-md font--bold btn-light-success full-width"><i class="fa-solid fa-paper-plane me-2"></i>Send Message</button>
                         </div>
                     </div>

@@ -11,7 +11,7 @@
             <h3>@ViewData["Title"]</h3>
             <partial name="_StatusMessage" for="StatusMessage" />
             <div class="frm_submit_wrap">
-                <form id="profile-form" method="post"  class="row">
+                <form id="profile-form" method="post" enctype="multipart/form-data" class="row">
                     <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
                     <div class="form-group col-md-6">
                         <label asp-for="Input.FullName" class="form-label"></label>
@@ -20,11 +20,16 @@
                     </div>
                     <div class="form-group col-md-6">
                         <label asp-for="Username" class="form-label"></label>
-                        <input asp-for="Username" class="form-control" placeholder="Please choose your Email." disabled />
+                        <input asp-for="Username" class="form-control" placeholder="Please enter your username."  />
+                        <span asp-validation-for="Username" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label asp-for="Input.Email" class="form-label"></label>
+                        <input asp-for="Input.Email" class="form-control" placeholder="Please enter your username." disabled/>
                     </div>
                     <div class="form-group col-md-6">
                         <label asp-for="Input.PhoneNumber" class="form-label"></label>
-                        <input asp-for="Input.PhoneNumber" class="form-control" placeholder="Please enter your phone number."/>
+                        <input asp-for="Input.PhoneNumber" class="form-control" placeholder="Please enter your phone number." />
                         <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
                     </div>
                     <div class="form-group col-md-6">
@@ -54,9 +59,27 @@
                     </div>
                     <div class="form-group col-md-12">
                         <label asp-for="Input.About" class="form-label"></label>
-@*                             <textarea asp-for="Input.About" class="form-control"></textarea>
-                        *@                            <textarea asp-for="Input.About" class="form-control"></textarea>
+                        <textarea asp-for="Input.About" class="form-control"></textarea>
                         <span asp-validation-for="Input.About" class="text-danger"></span>
+                    </div>
+                    <!-- Agent Picture -->
+                    <div class="frm_submit_block">
+                        <h3>Picture</h3>
+                        <div class="frm_submit_wrap">
+                            <div class="row">
+                                <div class="form-group col-md-12">
+                                    <label>Upload Picture</label>
+                                    <div class="previews"></div>
+                                    <div class="dropzone dz-clickable primary-dropzone" id="agentpicDropzone">
+                                        <div class="dz-default dz-message">
+                                            <i class="fa-solid fa-images"></i>
+                                            <span>Drag & Drop To Upload Images</span>
+                                        </div>
+                                        <input type="hidden" id="uploadedImageUrl" name="Input.ProfilePicture" value="@Model.Input.ProfilePicture" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <h3>Social Media</h3>
                     <div class="form-group col-md-6">
@@ -88,4 +111,104 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.js"></script>
+
+    <script>
+        Dropzone.autoDiscover = false;
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var existingImageUrl = document.getElementById('uploadedImageUrl').value;
+            var AgentDropzone = new Dropzone("#agentpicDropzone", {
+                url: "/agent/uploadAgentPic",
+                method: "post",
+                uploadMultiple: false,
+                maxFiles: 1,
+                addRemoveLinks: true,
+                acceptedFiles: 'image/*',
+                paramName: "files",
+                init: function () {
+                    if (existingImageUrl) {
+                        var mockFile = { name: "Profile Picture", size: 12345, type: 'image/jpeg', url: existingImageUrl };
+                        this.emit("addedfile", mockFile);
+                        this.emit("thumbnail", mockFile, '/uploads/agent/' + existingImageUrl);
+                        this.emit("complete", mockFile);
+                        this.files.push(mockFile);
+                    }
+                }
+            });
+
+            AgentDropzone.on("success", function (file, response) {
+                if (response.success) {
+                    document.getElementById('uploadedImageUrl').value = response.fileUrl;
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'Your profile has been updated successfully.',
+                        icon: 'success',
+                        confirmButtonText: 'OK',
+                        confirmButtonColor: '#017efa',
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            location.reload();
+                        }
+                    });
+                } else {
+                    showAlert('Error!', response.errors.join('\n'), 'error');
+                }
+            });
+
+            AgentDropzone.on("error", function (file, response) {
+                showAlert('Error!', 'An unexpected error occurred during the file upload. Please try again.', 'error');
+            });
+
+            var form = document.getElementById('profile-form');
+
+            // form.addEventListener("submit", function (e) {
+            //     e.preventDefault();
+            //     if (AgentDropzone.getQueuedFiles().length > 0) {
+            //         AgentDropzone.processQueue();
+            //     } else {
+            //         submitForm();
+            //     }
+            // });
+
+            // function submitForm() {
+            //     var formData = new FormData(form);
+            //     fetch(form.action, {
+            //         method: 'POST',
+            //         body: formData
+            //     })
+            //         .then(response => response.json())
+            //         .then(data => {
+            //             if (data.success) {
+            //                 Swal.fire({
+            //                     title: 'Success!',
+            //                     text: 'Your profile has been updated successfully.',
+            //                     icon: 'success',
+            //                     confirmButtonText: 'OK',
+            //                     confirmButtonColor: '#017efa',
+            //                 }).then((result) => {
+            //                     if (result.isConfirmed) {
+            //                         location.reload();
+            //                     }
+            //                 });
+            //             } else {
+            //                 showAlert('Error!', data.errors.join('\n'), 'error');
+            //             }
+            //         })
+            //         .catch(error => {
+            //             showAlert('Error!', 'An unexpected error occurred. Please try again.', 'error');
+            //         });
+            // }
+
+            function showAlert(title, text, icon) {
+                Swal.fire({
+                    title: title,
+                    text: text,
+                    icon: icon,
+                    confirmButtonColor: '#017efa',
+                    confirmButtonText: 'OK'
+                });
+            }
+        });
+    </script>
 }

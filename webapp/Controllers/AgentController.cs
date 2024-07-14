@@ -380,5 +380,51 @@ namespace webapp.Controllers
 
             return RedirectToAction("AgentPropertyList");
         }
+
+
+        [Authorize]
+        [HttpPost]
+        [Route("agent/uploadAgentPic")]
+        public async Task<IActionResult> UploadAgentPic(List<IFormFile> files)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var uploadUrls = new List<string>();
+            foreach (var file in files)
+            {
+                if (file.Length > 0)
+                {
+                    var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                    var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "agent");
+                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    // Ensure the uploads folder exists
+                    if (!Directory.Exists(uploadsFolder))
+                    {
+                        Directory.CreateDirectory(uploadsFolder);
+                    }
+
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await file.CopyToAsync(fileStream);
+                    }
+
+                    uploadUrls.Add(uniqueFileName);
+                }
+            }
+
+            if (uploadUrls.Count > 0)
+            {
+                var uploadedUrl = uploadUrls.First(); // Assuming one file
+                user.ProfilePicture = uploadedUrl;
+                await _userManager.UpdateAsync(user);
+
+                return Json(new { success = true, fileUrl = uploadedUrl });
+            }
+            else
+            {
+                return Json(new { success = false, errors = new[] { "No files uploaded." } });
+            }
+        }
+
     }
 }

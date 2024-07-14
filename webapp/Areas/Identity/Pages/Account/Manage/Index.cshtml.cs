@@ -18,13 +18,18 @@ namespace webapp.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<webappUser> _userManager;
         private readonly SignInManager<webappUser> _signInManager;
+        private readonly IWebHostEnvironment _environment;
+
 
         public IndexModel(
             UserManager<webappUser> userManager,
-            SignInManager<webappUser> signInManager)
+            SignInManager<webappUser> signInManager,
+            IWebHostEnvironment environment)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _environment = environment;
+
         }
 
         /// <summary>
@@ -60,6 +65,9 @@ namespace webapp.Areas.Identity.Pages.Account.Manage
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
+
+            public string Email { get; set; }
+
 
             [Required(ErrorMessage = "You must enter the full name before submitting your form!")]
             [StringLength(256, ErrorMessage = "You must enter the value between 6 - 256 chars", MinimumLength = 6)]
@@ -118,6 +126,8 @@ namespace webapp.Areas.Identity.Pages.Account.Manage
             [Display(Name = "Google Plus")] //label
             public string GoogleLink { get; set; }
 
+            public string ProfilePicture { get; set; }
+
         }
 
         private async Task LoadAsync(webappUser user)
@@ -130,6 +140,7 @@ namespace webapp.Areas.Identity.Pages.Account.Manage
             Input = new InputModel
             {
                 PhoneNumber = phoneNumber,
+                Email = user.Email,
                 FullName = user.FullName,
                 Country = user.Country,
                 Address = user.Address,
@@ -140,9 +151,9 @@ namespace webapp.Areas.Identity.Pages.Account.Manage
                 FacebookLink = user.FacebookLink,
                 XLink = user.XLink,
                 LinkedInLink = user.LinkedInLink,
-                GoogleLink = user.GoogleLink
+                GoogleLink = user.GoogleLink,
+                ProfilePicture = user.ProfilePicture,
             };
-            Console.WriteLine("123", user.GoogleLink);
         }
 
         public async Task<IActionResult> OnGetAsync()
@@ -180,6 +191,11 @@ namespace webapp.Areas.Identity.Pages.Account.Manage
                     StatusMessage = "Unexpected error when trying to set phone number.";
                     return RedirectToPage();
                 }
+            }
+
+            if (Input.Email != user.Email)
+            {
+                user.Email = Input.Email;
             }
 
             if (Input.FullName != user.FullName)
