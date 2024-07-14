@@ -107,7 +107,7 @@ namespace webapp.Controllers
 		}
 
 
-		[Authorize]
+		[Authorize(Roles = "Agent")]
         [HttpGet]
         public IActionResult SubmitProperty()
         {
@@ -115,7 +115,7 @@ namespace webapp.Controllers
             return View(new PropertyViewModel());
         }
 
-        [Authorize]
+        [Authorize(Roles = "Agent")]
         [HttpPost]
         public async Task<IActionResult> SubmitProperty(PropertyViewModel model, List<IFormFile> files)
         {
@@ -245,7 +245,7 @@ namespace webapp.Controllers
             //return View(model);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Agent")]
         [HttpGet]
         public async Task<IActionResult> AgentPropertyList()
         {
@@ -284,7 +284,7 @@ namespace webapp.Controllers
             return View(propertyViewModels);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Agent")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteProperty(int id)
