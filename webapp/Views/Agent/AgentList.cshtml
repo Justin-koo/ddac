@@ -2,6 +2,7 @@
 @{
 	var agentCount = Model.Count();
 	var agentLabel = agentCount <= 1 ? "Agent Found" : "Agents Found";
+	var filters = ViewBag.Filters as webapp.Models.AgentViewModel;
 }
 
 <div class="page-title" style="background:#017efa url('@Url.Content("~/img/page-title.png")') no-repeat;">
@@ -31,7 +32,7 @@
 						<form method="get" asp-action="AgentList" class="sidebar-widgets p-4">
 
 							<div class="form-group">
-								<input type="text" placeholder="Agent Name" id="name" name="Name" class="form-control" value="@ViewBag.Name" />
+								<input type="text" placeholder="Agent Name" id="name" name="Name" class="form-control" value="@filters?.Name" />
 							</div>
 
 							<div class="form-group">
@@ -204,6 +205,17 @@
 				}
 			});
 		});
+
+		@if (!string.IsNullOrEmpty(filters?.Location))
+		{
+			<text>
+				var selectedLocation = '@filters.Location';
+				if (selectedLocation) {
+					var newOption = new Option(selectedLocation, selectedLocation, true, true);
+					$('#location').append(newOption).trigger('change');
+				}
+			</text>
+		}
 
 	</script>
 }

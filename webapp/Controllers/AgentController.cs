@@ -25,61 +25,68 @@ namespace webapp.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
 
-		[Route("agents")]
-		[HttpGet]
-		public async Task<IActionResult> AgentList(AgentViewModel filters)
-		{
-			var query = _userManager.Users.AsQueryable();
+        [Route("agents")]
+        [HttpGet]
+        public async Task<IActionResult> AgentList(AgentViewModel filters)
+        {
+            var usersInRole = await _userManager.GetUsersInRoleAsync("Agent");
+            var userIds = usersInRole.Select(u => u.Id).ToList();
 
-			if (!string.IsNullOrEmpty(filters.Location))
-			{
-				query = query.Where(u => u.City.Contains(filters.Location) || u.State.Contains(filters.Location));
-			}
+            var query = _userManager.Users.Where(u => userIds.Contains(u.Id)).AsQueryable();
 
-			if (!string.IsNullOrEmpty(filters.Name))
-			{
-				query = query.Where(u => u.FullName.Contains(filters.Name));
-			}
+            if (!string.IsNullOrEmpty(filters.Location))
+            {
+                query = query.Where(u => u.City.Contains(filters.Location) || u.State.Contains(filters.Location));
+            }
 
-			var agents = await query
-				.Select(u => new AgentViewModel
-				{
-					Id = u.Id,
-					Name = u.FullName, // Use FullName if available in your user model
-					Email = u.Email,
-					PhoneNumber = u.PhoneNumber,
-					About = u.About,
-					City = u.City,
-					State = u.State,
-					FacebookLink = u.FacebookLink,
-					XLink = u.XLink,
-					LinkedInLink = u.LinkedInLink,
-					PropertyCount = _context.Properties.Count(p => p.AgentId == u.Id),
-					Location = filters.Location
-				})
-				.ToListAsync();
+            if (!string.IsNullOrEmpty(filters.Name))
+            {
+                query = query.Where(u => u.FullName.Contains(filters.Name));
+            }
 
-			ViewData["Title"] = "Find an Agent";
-			return View(agents);
-		}
+            var agents = await query
+                .Select(u => new AgentViewModel
+                {
+                    Id = u.Id,
+                    Name = u.FullName,
+                    Email = u.Email,
+                    PhoneNumber = u.PhoneNumber,
+                    About = u.About,
+                    City = u.City,
+                    State = u.State,
+                    FacebookLink = u.FacebookLink,
+                    XLink = u.XLink,
+                    LinkedInLink = u.LinkedInLink,
+                    PropertyCount = _context.Properties.Count(p => p.AgentId == u.Id),
+                    Location = filters.Location
+                })
+                .ToListAsync();
 
-		[HttpGet]
-		public JsonResult GetLocations(string term)
-		{
-			var locations = _userManager.Users
-			.Where(u => u.City.Contains(term) || u.State.Contains(term))
-			.Select(u => new
-			{
-				label = u.City + ", " + u.State,
-				value = u.City
-			})
-			.Distinct()
-			.ToList();
+            ViewData["Title"] = "Find an Agent";
+            ViewBag.Filters = filters;
+            return View(agents);
+        }
 
-			return Json(locations);
-		}
+        [HttpGet]
+        public async Task<JsonResult> GetLocations(string term)
+        {
+            var usersInRole = await _userManager.GetUsersInRoleAsync("Agent");
+            var userIds = usersInRole.Select(u => u.Id).ToList();
 
-		[Route("agents/details")]
+            var locations = _userManager.Users
+                .Where(u => userIds.Contains(u.Id) && (u.City.Contains(term) || u.State.Contains(term)))
+                .Select(u => new
+                {
+                    label = u.City + ", " + u.State,
+                    value = u.City
+                })
+                .Distinct()
+                .ToList();
+
+            return Json(locations);
+        }
+
+        [Route("agents/details")]
 		[HttpGet]
 		public IActionResult AgentDetails()
 		{
@@ -110,7 +117,7 @@ namespace webapp.Controllers
 		}
 
 
-		[Authorize]
+		[Authorize(Roles = "Agent")]
         [HttpGet]
         public IActionResult SubmitProperty()
         {
@@ -118,7 +125,7 @@ namespace webapp.Controllers
             return View(new PropertyViewModel());
         }
 
-        [Authorize]
+        [Authorize(Roles = "Agent")]
         [HttpPost]
         public async Task<IActionResult> SubmitProperty(PropertyViewModel model, List<IFormFile> files)
         {
@@ -254,7 +261,7 @@ namespace webapp.Controllers
             //return View(model);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Agent")]
         [HttpGet]
         public async Task<IActionResult> AgentPropertyList()
         {
@@ -293,7 +300,7 @@ namespace webapp.Controllers
             return View(propertyViewModels);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Agent")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteProperty(int id)
