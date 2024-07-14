@@ -18,14 +18,34 @@
 
 	var property_folder = ToSHA256String(property.Id.ToString());
 	Console.WriteLine("Directory: " + property_folder.ToLower());
+	foreach (var feature in Model.SelectedFeatures)
+	{
+		Console.WriteLine("Selected Feature: " + feature);
+	}
+	var galleryPaths = Model.Property.GalleryPath?.Where(path => !string.IsNullOrWhiteSpace(path)).ToList() ?? new List<string>();
+
+
 }
 
 <!-- ============================ Hero Banner  Start================================== -->
 <div class="featured_slick_gallery gray m-0">
 	<div class="featured_slick_gallery-slide">
-		@foreach (var galleryPath in property.GalleryPath.Split(";"))
+		@if (Model.Property.GalleryPath.All(string.IsNullOrWhiteSpace))
 		{
-			<div class="featured_slick_padd"><a href="~/uploads/property/@(property_folder.ToLower())/@(galleryPath)" class="mfp-gallery"><img src="~/uploads/property/@(property_folder.ToLower())/@(galleryPath)" class="img-fluid mx-auto" alt=""></a></div>
+			<div class="featured_slick_padd">
+				<a href="~/uploads/property/default/default_property.jpeg" class="mfp-gallery">
+					<img src="~/uploads/property/default/default_property.jpeg" class="img-fluid mx-auto" alt="">
+				</a>
+			</div>
+		}
+		else
+		{
+			Console.WriteLine("Got photo");
+			Console.WriteLine(Model.Property.GalleryPath.First());
+			@foreach (var galleryPath in property.GalleryPath)
+			{
+				<div class="featured_slick_padd"><a href="~/uploads/property/@(property_folder.ToLower())/@(galleryPath)" class="mfp-gallery"><img src="~/uploads/property/@(property_folder.ToLower())/@(galleryPath)" class="img-fluid mx-auto" alt=""></a></div>
+			}
 		}
 	</div>
 </div>
@@ -47,13 +67,13 @@
 											<h4>@property.Title</h4>
 											<span class="text-mid">
 												<i class="fa-solid fa-location-dot me-2"></i>
-													@property.Address.AddressLine
+													@property.AddressLine
 													,
-													@property.Address.City
+													@property.City
 													,
-													@property.Address.State
+													@property.State
 													,
-													@property.Address.ZipCode
+													@property.ZipCode
 											</span>
 											<div class="list-fx-features mt-2">
 												<div class="list-fx-fisrt">
@@ -81,7 +101,7 @@
 								<div class="vesh-detail-bloc-body">
 									<div class="row g-3">
 										<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-											<p>@property.Detail.Description</p>
+											<p>@property.Description</p>
 										</div>
 									</div>
 								</div>
@@ -133,13 +153,33 @@
 							
 							
 							<!-- All features Detail -->
+
 							<div class="vesh-detail-bloc style_2">
 								<div class="vesh-detail-bloc_header">
 									<a data-bs-toggle="collapse" data-parent="#featuresinfo" data-bs-target="#featuresinfo" aria-controls="featuresinfo" href="javascript:void(0);" aria-expanded="false"><h4 class="property_block_title">Features</h4></a>
 								</div>
 								<div id="featuresinfo" class="panel-collapse collapse" aria-labelledby="featuresinfo">
 									<div class="vesh-detail-bloc-body">
-										<div class="lvs-detail mb-4">
+										@foreach (var category in Model.Features
+												.Where(f => Model.SelectedFeatures.Contains(f.FeatureID.ToString()))
+												.GroupBy(f => f.Category)
+												.ToList())
+										{
+											<div class="lvs-detail mb-4">
+												<div class="row">
+													<div class="col-xl-12 col-lg-12 col-md-12"><h6>@category.Key</h6></div>
+												</div>
+												<div class="row gy-3">
+													@foreach (var feature in category)
+													{
+														<div class="col-xl-4 col-lg-4 col-md-4 col-12">
+															<div class="lvs-caption"><i class="fa-solid @feature.IconClass"></i>@feature.FeatureName</div>
+														</div>
+													}
+												</div>
+											</div>
+										}
+										@* <div class="lvs-detail mb-4">
 											<div class="row">
 												<div class="col-xl-12 col-lg-12 col-md-12"><h6>Interior Details</h6></div>
 											</div>
@@ -189,7 +229,7 @@
 												<div class="col-xl-4 col-lg-4 col-md-4 col-12"><div class="lvs-caption"><i class="fa-solid fa-bacon"></i>Washer and dryer</div></div>
 												<div class="col-xl-4 col-lg-4 col-md-4 col-12"><div class="lvs-caption"><i class="fa-solid fa-wifi"></i>WiFi</div></div>
 											</div>
-										</div>
+										</div> *@
 									</div>
 								</div>
 							</div>							

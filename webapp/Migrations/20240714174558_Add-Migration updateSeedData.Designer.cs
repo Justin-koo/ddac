@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using webapp.Data;
 
@@ -11,9 +12,11 @@ using webapp.Data;
 namespace webapp.Migrations
 {
     [DbContext(typeof(webappContext))]
-    partial class webappContextModelSnapshot : ModelSnapshot
+    [Migration("20240714174558_Add-Migration updateSeedData")]
+    partial class AddMigrationupdateSeedData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -268,10 +271,6 @@ namespace webapp.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FeatureID"));
 
-                    b.Property<string>("Category")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("FeatureName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -288,161 +287,138 @@ namespace webapp.Migrations
                         new
                         {
                             FeatureID = 1,
-                            Category = "Interior Details",
                             FeatureName = "Equipped Kitchen",
                             IconClass = "fa-utensils"
                         },
                         new
                         {
                             FeatureID = 2,
-                            Category = "Interior Details",
                             FeatureName = "Gym",
                             IconClass = "fa-dumbbell"
                         },
                         new
                         {
                             FeatureID = 3,
-                            Category = "Interior Details",
                             FeatureName = "Laundry",
                             IconClass = "fa-jug-detergent"
                         },
                         new
                         {
                             FeatureID = 4,
-                            Category = "Interior Details",
                             FeatureName = "Media Room",
                             IconClass = "fa-chromecast"
                         },
                         new
                         {
                             FeatureID = 5,
-                            Category = "Interior Details",
                             FeatureName = "TV Set",
                             IconClass = "fa-tv"
                         },
                         new
                         {
                             FeatureID = 6,
-                            Category = "Outdoor Details",
                             FeatureName = "Back yard",
                             IconClass = "fa-canadian-maple-leaf"
                         },
                         new
                         {
                             FeatureID = 7,
-                            Category = "Outdoor Details",
                             FeatureName = "Basketball court",
                             IconClass = "fa-basketball"
                         },
                         new
                         {
                             FeatureID = 8,
-                            Category = "Outdoor Details",
                             FeatureName = "Front yard",
                             IconClass = "fa-seedling"
                         },
                         new
                         {
                             FeatureID = 9,
-                            Category = "Outdoor Details",
                             FeatureName = "Garage Attached",
                             IconClass = "fa-square-parking"
                         },
                         new
                         {
                             FeatureID = 10,
-                            Category = "Outdoor Details",
                             FeatureName = "Hot Bath",
                             IconClass = "fa-shower"
                         },
                         new
                         {
                             FeatureID = 11,
-                            Category = "Outdoor Details",
                             FeatureName = "Pool",
                             IconClass = "fa-water-ladder"
                         },
                         new
                         {
                             FeatureID = 12,
-                            Category = "Utilities",
                             FeatureName = "Central Air",
                             IconClass = "fa-fan"
                         },
                         new
                         {
                             FeatureID = 13,
-                            Category = "Utilities",
                             FeatureName = "Electricity",
                             IconClass = "fa-plug"
                         },
                         new
                         {
                             FeatureID = 14,
-                            Category = "Utilities",
                             FeatureName = "Heating",
                             IconClass = "fa-fire"
                         },
                         new
                         {
                             FeatureID = 15,
-                            Category = "Utilities",
                             FeatureName = "Natural Gas",
                             IconClass = "fa-fire-flame-simple"
                         },
                         new
                         {
                             FeatureID = 16,
-                            Category = "Utilities",
                             FeatureName = "Ventilation",
                             IconClass = "fa-snowflake"
                         },
                         new
                         {
                             FeatureID = 17,
-                            Category = "Utilities",
                             FeatureName = "Water",
                             IconClass = "fa-droplet"
                         },
                         new
                         {
                             FeatureID = 18,
-                            Category = "Other Features",
                             FeatureName = "Chair Accessible",
                             IconClass = "fa-wheelchair"
                         },
                         new
                         {
                             FeatureID = 19,
-                            Category = "Other Features",
                             FeatureName = "Elevator",
                             IconClass = "fa-elevator"
                         },
                         new
                         {
                             FeatureID = 20,
-                            Category = "Other Features",
                             FeatureName = "Fireplace",
                             IconClass = "fa-fire-extinguisher"
                         },
                         new
                         {
                             FeatureID = 21,
-                            Category = "Other Features",
                             FeatureName = "Smoke detectors",
                             IconClass = "fa-smoking"
                         },
                         new
                         {
                             FeatureID = 22,
-                            Category = "Other Features",
                             FeatureName = "Washer and dryer",
                             IconClass = "fa-bacon"
                         },
                         new
                         {
                             FeatureID = 23,
-                            Category = "Other Features",
                             FeatureName = "WiFi",
                             IconClass = "fa-wifi"
                         });

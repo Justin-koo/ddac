@@ -114,44 +114,82 @@ namespace webapp.Controllers
         [HttpGet]
 		public async Task<IActionResult> PropertyDetails(int id)
         {
-			var property_details = await _context.Properties
-				.Include(p => p.Address)
-				.Include(p => p.Detail)
-				.FirstOrDefaultAsync(p => p.Id == id);
+			var property = await _context.Properties
+			    .Include(p => p.Address)
+			    .Include(p => p.Detail)
+			    .FirstOrDefaultAsync(p => p.Id == id);
 
-			if (property_details == null)
+			if (property == null)
 			{
 				return NotFound();
 			}
 
-			var viewModel = new PropertyDetailsViewModel
+			var propertyViewModel = new PropertyViewModel
 			{
-				Property = property_details
+				Id = property.Id,
+				Title = property.Title,
+				Status = property.Status,
+				PropertyType = property.PropertyType,
+				Price = property.Price,
+				Area = property.Area,
+				Bedrooms = property.Bedrooms,
+				Bathrooms = property.Bathrooms,
+				GalleryPath = property.GalleryPath?.Split(";").ToList() ?? new List<string>(),
+				ListingDate = property.ListingDate,
+				AgentId = property.AgentId,
+				AddressLine = property.Address.AddressLine,
+				City = property.Address.City,
+				State = property.Address.State,
+				ZipCode = property.Address.ZipCode,
+				Description = property.Detail.Description,
+				BuildingAge = property.Detail.BuildingAge,
+				Garage = property.Detail.Garage,
+				Rooms = property.Detail.Rooms,
+				SubmissionStatus = property.SubmissionStatus
 			};
 
-			ViewData["Title"] = property_details.Title;
+			var viewModel = new PropertyDetailsViewModel
+            {
+                Property = propertyViewModel,
+				Features = await _context.Features.ToListAsync(),
+                SelectedFeatures = [.. property.Detail.OtherFeatures.Split(";")],
+		    };
+
+			ViewData["Title"] = property.Title;
 			return View(viewModel);
 		}
 
 
         //[Authorize(Roles = "Agent")]
         [HttpGet]
-        public IActionResult SubmitProperty()
+        public async Task<IActionResult> SubmitProperty()
         {
+            var viewModel = new PropertyDetailsViewModel
+            {
+                Property = new PropertyViewModel(),
+                Features = await _context.Features.ToListAsync(),
+                SelectedFeatures = new List<string>(),
+            };
             ViewData["Title"] = "Submit Property";
-            return View(new PropertyViewModel());
+            return View(viewModel);
         }
 
         //[Authorize(Roles = "Agent")]
         [HttpPost]
-        public async Task<IActionResult> SubmitProperty(PropertyViewModel model, List<IFormFile> files)
+        public async Task<IActionResult> SubmitProperty(PropertyDetailsViewModel model, List<IFormFile> files)
         {
 
             if (!ModelState.IsValid)
             {
+                Console.WriteLine("ModelState Invalid");
                 var errors = ModelState.Values.SelectMany(v => v.Errors)
                                       .Select(e => e.ErrorMessage)
                                       .ToList();
+
+                foreach (var error in errors)
+                {
+                    Console.WriteLine(error);
+                }
 
                 return Json(new
                 {
@@ -164,14 +202,14 @@ namespace webapp.Controllers
 
             var property = new Property
             {
-                Title = model.Title,
-                Status = model.Status,
-                PropertyType = model.PropertyType,
-                Price = model.Price,
-                Area = model.Area,
-                Bedrooms = model.Bedrooms,
-                Bathrooms = model.Bathrooms,
-                ListingDate = model.ListingDate,
+                Title = model.Property.Title,
+                Status = model.Property.Status,
+                PropertyType = model.Property.PropertyType,
+                Price = model.Property.Price,
+                Area = model.Property.Area,
+                Bedrooms = model.Property.Bedrooms,
+                Bathrooms = model.Property.Bathrooms,
+                ListingDate = model.Property.ListingDate,
                 AgentId = user.Id,
                 SubmissionStatus = "Pending",
                 // GalleryPath = string.Join(";", model.GalleryPath),
@@ -217,19 +255,17 @@ namespace webapp.Controllers
                 }
             }
 
-            model.GalleryPath = uploadUrls;
-
             // Update property with gallery path
-            property.GalleryPath = string.Join(";", model.GalleryPath);
+            property.GalleryPath = string.Join(";", uploadUrls);
             _context.Properties.Update(property);
             await _context.SaveChangesAsync();
 
             var propertyAddress = new PropertyAddress
             {
-                AddressLine = model.AddressLine,
-                City = model.City,
-                State = model.State,
-                ZipCode = model.ZipCode,
+                AddressLine = model.Property.AddressLine,
+                City = model.Property.City,
+                State = model.Property.State,
+                ZipCode = model.Property.ZipCode,
                 PropertyId = property.Id
             };
 
@@ -238,11 +274,11 @@ namespace webapp.Controllers
 
             var propertyDetail = new PropertyDetail
             {
-                Description = model.Description,
-                BuildingAge = model.BuildingAge,
-                Garage = model.Garage,
-                Rooms = model.Rooms,
-                OtherFeatures = string.Join(";", model.Features),
+                Description = model.Property.Description,
+                BuildingAge = model.Property.BuildingAge,
+                Garage = model.Property.Garage,
+                Rooms = model.Property.Rooms,
+                OtherFeatures = string.Join(";", model.SelectedFeatures),
                 PropertyId = property.Id
             };
 
