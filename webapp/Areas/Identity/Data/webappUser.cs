@@ -43,4 +43,7 @@ public class webappUser : IdentityUser
     [PersonalData]
     public string? Country { get; set; }
 
+	[PersonalData]
+	public string? ProfilePicture { get; set; }
+
 }
