@@ -6,6 +6,9 @@ using Microsoft.EntityFrameworkCore;
 using webapp.Areas.Identity.Data;
 using webapp.Data;
 using webapp.Models;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
+using SixLabors.ImageSharp.Formats.Jpeg; //used only for the Jpeg encoder below
 
 namespace webapp.Controllers
 {
@@ -157,31 +160,37 @@ namespace webapp.Controllers
 
             //Console.WriteLine("Files: " + (files != null ? files.Count.ToString() : "null"));
             var uploadUrls = new List<string>();
+             var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "property", propertyIdString.ToSHA256String());
+
+            if (!Directory.Exists(uploadsFolder))
+            {
+                Directory.CreateDirectory(uploadsFolder);
+            }
             foreach (var file in files)
             {
                 //Console.WriteLine("In handle file");
                 if (file.Length > 0)
                 {
-                    var uniqueFileName = Guid.NewGuid().ToString() + ".png";
-                    var uploadsFolder = Path.Combine("wwwroot", "uploads", "property", propertyIdString.ToSHA256String());
+                    var uniqueFileName = Guid.NewGuid().ToString() + ".jpeg";
                     var filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
-                    // Ensure the uploads folder exists
-                    if (!Directory.Exists(uploadsFolder))
+                    using (var inStream = file.OpenReadStream())
+                    using (Image image = Image.Load(inStream))
                     {
-                        Directory.CreateDirectory(uploadsFolder);
-                    }
+                        image.Mutate(x => x.Resize(1920, 1250));
 
-                    using (var fileStream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await file.CopyToAsync(fileStream);
-                    }
+                        var encoder = new JpegEncoder
+                        {
+                            Quality = 75
+                        };
 
+                        using (var fileStream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await image.SaveAsJpegAsync(fileStream, encoder);
+                        }
+                    }
                     uploadUrls.Add(uniqueFileName); // or a URL if needed
                 }
-                //else {
-                //    Console.WriteLine("No file to handle");
-                //}
             }
 
             model.GalleryPath = uploadUrls;
