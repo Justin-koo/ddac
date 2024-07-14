@@ -22,49 +22,66 @@ namespace webapp.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
 
-        [Route("agents")]
+        [Route("agents", Name ="AgentList")]
         [HttpGet]
-        public async Task<IActionResult> AgentList(AgentViewModel filters)
-        {
-            var usersInRole = await _userManager.GetUsersInRoleAsync("Agent");
-            var userIds = usersInRole.Select(u => u.Id).ToList();
+		public async Task<IActionResult> AgentList(AgentViewModel filters, int page = 1)
+		{
+			int pageSize = 10; // Set a fixed page size
+			var usersInRole = await _userManager.GetUsersInRoleAsync("Agent");
+			var userIds = usersInRole.Select(u => u.Id).ToList();
 
-            var query = _userManager.Users.Where(u => userIds.Contains(u.Id)).AsQueryable();
+			var query = _userManager.Users.Where(u => userIds.Contains(u.Id)).AsQueryable();
 
-            if (!string.IsNullOrEmpty(filters.Location))
-            {
-                query = query.Where(u => u.City.Contains(filters.Location) || u.State.Contains(filters.Location));
-            }
+			// Calculate the total number of agents
+			var totalAgents = userIds.Count;
 
-            if (!string.IsNullOrEmpty(filters.Name))
-            {
-                query = query.Where(u => u.FullName.Contains(filters.Name));
-            }
+			// Apply filters
+			if (!string.IsNullOrEmpty(filters.Location))
+			{
+				query = query.Where(u => u.City.Contains(filters.Location) || u.State.Contains(filters.Location));
+			}
 
-            var agents = await query
-                .Select(u => new AgentViewModel
-                {
-                    Id = u.Id,
-                    Name = u.FullName,
-                    Email = u.Email,
-                    PhoneNumber = u.PhoneNumber,
-                    About = u.About,
-                    City = u.City,
-                    State = u.State,
-                    FacebookLink = u.FacebookLink,
-                    XLink = u.XLink,
-                    LinkedInLink = u.LinkedInLink,
-                    PropertyCount = _context.Properties.Count(p => p.AgentId == u.Id),
-                    Location = filters.Location
-                })
-                .ToListAsync();
+			if (!string.IsNullOrEmpty(filters.Name))
+			{
+				query = query.Where(u => u.FullName.Contains(filters.Name));
+			}
 
-            ViewData["Title"] = "Find an Agent";
-            ViewBag.Filters = filters;
-            return View(agents);
-        }
+			// Calculate the total number of filtered agents
+			var totalFilteredAgents = await query.CountAsync();
 
-        [HttpGet]
+			var agents = await query
+				.Skip((page - 1) * pageSize)
+				.Take(pageSize)
+				.Select(u => new AgentViewModel
+				{
+					Id = u.Id,
+					Name = u.FullName,
+					Email = u.Email,
+					PhoneNumber = u.PhoneNumber,
+					About = u.About,
+					City = u.City,
+					State = u.State,
+					FacebookLink = u.FacebookLink,
+					XLink = u.XLink,
+					LinkedInLink = u.LinkedInLink,
+					PropertyCount = _context.Properties.Count(p => p.AgentId == u.Id),
+					Location = filters.Location
+				})
+				.ToListAsync();
+
+			ViewData["Title"] = "Find an Agent";
+			ViewBag.Filters = filters;
+			ViewBag.Page = page;
+			ViewBag.PageSize = pageSize;
+			ViewBag.TotalAgents = totalAgents;
+			ViewBag.TotalFilteredAgents = totalFilteredAgents;
+			ViewBag.TotalPages = (int)Math.Ceiling((double)totalFilteredAgents / pageSize);
+
+			return View(agents);
+		}
+
+
+		[HttpGet]
         public async Task<JsonResult> GetLocations(string term)
         {
             var usersInRole = await _userManager.GetUsersInRoleAsync("Agent");
