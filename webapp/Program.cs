@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using webapp.Areas.Identity.Data;
 using webapp.Data;
+using webapp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("webappContextConnection") ?? throw new InvalidOperationException("Connection string 'webappContextConnection' not found.");
@@ -22,6 +23,10 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.SlidingExpiration = true;
     options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
 });
+
+// Configure SMTP settings and email service
+builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
+builder.Services.AddTransient<SendEmailService>();
 
 var app = builder.Build();
 
