@@ -48,3 +48,7 @@
         width: calc(33.33% - 0.5em);
     }
 }
+
+.filepond--root {
+    max-height: 356px;
+}
