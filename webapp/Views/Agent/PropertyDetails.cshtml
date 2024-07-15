@@ -25,10 +25,18 @@
 	var galleryPaths = Model.Property.GalleryPath?.Where(path => !string.IsNullOrWhiteSpace(path)).ToList() ?? new List<string>();
 	decimal propertyPrice = property.Price;
 	decimal downPayment = propertyPrice * (decimal)0.1;
+
+	var property_js = Newtonsoft.Json.JsonConvert.SerializeObject(property);
 }
 
 <!-- ============================ Hero Banner  Start================================== -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+	#map {
+		height: 400px;
+	}
+</style>
 
 <div class="featured_slick_gallery gray m-0">
 	<div class="featured_slick_gallery-slide">
@@ -581,9 +589,54 @@
 							<!-- Nearby School -->
 							<div class="vesh-detail-bloc style_2">
 								<div class="vesh-detail-bloc_header">
-									<a data-bs-toggle="collapse" data-parent="#schoolsinfo" data-bs-target="#schoolsinfo" aria-controls="schoolsinfo" href="javascript:void(0);" aria-expanded="false"><h4 class="property_block_title">Nearby Grat Schools</h4></a>
+									<a data-bs-toggle="collapse" data-parent="#schoolsinfo" data-bs-target="#schoolsinfo" aria-controls="schoolsinfo" href="javascript:void(0);" aria-expanded="false"><h4 class="property_block_title">Map</h4></a>
 								</div>
 								<div id="schoolsinfo" class="panel-collapse collapse" aria-labelledby="schoolsinfo">
+									<div id="map"></div>
+									<script>
+										var property_js = @Html.Raw(property_js);
+
+										let map;
+										let geocoder;
+										// The callback function that initializes the map
+										function initMap() {
+											map = new google.maps.Map(document.getElementById('map'), {
+												center: { lat: 3.056069, lng: 101.700466 },
+												zoom: 15,
+												mapId: "DEMO_MAP_ID", // Map ID is required for advanced markers.
+											});
+											geocoder = new google.maps.Geocoder();
+
+											// const address = 'Jalan Teknologi 5, MRANTI Park, 57000, Kuala Lumpur, Malaysia';
+											const address = `${property_js.AddressLine}, ${property_js.City}, ${property_js.ZipCode}, ${property_js.State}, Malaysia`;
+											console.log("Address before search" + address);
+											searchAddress(address);
+										}
+
+										function searchAddress(address) {
+											console.log("Geocoding address:", address);
+											// const address = document.getElementById('searchInput').value;
+											geocoder.geocode({ 'address': address }, function (results, status) {
+												if (status === 'OK') {
+													const location = results[0].geometry.location;
+													map.setCenter(location);
+													new google.maps.marker.AdvancedMarkerElement({
+														map: map,
+														position: location
+													});
+												} else {
+													alert('Geocode was not successful for the following reason: ' + status);
+												}
+											});
+							}
+									</script>
+									<!-- Load the Google Maps API asynchronously and defer execution -->
+						<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDmbu1JIMzxCG5-0SptuDVnXQw2R3GFBTI&libraries=marker&loading=async&callback=initMap" async defer></script>
+					</div>
+
+
+
+								@* <div id="schoolsinfo" class="panel-collapse collapse" aria-labelledby="schoolsinfo">
 									<div class="vesh-detail-bloc-body">
 										<div class="nerb-lists-groups">
 										
@@ -685,7 +738,7 @@
 										
 										</div>
 									</div>
-								</div>
+								</div> *@
 							</div>
 							
 							<!-- Contact More Agents -->
@@ -1576,4 +1629,3 @@
 		calculateResults(); // initial calculation
 	});
 </script>
-
