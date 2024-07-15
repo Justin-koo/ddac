@@ -23,11 +23,13 @@
 		Console.WriteLine("Selected Feature: " + feature);
 	}
 	var galleryPaths = Model.Property.GalleryPath?.Where(path => !string.IsNullOrWhiteSpace(path)).ToList() ?? new List<string>();
-
-
+	decimal propertyPrice = property.Price;
+	decimal downPayment = propertyPrice * (decimal)0.1;
 }
 
 <!-- ============================ Hero Banner  Start================================== -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <div class="featured_slick_gallery gray m-0">
 	<div class="featured_slick_gallery-slide">
 		@if (Model.Property.GalleryPath.All(string.IsNullOrWhiteSpace))
@@ -231,7 +233,7 @@
 								</div>
 							</div>							
 							
-							<!-- Floor Plan -->
+							@* <!-- Floor Plan -->
 							<div class="vesh-detail-bloc style_2">
 								<div class="vesh-detail-bloc_header">
 									<a data-bs-toggle="collapse" data-parent="#floorinfo" data-bs-target="#floorinfo" aria-controls="floorinfo" href="javascript:void(0);" aria-expanded="false"><h4 class="property_block_title">Floor Plan</h4></a>
@@ -293,23 +295,23 @@
 										</div>
 									</div>
 								</div>
-							</div>
+							</div> *@
 							
 							<!-- Property History -->
 							<div class="vesh-detail-bloc style_2">
 								<div class="vesh-detail-bloc_header">
-									<a data-bs-toggle="collapse" data-parent="#historyinfo" data-bs-target="#historyinfo" aria-controls="historyinfo" href="javascript:void(0);" aria-expanded="false"><h4 class="property_block_title">Property History</h4></a>
+									<a data-bs-toggle="collapse" data-parent="#historyinfo" data-bs-target="#historyinfo" aria-controls="historyinfo" href="javascript:void(0);" aria-expanded="false"><h4 class="property_block_title">Property Price History</h4></a>
 								</div>
 								<div id="historyinfo" class="panel-collapse collapse show" aria-labelledby="historyinfo">
 									<div class="vesh-detail-bloc-body">
-										<ul class="nav nav-pills mb-3" id="pills-tab1" role="tablist">
+										@* <ul class="nav nav-pills mb-3" id="pills-tab1" role="tablist">
 											<li class="nav-item" role="presentation">
 											<button class="nav-link active" id="pills-price-tab" data-bs-toggle="pill" data-bs-target="#pills-price" type="button" role="tab" aria-controls="pills-price" aria-selected="true">Price history</button>
 											</li>
 											<li class="nav-item" role="presentation">
 											<button class="nav-link" id="pills-tax-tab" data-bs-toggle="pill" data-bs-target="#pills-tax" type="button" role="tab" aria-controls="pills-tax" aria-selected="false">Tax History</button>
 											</li>
-										</ul>
+										</ul> *@
 										<div class="tab-content" id="pills-tabContent1">
 											<div class="tab-pane fade show active" id="pills-price" role="tabpanel" aria-labelledby="pills-price-tab" tabindex="0">
 												<div class="table-responsive">
@@ -374,7 +376,7 @@
 												</div>
 											</div>
 											
-											<div class="tab-pane fade" id="pills-tax" role="tabpanel" aria-labelledby="pills-tax-tab" tabindex="0">
+											@* <div class="tab-pane fade" id="pills-tax" role="tabpanel" aria-labelledby="pills-tax-tab" tabindex="0">
 												<div class="table-responsive">
 													<table class="table">
 														<thead>
@@ -435,15 +437,15 @@
 														</tbody>
 													</table>
 												</div>
-											</div>
+											</div> *@
 										</div>
 									</div>
 								</div>
 							</div>
 							
 							
-							<!-- All over Review -->
-							<div class="veshm-fl-rate-box">
+							@* <!-- All over Review -->
+							<!-- <div class="veshm-fl-rate-box">
 								<div class="fl-rate-box-head theme-bg">
 									<div class="flt-yuo10">
 										<h4>5.0</h4>
@@ -476,9 +478,9 @@
 									</div>
 								</div>
 							</div>
-							<!-- All over Review -->
+							All over Review --> *@
 							
-							<!-- Property Reviews Detail -->
+							@* <!-- Property Reviews Detail -->
 							<div class="vesh-detail-bloc style_2">
 								<div class="vesh-detail-bloc_header">
 									<h4 class="property_block_title no-arrow">Property Reviews</h4>
@@ -574,7 +576,7 @@
 										</div>
 									</div>
 								</div>
-							</div>
+							</div> *@
 							
 							<!-- Nearby School -->
 							<div class="vesh-detail-bloc style_2">
@@ -808,7 +810,7 @@
 								</div>
 							</div>
 							
-							<!-- Property Graph Detail -->
+							@* <!-- Property Graph Detail -->
 							<div class="vesh-detail-bloc style_2">
 								<div class="vesh-detail-bloc_header">
 									<h4 class="property_block_title no-arrow">View property Graph</h4>
@@ -829,7 +831,7 @@
 										<div class="chart" id="line-chart" style="height:300px;"></div>
 									</div>
 								</div>
-							</div>
+							</div> *@
 							
 							
 							<!-- Repayments Mortgage Calculator -->
@@ -839,76 +841,93 @@
 								</div>
 								<div class="panel">
 									<div class="vesh-detail-bloc-body">
-									
-										<div class="row align-items-end">
-											<div class="col-xl-4 col-lg-4 col-md-6 col-12">
-												 <label class="form-label font--medium small">Property value</label>
-												 <div class="input-group mb-3">
-												  <span class="input-group-text">$</span>
-												  <input type="text" class="form-control" placeholder="$10000" value="250,000">
+										<div class="row">
+											<div class="col-8">
+												<div class="row align-items-bottom">
+													@* <div class="col-xl-4 col-lg-4 col-md-6 col-12 mb-3"> *@
+													<div class="col mb-3">
+														 <label class="form-label font--medium small">Property value</label>
+														 <div class="input-group">
+															<span class="input-group-text">$</span>
+															<input type="text" id="property-value" class="form-control" value="@property.Price.ToString("N2")">
+														</div>
+														<span class="text-danger" id="property-value-error"></span>
+													</div>
+													<div class="col mb-3">
+														 <label class="form-label font--medium small">Your Down Payment</label>
+														 <div class="input-group">
+															<span class="input-group-text">@@</span>
+															<input type="text" id="down-payment" class="form-control" value="@((property.Price * (decimal)0.1).ToString("N2"))">
+														</div>
+														<span class="text-danger" id="down-payment-error"></span>
+													</div>
+													@* <div class="col-xl-4 col-lg-4 col-md-6 col-12">
+														<div class="alert alert-warning small mb-3" role="alert">
+														  Your Loan to value would be <strong>90%</strong> with a Down Payment of <strong>@((property.Price * (decimal)0.1).ToString("C"))</strong>
+														</div>
+													</div> *@
 												</div>
-											</div>
-											<div class="col-xl-4 col-lg-4 col-md-6 col-12">
-												 <label class="form-label font--medium small">Your Deposit</label>
-												 <div class="input-group mb-3">
-												  <span class="input-group-text">@@</span>
-												  <input type="text" class="form-control" placeholder="$10000" value="$45,000">
-												</div>
-											</div>
-											<div class="col-xl-4 col-lg-4 col-md-6 col-12">
-												<div class="alert alert-warning small mb-3" role="alert">
-												  Your Loan to value would be <strong>87%</strong> with a Deposit of <strong>$47,0000</strong>
-												</div>
-											</div>
-										</div>
 										
-										<div class="row align-items-bottom">
-											<div class="col-xl-4 col-lg-4 col-md-6 col-12">
-												 <label class="form-label font--medium small">Mortgage Terms Length</label>
-												 <div class="input-group mb-3">
-												  <input type="text" class="form-control" placeholder="20" value="20">
-												  <span class="input-group-text">Yers</span>
+												<div class="row align-items-bottom">
+													<div class="col mb-3">
+														 <label class="form-label font--medium small">Mortgage Terms Length</label>
+														 <div class="input-group">
+														  <input type="number" id="mortgage-term" class="form-control" value="20">
+														  <span class="input-group-text">Yrs</span>
+														</div>
+														<span class="text-danger" id="mortgage-term-error"></span>
+													</div>
+		@* 											<div class="col-xl-4 col-lg-4 col-md-6 col-12">
+														 <label class="form-label font--medium small">Fixed Term Length</label>
+														 <div class="input-group mb-3">
+														  <input type="number" class="form-control" placeholder="7" value="5">
+														  <span class="input-group-text">Yrs</span>
+														</div>
+													</div> *@
+													<div class="col mb-3">
+														 <label class="form-label font--medium small">Mortgage Fees</label>
+														 <div class="input-group">
+														  <span class="input-group-text">@@</span>
+														  <input id="mortgage-fee" type="text" class="form-control" value="1,250">
+														</div>
+														<span class="text-danger" id="mortgage-fee-error"></span>
+													</div>
+		@* 											<div class="col-xl-4 col-lg-4 col-md-6 col-12">
+														<label class="form-label font--medium small">Add fee To Mortgage</label>
+														<div class="input-group mb-3">
+															<select class="form-control">
+																<option value="1">Yes</option>
+																<option value="2">No</option>
+															</select>
+														</div>
+													</div> *@
 												</div>
-											</div>
-											<div class="col-xl-4 col-lg-4 col-md-6 col-12">
-												 <label class="form-label font--medium small">Fixed Term Length</label>
-												 <div class="input-group mb-3">
-												  <input type="text" class="form-control" placeholder="7" value="5">
-												  <span class="input-group-text">Yers</span>
-												</div>
-											</div>
-											<div class="col-xl-4 col-lg-4 col-md-6 col-12">
-												 <label class="form-label font--medium small">Mortgage Fees</label>
-												 <div class="input-group mb-3">
-												  <span class="input-group-text">@@</span>
-												  <input type="text" class="form-control" placeholder="1000" value="1,250">
-												</div>
-											</div>
-										</div>
 										
-										<div class="row align-items-end">
-											<div class="col-xl-4 col-lg-4 col-md-6 col-12">
-												 <label class="form-label font--medium small">Standard Variable Rate</label>
-												 <div class="input-group mb-3">
-												  <input type="text" class="form-control" placeholder="1" value="1.7">
-												  <span class="input-group-text">%</span>
+												<div class="row align-items-bottom">
+													<div class="col mb-3">
+														 <label class="form-label font--medium small">Standardised Base Rate (SBR)</label>
+														 <div class="input-group">
+														  <input type="text" id="base-interest-rate" class="form-control" value="1.7">
+														  <span class="input-group-text">%</span>
+														</div>
+														<span class="text-danger" id="base-interest-rate-error"></span>
+													</div>
+													<div class="col mb-3">
+														 <label class="form-label font--medium small">Loan Intrest Rate</label>
+														 <div class="input-group">
+														  <input type="text" id="loan-interest-rate" class="form-control" value="4.2">
+														  <span class="input-group-text">%</span>
+														</div>
+														<span class="text-danger" id="loan-interest-rate-error"></span>
+													</div>
 												</div>
 											</div>
-											<div class="col-xl-4 col-lg-4 col-md-6 col-12">
-												 <label class="form-label font--medium small">Fixed Terms Intrest Rate</label>
-												 <div class="input-group mb-3">
-												  <input type="text" class="form-control" placeholder="5" value="4.2">
-												  <span class="input-group-text">%</span>
-												</div>
-											</div>
-											<div class="col-xl-4 col-lg-4 col-md-6 col-12">
-												<label class="form-label font--medium small">Add fee To Mortgage</label>
-												<div class="input-group mb-3">
-													<select class="form-control">
-														<option value="1">Yes</option>
-														<option value="2">No</option>
-													</select>
-												</div>
+											@* <div class="col-xl-4 col-lg-4 col-md-6 col-2"> *@
+											<div class="col-4">
+												@* <div class="alert alert-warning small mb-3" role="alert">
+													Your Loan to value would be <strong>90%</strong> with a Down Payment of <strong>@((property.Price * (decimal)0.1).ToString("C"))</strong>
+												</div> *@
+												<canvas id="mortgageChart"></canvas>
 											</div>
 										</div>
 										
@@ -922,20 +941,20 @@
 											<div class="col-xl-12 col-lg-12 col-12">
 												<div class="mortgage-wrp-bloc">
 													<div class="mortgage-wrp-bloc-single">
-														<div class="mrtg-wrp-title">63 months of</div>
-														<div class="mrtg-wrp-subtitle">$799.70</div>
+														<div class="mrtg-wrp-title">Monthly Payment</div>
+														<div id="monthly-payment" class="mrtg-wrp-subtitle">$799.70</div>
 													</div>
 													<div class="mortgage-wrp-bloc-single">
-														<div class="mrtg-wrp-title">235 months of</div>
-														<div class="mrtg-wrp-subtitle">$12,56.40</div>
+														<div class="mrtg-wrp-title">Total Amount Financed</div>
+														<div id="total-amount-financed" class="mrtg-wrp-subtitle">$12,56.4</div>
 													</div>
 													<div class="mortgage-wrp-bloc-single">
-														<div class="mrtg-wrp-title">APRC</div>
-														<div class="mrtg-wrp-subtitle">4.2%</div>
+														<div class="mrtg-wrp-title">Total Interest Payable</div>
+														<div id="total-interest-payable" class="mrtg-wrp-subtitle">4.2%</div>
 													</div>
 													<div class="mortgage-wrp-bloc-single">
-														<div class="mrtg-wrp-title">Initial term cost</div>
-														<div class="mrtg-wrp-subtitle">$72,890</div>
+														<div class="mrtg-wrp-title">Total Payable</div>
+														<div id="total-payable" class="mrtg-wrp-subtitle">$72,890</div>
 													</div>
 												</div>
 											</div>
@@ -1270,7 +1289,7 @@
 								</div>
 							</div>
 							
-							<!-- Submit Reviews -->
+							@* <!-- Submit Reviews -->
 							<div class="vesh-detail-bloc style_2">
 								<div class="vesh-detail-bloc_header">
 									<h4 class="property_block_title no-arrow">Submit Review</h4>
@@ -1326,7 +1345,7 @@
 										</form>
 									</div>
 								</div>
-							</div>
+							</div> *@
 							
 						</div>
 						<!-- property main detail -->
@@ -1459,4 +1478,102 @@
 				</div>
 			</section>
 			<!-- ============================ Property Detail End ================================== -->
+
+
+<script>
+	console.log("script working?")
+	$(document).ready(function () {
+		var ctx = document.getElementById('mortgageChart').getContext('2d');
+		var mortgageChart = new Chart(ctx, {
+			type: 'pie',
+			data: {
+				labels: ['Principal', 'Interest'],
+				datasets: [{
+					label: 'Total Payable',
+					data: [12, 19],
+					backgroundColor: [
+                        'rgba(54, 162, 235, 0.4)',  // Custom color for Monthly Payment Variable
+						'rgba(255, 99, 132, 0.4)', // Custom color for Monthly Payment Fixed
+                    ],
+					borderWidth: 2
+				}]
+			},
+		});
+		
+		function validateInput(selector, errorSelector) {
+			var value = $(selector).val();
+			if (value) {
+				var sanitizedValue = value.replace(/,/g, ''); // Remove commas
+				if (!$.isNumeric(sanitizedValue) || parseFloat(sanitizedValue) < 0) {
+					$(selector).addClass("is-invalid");
+					$(errorSelector).text("Please enter a valid number.");
+					return false;
+				} else {
+					$(errorSelector).text("");
+					$(selector).removeClass("is-invalid");
+					return true;
+				}
+			} else {
+				$(errorSelector).text("This field is required.");
+				return false;
+			}
+		}
+
+		function calculateMonthlyPayment(principal, annualInterestRate, loanTermYears) {
+            var monthlyInterestRate = annualInterestRate / 100 / 12;
+            var numberOfPayments = loanTermYears * 12;
+            
+            var monthlyPayment = principal * monthlyInterestRate / (1 - Math.pow(1 + monthlyInterestRate, -numberOfPayments));
+            return monthlyPayment;
+        }
+
+		function calculateResults() {
+			var isValid = true;
+
+			isValid &= validateInput("#property-value", "#property-value-error");
+			isValid &= validateInput("#down-payment", "#down-payment-error");
+			isValid &= validateInput("#mortgage-term", "#mortgage-term-error");
+			isValid &= validateInput("#mortgage-fee", "#mortgage-fee-error");
+			isValid &= validateInput("#base-interest-rate", "#base-interest-rate-error");
+			isValid &= validateInput("#loan-interest-rate", "#loan-interest-rate-error");
+
+			if (!isValid) {
+				return;
+			}
+
+			var propertyValue = parseFloat($("#property-value").val().replace(/,/g, ''));
+            var downPayment = parseFloat($("#down-payment").val().replace(/,/g, ''));
+            var mortgageTerm = parseInt($("#mortgage-term").val());
+            var mortgageFee = parseFloat($("#mortgage-fee").val().replace(/,/g, ''));
+            var baseInterestRate = parseFloat($("#base-interest-rate").val());
+            var loanInterestRate = parseFloat($("#loan-interest-rate").val());
+
+			var monthlyPayment = 0;
+			var totalPayment = 0;
+			var totalInterest = 0;
+
+			var loanAmount = propertyValue - downPayment;
+			if (loanAmount > 0) {
+				monthlyPayment = calculateMonthlyPayment(loanAmount, baseInterestRate + loanInterestRate, mortgageTerm) + mortgageFee / (12 * mortgageTerm);
+				totalPayment = monthlyPayment * mortgageTerm * 12;
+				totalInterest = totalPayment - loanAmount;
+			}
+
+			$("#monthly-payment").text(monthlyPayment > 0 ? monthlyPayment.toFixed(2) : "N/A");
+			$("#total-amount-financed").text(loanAmount > 0 ? loanAmount.toFixed(2) : "N/A");
+			$("#total-interest-payable").text(totalInterest > 0 ? totalInterest.toFixed(2) : "N/A");
+			$("#total-payable").text(totalPayment > 0 ? totalPayment.toFixed(2) : "N/A");
+
+			mortgageChart.data.datasets[0].data[0] = loanAmount > 0 ? loanAmount.toFixed(2) : 0;
+            mortgageChart.data.datasets[0].data[1] = totalInterest > 0 ? totalInterest.toFixed(2) : 0;
+            mortgageChart.update();
+		}
+
+		$("input").on("input", function () {
+			calculateResults();
+		});
+
+		calculateResults(); // initial calculation
+	});
+</script>
 
