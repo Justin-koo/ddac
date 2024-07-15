@@ -72,13 +72,13 @@ namespace webapp.Areas.Identity.Pages.Account.Manage
             [Required(ErrorMessage = "You must enter the full name before submitting your form!")]
             [StringLength(256, ErrorMessage = "You must enter the value between 6 - 256 chars", MinimumLength = 6)]
             [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "The full name must only contain alphabetic characters and spaces.")]
-            [Display(Name = "Your Full Name")] //label
+            [Display(Name = "Full Name")] //label
             public string FullName { get; set; }
 
             [Required(ErrorMessage = "You must enter the Country before submitting your form!")]
             [StringLength(256, ErrorMessage = "You must enter the value between 2 - 256 chars", MinimumLength = 2)]
             [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "The country must only contain alphabetic characters and spaces.")]
-            [Display(Name = "Your Country")] //label
+            [Display(Name = "Country")] //label
             public string Country { get; set; }
 
             [Required(ErrorMessage = "You must enter the address before submitting your form!")]
@@ -106,22 +106,22 @@ namespace webapp.Areas.Identity.Pages.Account.Manage
             [Display(Name = "About")] //label
             public string About { get; set; }
 
-            [Required(ErrorMessage = "You must enter the facebook link before submitting your form!")]
+            //[Required(ErrorMessage = "You must enter the facebook link before submitting your form!")]
             [StringLength(256, ErrorMessage = "You must enter the value between 6 - 256 chars", MinimumLength = 6)]
             [Display(Name = "Facebook")] //label
             public string FacebookLink { get; set; }
 
-            [Required(ErrorMessage = "You must enter the X link before submitting your form!")]
+            //[Required(ErrorMessage = "You must enter the X link before submitting your form!")]
             [StringLength(256, ErrorMessage = "You must enter the value between 6 - 256 chars", MinimumLength = 6)]
             [Display(Name = "X")] //label
             public string XLink { get; set; }
 
-            [Required(ErrorMessage = "You must enter the LinkedIn link before submitting your form!")]
+            //[Required(ErrorMessage = "You must enter the LinkedIn link before submitting your form!")]
             [StringLength(256, ErrorMessage = "You must enter the value between 6 - 256 chars", MinimumLength = 6)]
             [Display(Name = "LinkedIn")] //label
             public string LinkedInLink { get; set; }
 
-            [Required(ErrorMessage = "You must enter the google link before submitting your form!")]
+            //[Required(ErrorMessage = "You must enter the google link before submitting your form!")]
             [StringLength(256, ErrorMessage = "You must enter the value between 6 - 256 chars", MinimumLength = 6)]
             [Display(Name = "Google Plus")] //label
             public string GoogleLink { get; set; }

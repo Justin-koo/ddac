@@ -29,7 +29,7 @@
             <div class="col-xl-3 col-lg-3 col-md-12">
                 <div class="property_dashboard_navbar">
                     <div class="dash_user_avater">
-                        <img src="~/uploads/agent/@user.ProfilePicture" class="img-fluid avater" alt="">
+                        <img src="@(string.IsNullOrEmpty(user.ProfilePicture) ? Url.Content("~/uploads/agent/default-user.png") : Url.Content($"~/uploads/agent/{user.ProfilePicture}"))" class="img-fluid avatar" alt="Profile Picture">
                 
                         <h4>@user.FullName</h4>
                         <span class="font--medium small"><i class="fa-solid fa-location-dot me-2"></i>@user.City, @user.Country</span>
