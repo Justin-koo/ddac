@@ -27,6 +27,7 @@
 	decimal downPayment = propertyPrice * (decimal)0.1;
 
 	var property_js = Newtonsoft.Json.JsonConvert.SerializeObject(property);
+	decimal? previousPrice = null; // Nullable to handle the first iteration where there is no previous price
 }
 
 <!-- ============================ Hero Banner  Start================================== -->
@@ -128,7 +129,7 @@
 											<div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-6"><div class="ilio-icon-wrap"><div class="ilio-icon"><i class="fa-solid fa-bed"></i></div><div class="ilio-text">@property.Bedrooms Bedrooms</div></div></div>
 											<div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-6"><div class="ilio-icon-wrap"><div class="ilio-icon"><i class="fa-solid fa-bath"></i></div><div class="ilio-text">@property.Bathrooms Bathrooms</div></div></div>
 											<div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-6"><div class="ilio-icon-wrap"><div class="ilio-icon"><i class="fa-solid fa-layer-group"></i></div><div class="ilio-text">@property.Area sq ft</div></div></div>
-											<div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-6"><div class="ilio-icon-wrap"><div class="ilio-icon"><i class="fa-solid fa-building-wheat"></i></div><div class="ilio-text">@property.BuildingAge</div></div></div>
+								<div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-6"><div class="ilio-icon-wrap"><div class="ilio-icon"><i class="fa-solid fa-building-wheat"></i></div><div class="ilio-text">@(!string.IsNullOrEmpty(property.BuildingAge) ? property.BuildingAge : "Building Age Not Provided")</div></div></div>
 											<div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-6"><div class="ilio-icon-wrap"><div class="ilio-icon"><i class="fa-solid fa-location-dot"></i></div><div class="ilio-text">@property.City</div></div></div>
 											<div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-6"><div class="ilio-icon-wrap"><div class="ilio-icon"><i class="fa-solid fa-building"></i></div><div class="ilio-text">@property.PropertyType</div></div></div>
 										</div>
@@ -334,7 +335,18 @@
 															</tr>
 														</thead>
 														<tbody>
-															<tr>
+															@foreach (var update in Model.PropertyUpdates.OrderByDescending(u => u.UpdateDate))
+															{
+																<tr>
+																	<td>@update.UpdateDate.ToString("dd MMM yyyy")</td>
+																	<td>@update.Status</td>
+																	<td>@String.Format("{0:C}", update.Price)</td>
+																	<td>@(previousPrice.HasValue ? String.Format("{0:C}",update.Price - previousPrice) : "N/A")</td>
+																	<td>@Math.Round(update.Price / decimal.Parse(property.Area), 2).ToString("C") / Sqft</td>
+																</tr>
+																previousPrice = update.Price;
+															}
+@* 															<tr>
 																<td>10 Jan 2020</td>
 																<td>For Sale</td>
 																<td>$40700</td>
@@ -378,7 +390,7 @@
 															</tr>
 															<tr>
 																<td colspan="5"><span class="font--medium text-success">Source: My State MLS</span></td>
-															</tr>
+															</tr> *@
 														</tbody>
 													</table>
 												</div>
@@ -1410,9 +1422,11 @@
 							<!-- Like And Share -->
 							<div class="vesh-detail-bloc border">
 								<ul class="like_share_list">
-									<li><a href="JavaScript:Void(0);" class="btn btn-light-success" data-toggle="tooltip" data-original-title="Share"><i class="fa-solid fa-share-from-square me-2"></i>Share</a></li>
+									<li>
+										<a href="JavaScript:Void(0);" id="copyLink" class="btn btn-light-success" data-toggle="tooltip" data-original-title="Share"><i class="fa-solid fa-share-from-square me-2"></i>Share</a>
+										<span id="copyMessage" style="display:none;">Link Copied!</span> 
+									</li>
 									<li><a href="JavaScript:Void(0);" class="btn btn-light-danger" data-toggle="tooltip" data-original-title="Save"><i class="fa-solid fa-heart-circle-check me-2"></i>Save</a></li>
-									<li><a href="JavaScript:Void(0);" class="btn btn-light-primary" data-toggle="tooltip" data-original-title="Save"><i class="fa-solid fa-print me-2"></i>Print</a></li>
 								</ul>
 							</div>
 							
@@ -1627,5 +1641,33 @@
 		});
 
 		calculateResults(); // initial calculation
+	});
+
+	// document.getElementById('copyLink').addEventListener('click', function () {
+	// 	// Create a temporary input element
+	// 	const tempInput = document.createElement('input');
+	// 	// Append it to the body
+	// 	document.body.appendChild(tempInput);
+	// 	// Set its value to the current URL
+	// 	tempInput.value = window.location.href;
+	// 	// Select the value
+	// 	tempInput.select();
+	// 	// Copy the text inside the input
+	// 	document.execCommand('copy');
+	// 	// Remove the temporary input
+	// 	document.body.removeChild(tempInput);
+
+	// 	// Optional: Alert the user that the URL has been copied
+	// 	alert('URL copied to clipboard!');
+	// });
+
+	document.getElementById('copyLink').addEventListener('click', async function () {
+		try {
+			await navigator.clipboard.writeText(window.location.href);
+			document.getElementById('copyMessage').style.display = 'inline'; // Show the message
+			setTimeout(() => { document.getElementById('copyMessage').style.display = 'none'; }, 3000); // Hide after 3 seconds
+		} catch (err) {
+			console.error('Failed to copy: ', err);
+		}
 	});
 </script>

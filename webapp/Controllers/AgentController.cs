@@ -209,11 +209,17 @@ namespace webapp.Controllers
                 ListingStatus = property.ListingStatus
             };
 
+			var propertyUpdates = await _context.PropertyUpdate
+	            .Where(p => p.PropertyId == id)  // Assuming 'PropertyId' is the foreign key linking to the property
+	            .ToListAsync();
+
+
 			var viewModel = new PropertyDetailsViewModel
             {
                 Property = propertyViewModel,
 				Features = await _context.Features.ToListAsync(),
                 SelectedFeatures = [.. property.Detail.OtherFeatures.Split(";")],
+                PropertyUpdates = propertyUpdates,
 		    };
 
 			ViewData["Title"] = property.Title;
@@ -221,7 +227,7 @@ namespace webapp.Controllers
 		}
 
 
-        [Authorize(Roles = "Agent")]
+        //[Authorize(Roles = "Agent")]
         [HttpGet]
         public async Task<IActionResult> SubmitProperty()
         {
@@ -235,7 +241,7 @@ namespace webapp.Controllers
             return View(viewModel);
         }
 
-        [Authorize(Roles = "Agent")]
+        //[Authorize(Roles = "Agent")]
         [HttpPost]
         public async Task<IActionResult> SubmitProperty(PropertyDetailsViewModel model, List<IFormFile> files)
         {
@@ -347,7 +353,18 @@ namespace webapp.Controllers
             _context.PropertyDetails.Add(propertyDetail);
             await _context.SaveChangesAsync();
 
-            TempData["Message"] = "Property created successfully!";
+			var propertyUpdate = new PropertyUpdate
+			{
+                Status = model.Property.Status,
+                Price = model.Property.Price,
+				PropertyId = property.Id,
+				UpdateDate = property.ListingDate,
+			};
+
+			_context.PropertyUpdate.Add(propertyUpdate);
+			await _context.SaveChangesAsync();
+
+			TempData["Message"] = "Property created successfully!";
             var redirectUrl = Url.Action("SubmitProperty", "Agent");
 
             return RedirectToAction(nameof(AgentPropertyList), new { username = user.UserName });
@@ -590,7 +607,18 @@ namespace webapp.Controllers
             _context.Properties.Update(property);
             await _context.SaveChangesAsync();
 
-            TempData["Message"] = "Property updated successfully.";
+            var propertyUpdate = new PropertyUpdate
+            {
+                Status = property.Status,
+                Price = property.Price,
+                PropertyId = property.Id,
+                UpdateDate = DateTime.Now,
+			};
+
+			_context.PropertyUpdate.Add(propertyUpdate);
+			await _context.SaveChangesAsync();
+
+			TempData["Message"] = "Property updated successfully.";
             return RedirectToAction(nameof(AgentPropertyList), new { username = currentUser.UserName });
 
             //viewModel.Features = await _context.Features.ToListAsync();
