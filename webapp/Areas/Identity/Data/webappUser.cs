@@ -46,4 +46,10 @@ public class webappUser : IdentityUser
 	[PersonalData]
 	public string? ProfilePicture { get; set; }
 
+    [PersonalData]
+    public string? Specialties { get; set; }
+
+    [PersonalData]
+    public string? Languages { get; set; }
+
 }

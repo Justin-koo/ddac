@@ -3,8 +3,10 @@
 #nullable disable
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Configuration;
+using System.Linq;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
@@ -20,7 +22,6 @@ namespace webapp.Areas.Identity.Pages.Account.Manage
         private readonly SignInManager<webappUser> _signInManager;
         private readonly IWebHostEnvironment _environment;
 
-
         public IndexModel(
             UserManager<webappUser> userManager,
             SignInManager<webappUser> signInManager,
@@ -29,118 +30,97 @@ namespace webapp.Areas.Identity.Pages.Account.Manage
             _userManager = userManager;
             _signInManager = signInManager;
             _environment = environment;
-
         }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
-        public string Username { get; set; }
+        public string Email { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         [TempData]
         public string StatusMessage { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         [BindProperty]
         public InputModel Input { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         public class InputModel
         {
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
 
-            public string Email { get; set; }
-
+            public string UserName { get; set; }
 
             [Required(ErrorMessage = "You must enter the full name before submitting your form!")]
             [StringLength(256, ErrorMessage = "You must enter the value between 6 - 256 chars", MinimumLength = 6)]
             [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "The full name must only contain alphabetic characters and spaces.")]
-            [Display(Name = "Full Name")] //label
+            [Display(Name = "Full Name")]
             public string FullName { get; set; }
 
             [Required(ErrorMessage = "You must enter the Country before submitting your form!")]
             [StringLength(256, ErrorMessage = "You must enter the value between 2 - 256 chars", MinimumLength = 2)]
             [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "The country must only contain alphabetic characters and spaces.")]
-            [Display(Name = "Country")] //label
+            [Display(Name = "Country")]
             public string Country { get; set; }
 
             [Required(ErrorMessage = "You must enter the address before submitting your form!")]
             [StringLength(256, ErrorMessage = "You must enter the value between 6 - 256 chars", MinimumLength = 6)]
-            [Display(Name = "Address")] //label
+            [Display(Name = "Address")]
             public string Address { get; set; }
 
             [Required(ErrorMessage = "You must enter the state before submitting your form!")]
             [StringLength(256, ErrorMessage = "You must enter the value between 2 - 256 chars", MinimumLength = 2)]
-            [Display(Name = "State")] //label
+            [Display(Name = "State")]
             public string State { get; set; }
 
             [Required(ErrorMessage = "You must enter the city before submitting your form!")]
             [StringLength(256, ErrorMessage = "You must enter the value between 2 - 256 chars", MinimumLength = 2)]
-            [Display(Name = "City")] //label
+            [Display(Name = "City")]
             public string City { get; set; }
 
             [Required(ErrorMessage = "You must enter the zip before submitting your form!")]
             [Range(5, 99999, ErrorMessage = "The ZIP code must be a valid 5-digit number.")]
-            [Display(Name = "Zip")] //label
+            [Display(Name = "Zip")]
             public int? Zip { get; set; }
 
             [Required(ErrorMessage = "You must enter the about before submitting your form!")]
             [StringLength(1000, ErrorMessage = "You must enter the value between 6 - 1000 chars", MinimumLength = 6)]
-            [Display(Name = "About")] //label
+            [Display(Name = "About")]
             public string About { get; set; }
 
-            //[Required(ErrorMessage = "You must enter the facebook link before submitting your form!")]
             [StringLength(256, ErrorMessage = "You must enter the value between 6 - 256 chars", MinimumLength = 6)]
-            [Display(Name = "Facebook")] //label
+            [Display(Name = "Facebook")]
             public string FacebookLink { get; set; }
 
-            //[Required(ErrorMessage = "You must enter the X link before submitting your form!")]
             [StringLength(256, ErrorMessage = "You must enter the value between 6 - 256 chars", MinimumLength = 6)]
-            [Display(Name = "X")] //label
+            [Display(Name = "X")]
             public string XLink { get; set; }
 
-            //[Required(ErrorMessage = "You must enter the LinkedIn link before submitting your form!")]
             [StringLength(256, ErrorMessage = "You must enter the value between 6 - 256 chars", MinimumLength = 6)]
-            [Display(Name = "LinkedIn")] //label
+            [Display(Name = "LinkedIn")]
             public string LinkedInLink { get; set; }
 
-            //[Required(ErrorMessage = "You must enter the google link before submitting your form!")]
             [StringLength(256, ErrorMessage = "You must enter the value between 6 - 256 chars", MinimumLength = 6)]
-            [Display(Name = "Google Plus")] //label
+            [Display(Name = "Google Plus")]
             public string GoogleLink { get; set; }
 
             public string ProfilePicture { get; set; }
 
+            [Display(Name = "Specialties")]
+            public List<string> Specialties { get; set; }
+
+            [Display(Name = "Languages")]
+            public List<string> Languages { get; set; }
         }
 
         private async Task LoadAsync(webappUser user)
         {
-            var userName = await _userManager.GetUserNameAsync(user);
+            var email = await _userManager.GetUserNameAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
 
-            Username = userName;
+            Email = email;
 
             Input = new InputModel
             {
                 PhoneNumber = phoneNumber,
-                Email = user.Email,
+                UserName = user.UserName,
                 FullName = user.FullName,
                 Country = user.Country,
                 Address = user.Address,
@@ -153,6 +133,8 @@ namespace webapp.Areas.Identity.Pages.Account.Manage
                 LinkedInLink = user.LinkedInLink,
                 GoogleLink = user.GoogleLink,
                 ProfilePicture = user.ProfilePicture,
+                Specialties = user.Specialties?.Split(',').ToList() ?? new List<string>(),
+                Languages = user.Languages?.Split(',').ToList() ?? new List<string>(),
             };
         }
 
@@ -193,9 +175,9 @@ namespace webapp.Areas.Identity.Pages.Account.Manage
                 }
             }
 
-            if (Input.Email != user.Email)
+            if (Input.UserName != user.UserName)
             {
-                user.Email = Input.Email;
+                user.UserName = Input.UserName;
             }
 
             if (Input.FullName != user.FullName)
@@ -252,7 +234,10 @@ namespace webapp.Areas.Identity.Pages.Account.Manage
             {
                 user.GoogleLink = Input.GoogleLink;
             }
-            
+
+            user.Specialties = Input.Specialties != null ? string.Join(',', Input.Specialties) : null;
+            user.Languages = Input.Languages != null ? string.Join(',', Input.Languages) : null;
+
             await _userManager.UpdateAsync(user);
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";
