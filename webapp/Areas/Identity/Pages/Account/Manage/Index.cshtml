@@ -103,19 +103,20 @@
 
                     <!-- Agent Picture -->
                     <div class="frm_submit_block">
-                        <h3>Picture</h3>
+                        <h3>Profile Picture</h3>
                         <div class="frm_submit_wrap">
                             <div class="row">
-                                <div class="form-group col-md-12">
+                                <div class="form-group col-md-6">
                                     <label>Upload Picture</label>
-                                    <div class="previews"></div>
+                                    <input type="file" name="profilepic" id="filepond" multiple>
+                                    @* <div class="previews"></div>
                                     <div class="dropzone dz-clickable primary-dropzone" id="agentpicDropzone">
                                         <div class="dz-default dz-message">
                                             <i class="fa-solid fa-images"></i>
                                             <span>Drag & Drop To Upload Images</span>
                                         </div>
                                         <input type="hidden" id="uploadedImageUrl" name="Input.ProfilePicture" value="@Model.Input.ProfilePicture" />
-                                    </div>
+                                    </div> *@
                                 </div>
                             </div>
                         </div>
@@ -155,111 +156,41 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.js"></script>
+    <script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js"></script>
+    <script src="https://unpkg.com/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.js"></script>
+    <script src="https://unpkg.com/filepond-plugin-image-transform/dist/filepond-plugin-image-transform.js"></script>
+    <script src="https://unpkg.com/filepond-plugin-image-resize/dist/filepond-plugin-image-resize.js"></script>
+    <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
+    <script src="https://unpkg.com/filepond-plugin-image-crop/dist/filepond-plugin-image-crop.js"></script>
+    <script src="https://unpkg.com/filepond/dist/filepond.js"></script>
 
     <script>
-        Dropzone.autoDiscover = false;
-
         document.addEventListener('DOMContentLoaded', function () {
-            var existingImageUrl = document.getElementById('uploadedImageUrl').value;
-            var AgentDropzone = new Dropzone("#agentpicDropzone", {
-                url: "/account/upload-profile-pic",
-                method: "post",
-                uploadMultiple: false,
-                maxFiles: 1,
-                // addRemoveLinks: true,
-                acceptedFiles: 'image/*',
-                paramName: "files",
-                resizeWidth: "100",
-                resizeHeight: "100",
-                resizeMethod: "crop",
-                init: function () {
-                    if (existingImageUrl) {
-                        var mockFile = { name: "Profile Picture", size: 12345, type: 'image/jpeg', url: existingImageUrl };
-                        this.emit("addedfile", mockFile);
-                        this.emit("thumbnail", mockFile, '/uploads/user/' + existingImageUrl);
-                        $('[data-dz-thumbnail]').css('height', '120');
-                        $('[data-dz-thumbnail]').css('width', '120');
-                        $('[data-dz-thumbnail]').css('object-fit', 'cover');
-                        this.emit("complete", mockFile);
-                        this.files.push(mockFile);
-                    }
-                }
+            // Register the plugins
+            FilePond.registerPlugin(FilePondPluginFileValidateSize);
+            FilePond.registerPlugin(FilePondPluginFileValidateType);
+            FilePond.registerPlugin(FilePondPluginImagePreview);
+            FilePond.registerPlugin(FilePondPluginImageResize);
+            FilePond.registerPlugin(FilePondPluginImageTransform);
+            FilePond.registerPlugin(FilePondPluginImageCrop);
+
+            // Get a reference to the file input element
+            const inputElement = document.querySelector('input[name="profilepic"]');
+
+            // Create a FilePond instance
+            const pond = FilePond.create(inputElement, {
+                storeAsFile: true,
+                name: "profilepic",
+                imageResizeTargetWidth: 100,
+                imageResizeTargetHeight: 100,
+                imageResizeMode: "contain",
+                imageCropAspectRatio: 1,
+                // allowMultiple: true,
+                maxFileSize: "5MB",
+                acceptedFileTypes: ['image/*'],
+                instantUpload: false // Disable instant upload to use default form submission
             });
-
-            AgentDropzone.on("success", function (file, response) {
-                if (response.success) {
-                    location.reload();
-                    // document.getElementById('uploadedImageUrl').value = response.fileUrl;
-                    // Swal.fire({
-                    //     title: 'Success!',
-                    //     text: 'Your profile has been updated successfully.',
-                    //     icon: 'success',
-                    //     confirmButtonText: 'OK',
-                    //     confirmButtonColor: '#017efa',
-                    // }).then((result) => {
-                    //     if (result.isConfirmed) {
-                    //         location.reload();
-                    //     }
-                    // });
-                } else {
-                    showAlert('Error!', response.errors.join('\n'), 'error');
-                }
-            });
-
-            AgentDropzone.on("error", function (file, response) {
-                showAlert('Error!', 'An unexpected error occurred during the file upload. Please try again.', 'error');
-            });
-
-            var form = document.getElementById('profile-form');
-
-            // form.addEventListener("submit", function (e) {
-            //     e.preventDefault();
-            //     if (AgentDropzone.getQueuedFiles().length > 0) {
-            //         AgentDropzone.processQueue();
-            //     } else {
-            //         submitForm();
-            //     }
-            // });
-
-            // function submitForm() {
-            //     var formData = new FormData(form);
-            //     fetch(form.action, {
-            //         method: 'POST',
-            //         body: formData
-            //     })
-            //         .then(response => response.json())
-            //         .then(data => {
-            //             if (data.success) {
-            //                 Swal.fire({
-            //                     title: 'Success!',
-            //                     text: 'Your profile has been updated successfully.',
-            //                     icon: 'success',
-            //                     confirmButtonText: 'OK',
-            //                     confirmButtonColor: '#017efa',
-            //                 }).then((result) => {
-            //                     if (result.isConfirmed) {
-            //                         location.reload();
-            //                     }
-            //                 });
-            //             } else {
-            //                 showAlert('Error!', data.errors.join('\n'), 'error');
-            //             }
-            //         })
-            //         .catch(error => {
-            //             showAlert('Error!', 'An unexpected error occurred. Please try again.', 'error');
-            //         });
-            // }
-
-            function showAlert(title, text, icon) {
-                Swal.fire({
-                    title: title,
-                    text: text,
-                    icon: icon,
-                    confirmButtonColor: '#017efa',
-                    confirmButtonText: 'OK'
-                });
-            }
         });
+    </script>
     </script>
 }
