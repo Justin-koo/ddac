@@ -8,7 +8,8 @@ using webapp.Data;
 using webapp.Models;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
-using SixLabors.ImageSharp.Formats.Jpeg; //used only for the Jpeg encoder below
+using SixLabors.ImageSharp.Formats.Jpeg;
+using webapp.Helpers; //used only for the Jpeg encoder below
 
 namespace webapp.Controllers
 {
@@ -17,12 +18,14 @@ namespace webapp.Controllers
         private readonly UserManager<webappUser> _userManager;
         private readonly webappContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly EncryptionHelper _encryptionHelper;
 
-        public AgentController(UserManager<webappUser> userManager, webappContext context, IWebHostEnvironment webHostEnvironment)
+        public AgentController(UserManager<webappUser> userManager, webappContext context, IWebHostEnvironment webHostEnvironment, EncryptionHelper encryptionHelper)
         {
             _userManager = userManager;
             _context = context;
             _webHostEnvironment = webHostEnvironment;
+            _encryptionHelper = encryptionHelper;
         }
 
         [Route("agents", Name ="AgentList")]
@@ -374,44 +377,266 @@ namespace webapp.Controllers
 
         [Authorize(Roles = "Agent")]
         [HttpGet]
-        public async Task<IActionResult> AgentPropertyList()
+        [Route("{username}/property-listing")]
+        public async Task<IActionResult> AgentPropertyList(string username)
         {
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser.UserName != username)
+            {
+                return RedirectToAction(nameof(AgentPropertyList), new { username = currentUser.UserName });
+            }
+
+            var user = await _userManager.Users.SingleOrDefaultAsync(u => u.UserName == username);
+
             var properties = await _context.Properties
                 .Include(p => p.Address)
                 .Include(p => p.Detail)
+                .Where(p => p.AgentId == user.Id)
                 .ToListAsync();
 
             var propertyViewModels = properties.Select(p => new PropertyViewModel
             {
-                Id = p.Id,
+                //Id = p.Id,
+                EncryptedId = _encryptionHelper.Encrypt(p.Id.ToString()),
                 Title = p.Title,
-                Status = p.Status,
-                PropertyType = p.PropertyType,
+                //Status = p.Status,
+                //PropertyType = p.PropertyType,
                 Price = p.Price,
-                Area = p.Area,
-                Bedrooms = p.Bedrooms,
-                Bathrooms = p.Bathrooms,
+                //Area = p.Area,
+                //Bedrooms = p.Bedrooms,
+                //Bathrooms = p.Bathrooms,
                 GalleryPath = p.GalleryPath.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList(),
                 ListingDate = p.ListingDate,
-                AgentId = p.AgentId,
+                //AgentId = p.AgentId,
                 AddressLine = p.Address.AddressLine,
-                City = p.Address.City,
-                State = p.Address.State,
-                ZipCode = p.Address.ZipCode,
-                Description = p.Detail.Description,
-                BuildingAge = p.Detail.BuildingAge,
-                Garage = p.Detail.Garage,
-                Rooms = p.Detail.Rooms,
-                Features = p.Detail.OtherFeatures?.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList() ?? new List<string>(),
+                //City = p.Address.City,
+                //State = p.Address.State,
+                //ZipCode = p.Address.ZipCode,
+                //Description = p.Detail.Description,
+                //BuildingAge = p.Detail.BuildingAge,
+                //Garage = p.Detail.Garage,
+                //Rooms = p.Detail.Rooms,
+                //Features = p.Detail.OtherFeatures?.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList() ?? new List<string>(),
                 GalleryFolder = p.Id.ToString().ToSHA256String(),
                 ListingStatus = p.ListingStatus,
             }).ToList();
 
             ViewData["Title"] = "My Property";
-            return View(propertyViewModels);
+			ViewData["User"] = user;
+			return View(propertyViewModels);
         }
 
         [Authorize(Roles = "Agent")]
+        [HttpGet]
+        [Route("{username}/edit/{encryptedId}")]
+        public async Task<IActionResult> EditProperty(string username, string encryptedId)
+		{
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser.UserName != username)
+            {
+                return RedirectToAction(nameof(AgentPropertyList), new { username = currentUser.UserName });
+            }
+
+            int id;
+			try
+			{
+				id = int.Parse(_encryptionHelper.Decrypt(encryptedId));
+			}
+			catch
+			{
+                return RedirectToAction(nameof(AgentPropertyList), new { username = currentUser.UserName });
+            }
+
+            var user = await _userManager.Users.SingleOrDefaultAsync(u => u.UserName == username);
+
+            var property = await _context.Properties
+                .Include(p => p.Address)
+                .Include(p => p.Detail)
+                .SingleOrDefaultAsync(p => p.Id == id && p.AgentId == user.Id);
+
+            if (property == null)
+            {
+                return RedirectToAction(nameof(AgentPropertyList), new { username = currentUser.UserName });
+            }
+
+            var viewModel = new PropertyDetailsViewModel
+			{
+				Property = new PropertyViewModel
+                {
+                    //Id = property.Id,
+                    EncryptedId = encryptedId,
+                    Title = property.Title,
+                    Status = property.Status,
+                    PropertyType = property.PropertyType,
+                    Price = property.Price,
+                    Area = property.Area,
+                    Bedrooms = property.Bedrooms,
+                    Bathrooms = property.Bathrooms,
+                    GalleryPath = property.GalleryPath.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList(),
+                    //ListingDate = property.ListingDate,
+                    AddressLine = property.Address.AddressLine,
+                    City = property.Address.City,
+                    State = property.Address.State,
+                    ZipCode = property.Address.ZipCode,
+                    Description = property.Detail.Description,
+                    BuildingAge = property.Detail.BuildingAge,
+                    Garage = property.Detail.Garage,
+                    Rooms = property.Detail.Rooms,
+                    Features = property.Detail.OtherFeatures?.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList() ?? new List<string>(),
+                    GalleryFolder = property.Id.ToString().ToSHA256String(),
+                    //ListingStatus = property.ListingStatus,
+                },
+                Features = await _context.Features.ToListAsync(),
+                SelectedFeatures = property.Detail.OtherFeatures?.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList() ?? new List<string>(),
+            };
+
+			ViewData["Title"] = "Edit Property";
+            ViewData["User"] = user;
+            return View(viewModel);
+		}
+
+        [Authorize(Roles = "Agent")]
+        [HttpPost]
+        [Route("{username}/edit/{encryptedId}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditProperty(string username, string encryptedId, PropertyDetailsViewModel viewModel, List<IFormFile> GalleryFiles)
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser.UserName != username)
+            {
+                return RedirectToAction(nameof(AgentPropertyList), new { username = currentUser.UserName });
+            }
+
+            int id;
+            try
+            {
+                id = int.Parse(_encryptionHelper.Decrypt(encryptedId));
+            }
+            catch
+            {
+                return RedirectToAction(nameof(AgentPropertyList), new { username = currentUser.UserName });
+            }
+
+            if (!ModelState.IsValid)
+            {
+                // Reload features if the model state is not valid
+                viewModel.Features = await _context.Features.ToListAsync();
+                return View(viewModel);
+            }
+
+            var property = await _context.Properties
+                .Include(p => p.Address)
+                .Include(p => p.Detail)
+                .SingleOrDefaultAsync(p => p.Id == id && p.AgentId == currentUser.Id);
+
+            if (property == null)
+            {
+                return RedirectToAction(nameof(AgentPropertyList), new { username = currentUser.UserName });
+            }
+
+            property.Title = viewModel.Property.Title;
+            property.Price = viewModel.Property.Price;
+            property.Status = viewModel.Property.Status;
+            property.PropertyType = viewModel.Property.PropertyType;
+            property.Price = viewModel.Property.Price;
+            property.Area = viewModel.Property.Area;
+            property.Bedrooms = viewModel.Property.Bedrooms;
+            property.Bathrooms = viewModel.Property.Bathrooms;
+            property.Address.AddressLine = viewModel.Property.AddressLine;
+            property.Address.City = viewModel.Property.City;
+            property.Address.State = viewModel.Property.State;
+            property.Address.ZipCode = viewModel.Property.ZipCode;
+            property.Detail.Description = viewModel.Property.Description;
+            property.Detail.BuildingAge = viewModel.Property.BuildingAge;
+            property.Detail.Garage = viewModel.Property.Garage;
+            property.Detail.Rooms = viewModel.Property.Rooms;
+            property.Detail.OtherFeatures = string.Join(";", viewModel.SelectedFeatures);
+
+            var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "property", property.Id.ToString().ToSHA256String());
+            var existingGalleryPaths = property.GalleryPath?.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries) ?? new string[0];
+            var newGalleryPaths = new List<string>(existingGalleryPaths);
+
+            // Handle file uploads
+            if (GalleryFiles != null && GalleryFiles.Count > 0)
+            {
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    Directory.CreateDirectory(uploadsFolder);
+                }
+
+                foreach (var formFile in GalleryFiles)
+                {
+                    if (formFile.Length > 0 && !existingGalleryPaths.Contains(formFile.FileName))
+                    {
+                        var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(formFile.FileName);
+                        var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await formFile.CopyToAsync(stream);
+                        }
+
+                        newGalleryPaths.Add(uniqueFileName);
+                    }
+                }
+            }
+
+            // Identify files to delete
+            var currentGalleryPaths = GalleryFiles?.Select(f => f.FileName).ToList() ?? new List<string>();
+            var filesToDelete = existingGalleryPaths.Except(currentGalleryPaths).ToList();
+
+            // Delete removed files
+            foreach (var fileToDelete in filesToDelete)
+            {
+                var filePath = Path.Combine(uploadsFolder, fileToDelete);
+                if (System.IO.File.Exists(filePath))
+                {
+                    System.IO.File.Delete(filePath);
+                }
+
+                // Remove the deleted file from the new gallery paths
+                newGalleryPaths.Remove(fileToDelete);
+            }
+
+            // Update the gallery path
+            property.GalleryPath = string.Join(";", newGalleryPaths);
+
+            _context.Properties.Update(property);
+            await _context.SaveChangesAsync();
+
+            TempData["Message"] = "Property updated successfully.";
+            return RedirectToAction(nameof(AgentPropertyList), new { username = currentUser.UserName });
+
+            //viewModel.Features = await _context.Features.ToListAsync();
+            ////viewModel.Property.Id = property.Id;
+            //viewModel.Property.EncryptedId = encryptedId; // Preserve the encrypted ID
+
+            //ViewData["Title"] = "Edit Property";
+            //ViewData["User"] = currentUser;
+            //return View(viewModel);
+        }
+
+        [HttpPost]
+		public async Task<IActionResult> UnlistProperty(int id)
+		{
+			var user = await _userManager.GetUserAsync(User);
+			var property = await _context.Properties
+				.Where(p => p.Id == id && p.AgentId == user.Id)
+				.FirstOrDefaultAsync();
+
+			if (property == null)
+			{
+				return NotFound("Property not found or you do not have permission to unlist this property.");
+			}
+
+			//property.ListingStatus = false;
+			//_context.Update(property);
+			await _context.SaveChangesAsync();
+
+			return RedirectToAction("AgentPropertyList");
+		}
+
+		[Authorize(Roles = "Agent")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteProperty(int id)

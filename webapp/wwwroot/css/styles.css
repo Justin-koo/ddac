@@ -7986,7 +7986,7 @@ table.property-table-wrap .dashboard_propert_wrapper .title .table-property-pric
     margin-bottom: 3px;
     display: inline-flex;
 }
-._leads_action a {
+._leads_action ._leads_item {
     width: 37px;
     height: 37px;
     display: inline-flex;

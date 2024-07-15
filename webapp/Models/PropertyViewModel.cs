@@ -68,5 +68,7 @@
 		public string? ListingStatus { get; set; }
 
 		public int Id { get; set; }
-	}
+
+        public string? EncryptedId { get; set; }
+    }
 }

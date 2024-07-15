@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using webapp.Areas.Identity.Data;
 using webapp.Data;
+using webapp.Helpers;
 using webapp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,6 +31,10 @@ builder.Services.ConfigureApplicationCookie(options =>
 // Configure SMTP settings and email service
 builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
 builder.Services.AddTransient<SendEmailService>();
+
+// Configure Data Protection
+builder.Services.AddDataProtection();
+builder.Services.AddSingleton<EncryptionHelper>();
 
 var app = builder.Build();
 
