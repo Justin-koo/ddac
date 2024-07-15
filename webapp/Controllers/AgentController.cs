@@ -221,7 +221,7 @@ namespace webapp.Controllers
 		}
 
 
-        //[Authorize(Roles = "Agent")]
+        [Authorize(Roles = "Agent")]
         [HttpGet]
         public async Task<IActionResult> SubmitProperty()
         {
@@ -235,7 +235,7 @@ namespace webapp.Controllers
             return View(viewModel);
         }
 
-        //[Authorize(Roles = "Agent")]
+        [Authorize(Roles = "Agent")]
         [HttpPost]
         public async Task<IActionResult> SubmitProperty(PropertyDetailsViewModel model, List<IFormFile> files)
         {
@@ -252,11 +252,12 @@ namespace webapp.Controllers
                     Console.WriteLine(error);
                 }
 
-                return Json(new
-                {
-                    success = false,
-                    errors
-                });
+                return View(model);
+                //return Json(new
+                //{
+                //    success = false,
+                //    errors
+                //});
             }
 
             var user = await _userManager.GetUserAsync(User);
@@ -349,28 +350,13 @@ namespace webapp.Controllers
             TempData["Message"] = "Property created successfully!";
             var redirectUrl = Url.Action("SubmitProperty", "Agent");
 
-            return Json(new
-            {
-                success = true,
-                redirectUrl
-            });
-            //var errors = ModelState
-            //        .Where(ms => ms.Value.Errors.Count > 0)
-            //        .Select(ms => new
-            //        {
-            //            Field = ms.Key,
-            //            Errors = ms.Value.Errors.Select(e => e.ErrorMessage).ToArray()
-            //        });
+            return RedirectToAction(nameof(AgentPropertyList), new { username = user.UserName });
 
-            //    // Optionally log the errors
-            //    foreach (var error in errors)
-            //    {
-            //        Console.WriteLine($"Field: {error.Field}");
-            //        foreach (var errorMessage in error.Errors)
-            //        {
-            //            Console.WriteLine($"Error: {errorMessage}");
-            //        }
-            //    }
+            //return Json(new
+            //{
+            //    success = true,
+            //    redirectUrl
+            //});
 
             //return View(model);
         }
