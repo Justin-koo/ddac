@@ -122,11 +122,11 @@
         document.addEventListener('DOMContentLoaded', function () {
             var existingImageUrl = document.getElementById('uploadedImageUrl').value;
             var AgentDropzone = new Dropzone("#agentpicDropzone", {
-                url: "/agent/uploadAgentPic",
+                url: "/account/upload-profile-pic",
                 method: "post",
                 uploadMultiple: false,
                 maxFiles: 1,
-                addRemoveLinks: true,
+                // addRemoveLinks: true,
                 acceptedFiles: 'image/*',
                 paramName: "files",
                 resizeWidth: "100",
@@ -136,7 +136,7 @@
                     if (existingImageUrl) {
                         var mockFile = { name: "Profile Picture", size: 12345, type: 'image/jpeg', url: existingImageUrl };
                         this.emit("addedfile", mockFile);
-                        this.emit("thumbnail", mockFile, '/uploads/agent/' + existingImageUrl);
+                        this.emit("thumbnail", mockFile, '/uploads/user/' + existingImageUrl);
                         $('[data-dz-thumbnail]').css('height', '120');
                         $('[data-dz-thumbnail]').css('width', '120');
                         $('[data-dz-thumbnail]').css('object-fit', 'cover');

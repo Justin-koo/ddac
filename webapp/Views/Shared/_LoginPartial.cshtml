@@ -5,14 +5,14 @@
 @inject UserManager<webappUser> UserManager
 
 @{
-	string profilePictureUrl = "~/uploads/agent/default-user.png"; // Default profile picture
+	string profilePictureUrl = "~/uploads/user/default-user.png"; // Default profile picture
 
 	if (SignInManager.IsSignedIn(User))
 	{
 		var user = await UserManager.GetUserAsync(User);
 		if (user != null && !string.IsNullOrEmpty(user.ProfilePicture))
 		{
-			profilePictureUrl = Url.Content($"~/uploads/agent/{user.ProfilePicture}");
+			profilePictureUrl = Url.Content($"~/uploads/user/{user.ProfilePicture}");
 		}
 	}
 }
@@ -59,7 +59,7 @@
 	<li>
 		<div class="btn-group account-drop">
 			<button type="button" class="btn btn-order-by-filt" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-				<img src="@profilePictureUrl" class="img-fluid circle" alt="Profile Picture">
+				<img src="@profilePictureUrl" class="img-fluid circle" alt="">
 			</button>
 			<div class="dropdown-menu dropdown-menu-end pull-right">
 				<div class="drp_menu_headr">
