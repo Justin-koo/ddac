@@ -9,6 +9,7 @@ using System.Configuration;
 using System.Linq;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -150,7 +151,7 @@ namespace webapp.Areas.Identity.Pages.Account.Manage
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(List<IFormFile> profilepic)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -237,6 +238,46 @@ namespace webapp.Areas.Identity.Pages.Account.Manage
 
             user.Specialties = Input.Specialties != null ? string.Join(',', Input.Specialties) : null;
             user.Languages = Input.Languages != null ? string.Join(',', Input.Languages) : null;
+
+            var uploadUrls = new List<string>();
+            foreach (var file in profilepic)
+            {
+                if (file.Length > 0)
+                {
+                    // Delete the old profile picture if it exists
+                    if (!string.IsNullOrEmpty(user.ProfilePicture))
+                    {
+                        var oldFilePath = Path.Combine(_environment.WebRootPath, "uploads", "user", user.ProfilePicture);
+                        if (System.IO.File.Exists(oldFilePath))
+                        {
+                            System.IO.File.Delete(oldFilePath);
+                        }
+                    }
+
+                    var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                    var uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads", "user");
+                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    // Ensure the uploads folder exists
+                    if (!Directory.Exists(uploadsFolder))
+                    {
+                        Directory.CreateDirectory(uploadsFolder);
+                    }
+
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await file.CopyToAsync(fileStream);
+                    }
+
+                    uploadUrls.Add(uniqueFileName);
+                }
+            }
+
+            if (uploadUrls.Count > 0)
+            {
+                var uploadedUrl = uploadUrls.First(); // Assuming one file
+                user.ProfilePicture = uploadedUrl;
+            }
 
             await _userManager.UpdateAsync(user);
             await _signInManager.RefreshSignInAsync(user);

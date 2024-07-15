@@ -1,16 +1,15 @@
-﻿@model PropertyDetailsViewModel
-@{
-    ViewData["Title"] = "Submit Property";
-    Layout = "~/Views/Shared/_AccountLayout.cshtml";
-}   
+﻿@using webapp.Areas.Identity.Data
+@model PropertyDetailsViewModel
 
-@if (TempData["Message"] != null)
-{
-	var statusMessageClass = TempData["Message"]?.ToString()?.StartsWith("Error") == true ? "danger" : "success";
-	<div class="alert alert-@statusMessageClass alert-dismissible" role="alert">
-		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-		@TempData["Message"]
-	</div>
+@{
+    Layout = "~/Views/Shared/_AccountLayout.cshtml";
+    var user = ViewData["User"] as webappUser;
+
+    var baseUrl = $"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.PathBase}";
+    var existingFiles = Model.Property.GalleryPath.Select(path => new
+    {
+        source = $"{baseUrl}/uploads/property/{Model.Property.GalleryFolder}/{path}",
+    }).ToList();
 }
 
 <div class="dashboard-body">
@@ -20,8 +19,15 @@
 
             <!-- Submit Form -->
             <div class="col-lg-12 col-md-12">
-                <form id="submitPropertyForm" asp-controller="Agent" asp-action="SubmitProperty" class="submit-page" method="post" enctype="multipart/form-data">
+                <h2 class="align-middle">
+                    <a asp-controller="Agent" asp-action="AgentPropertyList" asp-route-username="@user.UserName">
+                        <i class="fas fa-arrow-left"></i> 
+                    </a>
+                    @ViewData["Title"]
+                </h2>
 
+                <form id="editPropertyForm" asp-controller="Agent" asp-action="EditProperty" asp-route-username="@user.UserName" asp-route-encryptedId="@Model.Property.EncryptedId" class="submit-page mt-5" method="post" enctype="multipart/form-data">
+                    @Html.AntiForgeryToken()
                     <!-- Basic Information -->
                     <div class="frm_submit_block">
                         <h3>Basic Information</h3>
@@ -93,8 +99,8 @@
 
                                 <div class="form-group col-md-12">
                                     <label>Upload Gallery</label>
-                                    <input type="file" name="files" id="filepond" multiple>
-                                    @* <div class="dropzone dz-clickable primary-dropzone" id="galleryDropzone">
+                                    <input type="file" name="GalleryFiles" id="filepond" multiple>
+                                    <d@* iv class="dropzone dz-clickable primary-dropzone" id="galleryDropzone">
                                         <div class="dz-default dz-message">
                                             <i class="fa-solid fa-images"></i>
                                             <span>Drag & Drop To Upload Images</span>
@@ -198,72 +204,77 @@
                                     <div id="featuresinfo" class="panel-collapse mx-2" aria-labelledby="featuresinfo">
                                         <div class="vesh-detail-bloc-body">
                                             <div class="lvs-detail mb-4">
-                                            @foreach (var category in Model.Features.GroupBy(f => f.Category))
-                                            {
-                                                <div class="lvs-detail mb-4">
-                                                    <div class="row">
-                                                        <div class="col-xl-12 col-lg-12 col-md-12"><h6>@category.Key</h6></div>
-                                                    </div>
-                                                    <div class="row gy-3">
-                                                        @foreach (var feature in category)
-                                                        {
-                                                            <div class="col-xl-4 col-lg-4 col-md-4 col-12">
-                                                                <div class="lvs-caption">
-                                                                    <input name="SelectedFeatures" type="checkbox" value="@feature.FeatureID" class="form-check-input" id="feature-@feature.FeatureID">
-                                                                    <label class="form-check-label" for="feature-@feature.FeatureID">@feature.FeatureName</label>
+                                                @foreach (var category in Model.Features.GroupBy(f => f.Category))
+                                                {
+                                                    <div class="lvs-detail mb-4">
+                                                        <div class="row">
+                                                            <div class="col-xl-12 col-lg-12 col-md-12"><h6>@category.Key</h6></div>
+                                                        </div>
+                                                        <div class="row gy-3">
+                                                            @foreach (var feature in category)
+                                                            {
+                                                                <div class="col-xl-4 col-lg-4 col-md-4 col-12">
+                                                                    <div class="lvs-caption">
+                                                                        <input name="SelectedFeatures"
+                                                                               type="checkbox"
+                                                                               value="@feature.FeatureID"
+                                                                               class="form-check-input"
+                                                                               id="feature-@feature.FeatureID"
+                                                                        @(Model.SelectedFeatures.Contains(feature.FeatureID.ToString()) ? "checked" : "")>
+                                                                        <label class="form-check-label" for="feature-@feature.FeatureID">@feature.FeatureName</label>
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                        }
+                                                            }
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            }
-                                            
+                                                }
+
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Contact Information -->
-                    @*<div class="frm_submit_block">
-                    <h3>Contact Information</h3>
-                    <div class="frm_submit_wrap">
-                    <div class="row">
+                        <!-- Contact Information -->
+                        @*<div class="frm_submit_block">
+                        <h3>Contact Information</h3>
+                        <div class="frm_submit_wrap">
+                        <div class="row">
 
-                    <div class="form-group col-md-4">
-                    <label asp-for="ContactName">Name</label>
-                    <input asp-for="ContactName" class="form-control" />
-                    <span class="text-danger" asp-validation-for="ContactName"></span>
-                    </div>
+                        <div class="form-group col-md-4">
+                        <label asp-for="ContactName">Name</label>
+                        <input asp-for="ContactName" class="form-control" />
+                        <span class="text-danger" asp-validation-for="ContactName"></span>
+                        </div>
 
-                    <div class="form-group col-md-4">
-                    <label asp-for="ContactEmail">Email</label>
-                    <input asp-for="ContactEmail" class="form-control" />
-                    <span class="text-danger" asp-validation-for="ContactEmail"></span>
-                    </div>
+                        <div class="form-group col-md-4">
+                        <label asp-for="ContactEmail">Email</label>
+                        <input asp-for="ContactEmail" class="form-control" />
+                        <span class="text-danger" asp-validation-for="ContactEmail"></span>
+                        </div>
 
-                    <div class="form-group col-md-4">
-                    <label asp-for="ContactPhone">Phone (optional)</label>
-                    <input asp-for="ContactPhone" class="form-control" />
-                    <span class="text-danger" asp-validation-for="ContactPhone"></span>
-                    </div>
+                        <div class="form-group col-md-4">
+                        <label asp-for="ContactPhone">Phone (optional)</label>
+                        <input asp-for="ContactPhone" class="form-control" />
+                        <span class="text-danger" asp-validation-for="ContactPhone"></span>
+                        </div>
 
-                    </div>
-                    </div>
-                    </div>
+                        </div>
+                        </div>
+                        </div>
 
-                    <div class="form-group col-lg-12 col-md-12">
-                    <div class="form-check form-check-inline">
-                    <input asp-for="Consent" class="form-check-input" />
-                    <label class="form-check-label" asp-for="Consent">I consent to having this website store my submitted information so they can respond to my inquiry.</label>
-                    </div>
-                    <span class="text-danger" asp-validation-for="Consent"></span>
-                    </div> *@
+                        <div class="form-group col-lg-12 col-md-12">
+                        <div class="form-check form-check-inline">
+                        <input asp-for="Consent" class="form-check-input" />
+                        <label class="form-check-label" asp-for="Consent">I consent to having this website store my submitted information so they can respond to my inquiry.</label>
+                        </div>
+                        <span class="text-danger" asp-validation-for="Consent"></span>
+                        </div> *@
 
-                    <div class="form-group col-lg-12 col-md-12">
-                        <button id="submit-button" class="btn btn-primary" type="submit">Submit & Preview</button>
-                    </div>
+                        <div class="form-group col-lg-12 col-md-12">
+                            <button id="submit-button" class="btn btn-primary" type="submit">Save Changes</button>
+                        </div>
 
                 </form>
             </div>
@@ -289,101 +300,26 @@
             FilePond.registerPlugin(FilePondPluginImagePreview);
 
             // Get a reference to the file input element
-            const inputElement = document.querySelector('input[name="files"]');
+            const inputElement = document.querySelector('input[name="GalleryFiles"]');
 
             // Create a FilePond instance
             const pond = FilePond.create(inputElement, {
                 storeAsFile: true,
-                name: "files",
+                name: "GalleryFiles",
                 allowMultiple: true,
                 maxFileSize: "5MB",
                 imagePreviewHeight: 256,
                 acceptedFileTypes: ['image/*'],
                 instantUpload: false // Disable instant upload to use default form submission
             });
+
+            // Load existing files
+            const existingFiles = @Html.Raw(Json.Serialize(existingFiles));
+
+            existingFiles.forEach(file => {
+                pond.addFile(file.source);
+                // pond.addFile(file.source, file.options);
+            });
         });
-
-        // Dropzone.autoDiscover = false;
-
-        // var myDropzone = new Dropzone("#galleryDropzone", {
-        //     url: "/Agent/SubmitProperty", // Ensure this is the correct endpoint
-        //     method: "post", // Explicitly set the method
-        //     uploadMultiple: true, // If you want to allow uploading multiple files
-        //     parallelUploads: 10,
-        //     maxFiles: 10,
-        //     autoProcessQueue: false, // Consider processing the queue manually if needed
-        //     addRemoveLinks: true,
-        //     acceptedFiles: 'image/*',
-        //     paramName: "files", // This should match with your controller's parameter
-        //     init: function () {
-        //         var form = document.getElementById('submitPropertyForm');
-        //         var $submitButton = $('#submit-button');
-
-        //         form.addEventListener("submit", function (e) {
-        //             e.preventDefault();
-        //             e.stopPropagation();
-
-        //             $submitButton.addClass('placeholder disabled')
-
-        //             var formData = new FormData(form);
-
-        //             if (myDropzone.getQueuedFiles().length > 0) {
-        //                 // Append files manually
-        //                 myDropzone.files.forEach(function (file) {
-        //                     formData.append('files', file, file.name);
-        //                 });
-
-        //                 // for (var pair of formData.entries()) {
-        //                 //     console.log(`${pair[0]}: ${pair[1]}`);
-        //                 // }
-        //             }
-
-        //             fetch(form.action, {
-        //                 method: 'POST',
-        //                 body: formData
-        //             })
-        //                 .then(response => response.json())
-        //                 .then(data => {
-        //                     $submitButton.removeClass('placeholder disabled')
-
-        //                     if (data.success) {
-        //                         Swal.fire({
-        //                             title: 'Success!',
-        //                             text: 'Your property has been submitted successfully.',
-        //                             icon: 'success',
-        //                             confirmButtonText: 'OK',
-        //                             confirmButtonColor: '#017efa',
-        //                         }).then((result) => {
-        //                             if (result.isConfirmed) {
-        //                                 // Redirect if the user clicks "OK"
-        //                                 window.location.href = data.redirectUrl; // Assuming 'redirectUrl' is provided by the server
-        //                             }
-        //                         });
-        //                     } else {
-        //                         let errors = data.errors.join('\n');
-        //                         Swal.fire({
-        //                             title: 'Error!',
-        //                             text: errors,
-        //                             icon: 'error',
-        //                             confirmButtonColor: '#017efa',
-        //                             confirmButtonText: 'OK'
-        //                         });
-        //                     }
-        //                 })
-        //                 .catch(error => {
-        //                     Swal.fire({
-        //                         title: 'Error!',
-        //                         text: 'An unexpected error occurred. Please try again.',
-        //                         icon: 'error',
-        //                         confirmButtonColor: '#017efa',
-        //                         confirmButtonText: 'OK'
-        //                     });
-
-        //                     $submitButton.removeClass('placeholder disabled')
-        //                 });
-        //         });
-        //     }
-        // });
-
     </script>
 }
