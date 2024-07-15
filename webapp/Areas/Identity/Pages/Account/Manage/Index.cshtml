@@ -129,6 +129,9 @@
                 addRemoveLinks: true,
                 acceptedFiles: 'image/*',
                 paramName: "files",
+                resizeWidth: "100",
+                resizeHeight: "100",
+                resizeMethod: "crop",
                 init: function () {
                     if (existingImageUrl) {
                         var mockFile = { name: "Profile Picture", size: 12345, type: 'image/jpeg', url: existingImageUrl };
