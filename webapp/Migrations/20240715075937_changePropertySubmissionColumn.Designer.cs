@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using webapp.Data;
 
@@ -11,9 +12,11 @@ using webapp.Data;
 namespace webapp.Migrations
 {
     [DbContext(typeof(webappContext))]
-    partial class webappContextModelSnapshot : ModelSnapshot
+    [Migration("20240715075937_changePropertySubmissionColumn")]
+    partial class changePropertySubmissionColumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

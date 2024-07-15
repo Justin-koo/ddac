@@ -148,18 +148,19 @@
 									</td>
 									<td>
 										<div class="_leads_status">
-											@if (property.SubmissionStatus == "Pending")
+											<span class="active">@property.ListingStatus</span>
+											@* @if (property.ListingStatus == "Pending")
 											{
-												<span class="pending">@property.SubmissionStatus</span>
+												<span class="pending">@property.ListingStatus</span>
 											}
-											else if (property.SubmissionStatus == "Approved")
+											else if (property.ListingStatus == "Approved")
 											{
-												<span class="active">@property.SubmissionStatus</span>
+												<span class="active">@property.ListingStatus</span>
 											}
-											else if (property.SubmissionStatus == "Rejected")
+											else if (property.ListingStatus == "Rejected")
 											{
-												<span class="expired">@property.SubmissionStatus</span>
-											}
+												<span class="expired">@property.ListingStatus</span>
+											} *@
 										</div>
 										@* <div class="_leads_view_title"><span>Till 12 Oct</span></div> *@
 									</td>

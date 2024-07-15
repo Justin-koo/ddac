@@ -112,7 +112,7 @@
 					<div class="agent-list-block border">
 						<div class="agent-list-fliop">
 							<div class="agent-list-thumb">
-								<a asp-controller="Agent" asp-action="AgentDetails"><img src="https://via.placeholder.com/650x650" class="img-fluid rounded" alt=""></a>
+								<a asp-controller="Agent" asp-action="AgentDetails" asp-route-username="@agent.UserName"><img src="https://via.placeholder.com/650x650" class="img-fluid rounded" alt=""></a>
 								@* <span class="verify-icon"><i class="fa-solid fa-check"></i></span> *@
 							</div>
 						</div>
@@ -123,7 +123,7 @@
 								</span>
 							</div>
 							<div class="agent-title-uio mb-2">
-								<h5 class="mb-0"><a asp-controller="Agent" asp-action="AgentDetails">@agent.Name</a></h5>
+								<h5 class="mb-0"><a asp-controller="Agent" asp-action="AgentDetails" asp-route-username="@agent.UserName">@agent.Name</a></h5>
 								<span class="font--medium small"><i class="fa-solid fa-location-dot me-2"></i>@agent.City, @agent.State</span>
 							</div>
 							<div class="agent-yytr small font--medium mb-3">

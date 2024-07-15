@@ -58,6 +58,7 @@ namespace webapp.Controllers
 				.Select(u => new AgentViewModel
 				{
 					Id = u.Id,
+                    UserName = u.UserName,
 					Name = u.FullName,
 					Email = u.Email,
 					PhoneNumber = u.PhoneNumber,
@@ -103,12 +104,69 @@ namespace webapp.Controllers
             return Json(locations);
         }
 
-        [Route("agents/details")]
-		[HttpGet]
-		public IActionResult AgentDetails()
+        [Route("agents/{username}")]
+        [HttpGet]
+		public async Task<IActionResult> AgentDetails(string username)
 		{
+			if (string.IsNullOrEmpty(username))
+			{
+				return RedirectToAction("AgentList");
+			}
+
+			var agent = await _userManager.Users
+			.FirstOrDefaultAsync(u => u.UserName == username);
+
+			if (agent == null)
+			{
+				return RedirectToAction("AgentList");
+			}
+
+			var isAgent = await _userManager.IsInRoleAsync(agent, "Agent");
+			if (!isAgent)
+			{
+				return RedirectToAction("AgentList");
+			}
+
+			var properties = await _context.Properties
+			.Where(p => p.AgentId == agent.Id)
+			.Select(p => new PropertyViewModel
+			{
+				Id = p.Id,
+				Title = p.Title,
+				Status = p.Status,
+				Price = p.Price,
+				Area = p.Area,
+				Bedrooms = p.Bedrooms,
+				Bathrooms = p.Bathrooms,
+				GalleryPath = p.GalleryPath.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList(),
+				AddressLine = p.Address.AddressLine,
+				City = p.Address.City,
+				State = p.Address.State,
+				ZipCode = p.Address.ZipCode,
+				BuildingAge = p.Detail.BuildingAge,
+				GalleryFolder = p.Id.ToString().ToSHA256String(),
+                ListingStatus = p.ListingStatus,
+			})
+			.ToListAsync();
+
+			var model = new AgentViewModel
+			{
+				Id = agent.Id,
+				Name = agent.FullName,
+				Email = agent.Email,
+				PhoneNumber = agent.PhoneNumber,
+				About = agent.About,
+				City = agent.City,
+				State = agent.State,
+				FacebookLink = agent.FacebookLink,
+				XLink = agent.XLink,
+				LinkedInLink = agent.LinkedInLink,
+				Properties = properties
+				//PropertyCount = _context.Properties.Count(p => p.AgentId == agent.Id)
+			};
+
 			ViewData["Title"] = "Agent Details";
-			return View();
+			return View(model);
 		}
 
         [HttpGet]
@@ -145,8 +203,8 @@ namespace webapp.Controllers
 				BuildingAge = property.Detail.BuildingAge,
 				Garage = property.Detail.Garage,
 				Rooms = property.Detail.Rooms,
-				SubmissionStatus = property.SubmissionStatus
-			};
+                ListingStatus = property.ListingStatus
+            };
 
 			var viewModel = new PropertyDetailsViewModel
             {
@@ -211,7 +269,7 @@ namespace webapp.Controllers
                 Bathrooms = model.Property.Bathrooms,
                 ListingDate = model.Property.ListingDate,
                 AgentId = user.Id,
-                SubmissionStatus = "Pending",
+                ListingStatus = "Active",
                 // GalleryPath = string.Join(";", model.GalleryPath),
             };
 
@@ -346,7 +404,7 @@ namespace webapp.Controllers
                 Rooms = p.Detail.Rooms,
                 Features = p.Detail.OtherFeatures?.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList() ?? new List<string>(),
                 GalleryFolder = p.Id.ToString().ToSHA256String(),
-                SubmissionStatus = p.SubmissionStatus,
+                ListingStatus = p.ListingStatus,
             }).ToList();
 
             ViewData["Title"] = "My Property";
@@ -379,51 +437,6 @@ namespace webapp.Controllers
             }
 
             return RedirectToAction("AgentPropertyList");
-        }
-
-
-        [Authorize]
-        [HttpPost]
-        [Route("agent/uploadAgentPic")]
-        public async Task<IActionResult> UploadAgentPic(List<IFormFile> files)
-        {
-            var user = await _userManager.GetUserAsync(User);
-            var uploadUrls = new List<string>();
-            foreach (var file in files)
-            {
-                if (file.Length > 0)
-                {
-                    var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-                    var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "agent");
-                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                    // Ensure the uploads folder exists
-                    if (!Directory.Exists(uploadsFolder))
-                    {
-                        Directory.CreateDirectory(uploadsFolder);
-                    }
-
-                    using (var fileStream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await file.CopyToAsync(fileStream);
-                    }
-
-                    uploadUrls.Add(uniqueFileName);
-                }
-            }
-
-            if (uploadUrls.Count > 0)
-            {
-                var uploadedUrl = uploadUrls.First(); // Assuming one file
-                user.ProfilePicture = uploadedUrl;
-                await _userManager.UpdateAsync(user);
-
-                return Json(new { success = true, fileUrl = uploadedUrl });
-            }
-            else
-            {
-                return Json(new { success = false, errors = new[] { "No files uploaded." } });
-            }
         }
 
     }

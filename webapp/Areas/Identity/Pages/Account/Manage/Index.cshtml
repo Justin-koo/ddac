@@ -15,46 +15,46 @@
                     <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
                     <div class="form-group col-md-6">
                         <label asp-for="Input.FullName" class="form-label"></label>
-                        <input asp-for="Input.FullName" class="form-control" placeholder="Please enter your Full Name." />
+                        <input asp-for="Input.FullName" class="form-control" />
                         <span asp-validation-for="Input.FullName" class="text-danger"></span>
                     </div>
                     <div class="form-group col-md-6">
                         <label asp-for="Username" class="form-label"></label>
-                        <input asp-for="Username" class="form-control" placeholder="Please enter your username."  />
+                        <input asp-for="Username" class="form-control" />
                         <span asp-validation-for="Username" class="text-danger"></span>
                     </div>
                     <div class="form-group col-md-6">
                         <label asp-for="Input.Email" class="form-label"></label>
-                        <input asp-for="Input.Email" class="form-control" placeholder="Please enter your username." disabled/>
+                        <input asp-for="Input.Email" class="form-control" disabled/>
                     </div>
                     <div class="form-group col-md-6">
                         <label asp-for="Input.PhoneNumber" class="form-label"></label>
-                        <input asp-for="Input.PhoneNumber" class="form-control" placeholder="Please enter your phone number." />
+                        <input asp-for="Input.PhoneNumber" class="form-control"/>
                         <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
                     </div>
                     <div class="form-group col-md-6">
-                        <label asp-for="Input.Country" class="form-label"></label>
-                        <input asp-for="Input.Country" class="form-control" placeholder="Please enter your Country." />
-                        <span asp-validation-for="Input.Country" class="text-danger"></span>
-                    </div>
-                    <div class="form-group col-md-6">
                         <label asp-for="Input.Address" class="form-label"></label>
-                        <input asp-for="Input.Address" class="form-control" placeholder="Please enter your Address." />
+                        <input asp-for="Input.Address" class="form-control" />
                         <span asp-validation-for="Input.Address" class="text-danger"></span>
                     </div>
                     <div class="form-group col-md-6">
-                        <label asp-for="Input.State" class="form-label"></label>
-                        <input asp-for="Input.State" class="form-control" placeholder="Please enter your State." />
-                        <span asp-validation-for="Input.State" class="text-danger"></span>
-                    </div>
-                    <div class="form-group col-md-6">
                         <label asp-for="Input.City" class="form-label"></label>
-                        <input asp-for="Input.City" class="form-control" placeholder="Please enter your City." />
+                        <input asp-for="Input.City" class="form-control"/>
                         <span asp-validation-for="Input.City" class="text-danger"></span>
                     </div>
                     <div class="form-group col-md-6">
+                        <label asp-for="Input.State" class="form-label"></label>
+                        <input asp-for="Input.State" class="form-control" />
+                        <span asp-validation-for="Input.State" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label asp-for="Input.Country" class="form-label"></label>
+                        <input asp-for="Input.Country" class="form-control" />
+                        <span asp-validation-for="Input.Country" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-6">
                         <label asp-for="Input.Zip" class="form-label"></label>
-                        <input asp-for="Input.Zip" class="form-control" placeholder="Please enter your Zip." />
+                        <input asp-for="Input.Zip" class="form-control" />
                         <span asp-validation-for="Input.Zip" class="text-danger"></span>
                     </div>
                     <div class="form-group col-md-12">
@@ -84,25 +84,28 @@
                     <h3>Social Media</h3>
                     <div class="form-group col-md-6">
                         <label asp-for="Input.FacebookLink" class="form-label"></label>
-                        <input asp-for="Input.FacebookLink" class="form-control" placeholder="please enter your facebooklink." />
+                        <input asp-for="Input.FacebookLink" class="form-control" />
                         <span asp-validation-for="Input.FacebookLink" class="text-danger"></span>
                     </div>
                     <div class="form-group col-md-6">
                         <label asp-for="Input.XLink" class="form-label"></label>
-                        <input asp-for="Input.XLink" class="form-control" placeholder="please enter your xlink." />
+                        <input asp-for="Input.XLink" class="form-control" />
                         <span asp-validation-for="Input.XLink" class="text-danger"></span>
                     </div>
                     <div class="form-group col-md-6">
                         <label asp-for="Input.LinkedInLink" class="form-label"></label>
-                        <input asp-for="Input.LinkedInLink" class="form-control" placeholder="please enter your linkedinlink." />
+                        <input asp-for="Input.LinkedInLink" class="form-control" />
                         <span asp-validation-for="Input.LinkedInLink" class="text-danger"></span>
                     </div>
                     <div class="form-group col-md-6">
                         <label asp-for="Input.GoogleLink" class="form-label"></label>
-                        <input asp-for="Input.GoogleLink" class="form-control" placeholder="please enter your googlelink." />
+                        <input asp-for="Input.GoogleLink" class="form-control" />
                         <span asp-validation-for="Input.GoogleLink" class="text-danger"></span>
                     </div>
-                    <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
+                    <div class="form-group col-lg-12 col-md-12 mt-4">
+						<button id="update-profile-button" type="submit" class="btn btn-theme btn-lg">Save Changes</button>
+                    </div>
+                    
                 </form>
             </div>
         </div>
@@ -119,18 +122,24 @@
         document.addEventListener('DOMContentLoaded', function () {
             var existingImageUrl = document.getElementById('uploadedImageUrl').value;
             var AgentDropzone = new Dropzone("#agentpicDropzone", {
-                url: "/agent/uploadAgentPic",
+                url: "/account/upload-profile-pic",
                 method: "post",
                 uploadMultiple: false,
                 maxFiles: 1,
-                addRemoveLinks: true,
+                // addRemoveLinks: true,
                 acceptedFiles: 'image/*',
                 paramName: "files",
+                resizeWidth: "100",
+                resizeHeight: "100",
+                resizeMethod: "crop",
                 init: function () {
                     if (existingImageUrl) {
                         var mockFile = { name: "Profile Picture", size: 12345, type: 'image/jpeg', url: existingImageUrl };
                         this.emit("addedfile", mockFile);
-                        this.emit("thumbnail", mockFile, '/uploads/agent/' + existingImageUrl);
+                        this.emit("thumbnail", mockFile, '/uploads/user/' + existingImageUrl);
+                        $('[data-dz-thumbnail]').css('height', '120');
+                        $('[data-dz-thumbnail]').css('width', '120');
+                        $('[data-dz-thumbnail]').css('object-fit', 'cover');
                         this.emit("complete", mockFile);
                         this.files.push(mockFile);
                     }
@@ -139,18 +148,19 @@
 
             AgentDropzone.on("success", function (file, response) {
                 if (response.success) {
-                    document.getElementById('uploadedImageUrl').value = response.fileUrl;
-                    Swal.fire({
-                        title: 'Success!',
-                        text: 'Your profile has been updated successfully.',
-                        icon: 'success',
-                        confirmButtonText: 'OK',
-                        confirmButtonColor: '#017efa',
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            location.reload();
-                        }
-                    });
+                    location.reload();
+                    // document.getElementById('uploadedImageUrl').value = response.fileUrl;
+                    // Swal.fire({
+                    //     title: 'Success!',
+                    //     text: 'Your profile has been updated successfully.',
+                    //     icon: 'success',
+                    //     confirmButtonText: 'OK',
+                    //     confirmButtonColor: '#017efa',
+                    // }).then((result) => {
+                    //     if (result.isConfirmed) {
+                    //         location.reload();
+                    //     }
+                    // });
                 } else {
                     showAlert('Error!', response.errors.join('\n'), 'error');
                 }

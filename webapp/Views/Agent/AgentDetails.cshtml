@@ -1,6 +1,4 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model webapp.Models.AgentViewModel
 @{
 }
 
@@ -9,7 +7,7 @@
 		<div class="row">
 			<div class="col-lg-12 col-md-12">
 
-				<h2 class="ipt-title">Hello, Dhananjay</h2>
+				<h2 class="ipt-title">Meet, @Model.Name</h2>
 				<span class="ipn-subtitle">View Dhananjay's profile and get in touch</span>
 
 			</div>
@@ -36,12 +34,12 @@
 							</div>
 						</div>
 						<div class="adgt-wriop-cription">
-							<h5 class="mb-0"><a href="agent-detail.html">Mr. Kumar Dhananjay</a></h5>
-							<span class="font--medium small"><i class="fa-solid fa-location-dot me-2"></i>Liverpool, USA</span>
+							<h5 class="mb-0"><a href="agent-detail.html">@Model.Name</a></h5>
+							<span class="font--medium small"><i class="fa-solid fa-location-dot me-2"></i>@Model.City, @Model.State</span>
 						</div>
 						<div class="adgt-wriop-social">
 							<ul>
-								<li><a href="JavaScript:Void(0);" class="bg--facebook"><i class="fa-brands fa-facebook-f"></i></a></li>
+								<li><a href="@Model.FacebookLink" target="_blank" class="bg--facebook"><i class="fa-brands fa-facebook-f"></i></a></li>
 								<li><a href="JavaScript:Void(0);" class="bg--twitter"><i class="fa-brands fa-twitter"></i></a></li>
 								<li><a href="JavaScript:Void(0);" class="bg--googleplus"><i class="fa-brands fa-google-plus-g"></i></a></li>
 								<li><a href="JavaScript:Void(0);" class="bg--linkedin"><i class="fa-brands fa-linkedin-in"></i></a></li>
@@ -51,24 +49,24 @@
 					<div class="adgt-wriop-caption px-3 py-4">
 						<div class="vl-elfo-group">
 							<div class="vl-elfo-icon"><i class="fa-solid fa-phone-volume"></i></div>
-							<div class="vl-elfo-caption"><h6>Call Us</h6><p>+91 856 457 5243</p></div>
+							<div class="vl-elfo-caption"><h6>Call Us</h6><p>@Model.PhoneNumber</p></div>
 						</div>
 						<div class="vl-elfo-group">
 							<div class="vl-elfo-icon"><i class="fa-regular fa-envelope"></i></div>
-							<div class="vl-elfo-caption"><h6>Drop A Mail</h6><p>paythemezhub@gmail.com</p></div>
+							<div class="vl-elfo-caption"><h6>Drop A Mail</h6><p>@Model.Email</p></div>
 						</div>
 						<div class="vl-elfo-group">
 							<div class="vl-elfo-icon"><i class="fa-brands fa-whatsapp"></i></div>
-							<div class="vl-elfo-caption"><h6>WhatsApp</h6><p>987 563 214</p></div>
+							<div class="vl-elfo-caption"><h6>WhatsApp</h6><p>@Model.PhoneNumber</p></div>
 						</div>
-						<div class="vl-elfo-group">
+						@* <div class="vl-elfo-group">
 							<div class="vl-elfo-icon"><i class="fa-brands fa-skype"></i></div>
 							<div class="vl-elfo-caption"><h6>Skype</h6><p>Dhananjay.preet</p></div>
-						</div>
-						<div class="vl-elfo-group">
+						</div> *@
+						@* <div class="vl-elfo-group">
 							<div class="vl-elfo-icon"><i class="fa-solid fa-globe"></i></div>
 							<div class="vl-elfo-caption"><h6>Website</h6><p>Https://themezhub.com</p></div>
-						</div>
+						</div> *@
 					</div>
 					<div class="adgt-wriop-footer py-3 px-3">
 						<div class="single-button d-flex align-items-center justify-content-between">
@@ -86,8 +84,9 @@
 					<div class="col-lg-12 mb-4">
 						<div class="p-3 bg-white rounded border">
 							<h6>About Agent</h6>
-							<p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga.</p>
-							<p>Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet.</p>
+							<p>
+								@Model.About
+							</p>
 						</div>
 					</div>
 				</div>
@@ -97,7 +96,8 @@
 				</div>
 
 				<div class="row gx-3 gy-4">
-					<!-- Single Property -->
+					@foreach (var property in Model.Properties)
+					{
 					<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
 						<div class="veshm-list-prty">
 							<div class="veshm-list-prty-figure">
@@ -151,116 +151,7 @@
 							</div>
 						</div>
 					</div>
-
-					<!-- Single Property -->
-					<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-						<div class="veshm-list-prty">
-							<div class="veshm-list-prty-figure">
-								<div class="veshm-list-img-slide">
-									<div class="veshm-list-click">
-										<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
-										<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
-										<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
-										<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
-									</div>
-								</div>
-							</div>
-							<div class="veshm-list-prty-caption">
-								<div class="veshm-list-kygf">
-									<div class="veshm-list-kygf-flex">
-										<div class="veshm-list-typess rent"><span>For Rent</span></div>
-										<h5 class="rlhc-title-name verified"><a href="single-property-1.html" class="prt-link-detail">The Goldfinch Real Property</a></h5>
-										<div class="vesh-aget-rates">
-											<i class="fa-solid fa-star"></i>
-											<i class="fa-solid fa-star"></i>
-											<i class="fa-solid fa-star"></i>
-											<i class="fa-solid fa-star"></i>
-											<i class="fa-solid fa-star"></i>
-											<span class="resy-98">452 Reviews</span>
-										</div>
-									</div>
-									<div class="veshm-list-head-flex">
-										<button class="btn btn-like active" type="button"><i class="fa-solid fa-heart-circle-check"></i></button>
-									</div>
-								</div>
-								<div class="veshm-list-middle">
-									<div class="veshm-list-icons">
-										<ul>
-											<li><i class="fa-solid fa-bed"></i><span>3 Bed</span></li>
-											<li><i class="fa-solid fa-bath"></i><span>3 Ba</span></li>
-											<li><i class="fa-solid fa-vector-square"></i><span>2100 Sqft</span></li>
-											<li><i class="fa-solid fa-calendar-days"></i><span>Built 2021</span></li>
-										</ul>
-									</div>
-								</div>
-								<div class="veshm-list-footers">
-									<div class="veshm-list-ftr786">
-										<div class="rlhc-price">
-											<h4 class="rlhc-price-name theme-cl">$8,999<span class="monthly">/Months</span></h4>
-										</div>
-									</div>
-									<div class="veshm-list-ftr1707">
-										<a href="JavaScript:Void(0);" data-bs-toggle="modal" data-bs-target="#offer" class="btn btn-md btn-primary font--medium">Send Offer</a>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-
-					<!-- Single Property -->
-					<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-						<div class="veshm-list-prty">
-							<div class="veshm-list-prty-figure">
-								<div class="veshm-list-img-slide">
-									<div class="veshm-list-click">
-										<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
-										<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
-										<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
-										<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
-									</div>
-								</div>
-							</div>
-							<div class="veshm-list-prty-caption">
-								<div class="veshm-list-kygf">
-									<div class="veshm-list-kygf-flex">
-										<div class="veshm-list-typess rent"><span>For Rent</span></div>
-										<h5 class="rlhc-title-name verified"><a href="single-property-1.html" class="prt-link-detail">Dream Big Real Estate</a></h5>
-										<div class="vesh-aget-rates">
-											<i class="fa-solid fa-star"></i>
-											<i class="fa-solid fa-star"></i>
-											<i class="fa-solid fa-star"></i>
-											<i class="fa-solid fa-star"></i>
-											<i class="fa-solid fa-star"></i>
-											<span class="resy-98">340 Reviews</span>
-										</div>
-									</div>
-									<div class="veshm-list-head-flex">
-										<button class="btn btn-like active" type="button"><i class="fa-solid fa-heart-circle-check"></i></button>
-									</div>
-								</div>
-								<div class="veshm-list-middle">
-									<div class="veshm-list-icons">
-										<ul>
-											<li><i class="fa-solid fa-bed"></i><span>4 Bed</span></li>
-											<li><i class="fa-solid fa-bath"></i><span>3 Ba</span></li>
-											<li><i class="fa-solid fa-vector-square"></i><span>2700 Sqft</span></li>
-											<li><i class="fa-solid fa-calendar-days"></i><span>Built 2022</span></li>
-										</ul>
-									</div>
-								</div>
-								<div class="veshm-list-footers">
-									<div class="veshm-list-ftr786">
-										<div class="rlhc-price">
-											<h4 class="rlhc-price-name theme-cl">$9,649<span class="monthly">/Months</span></h4>
-										</div>
-									</div>
-									<div class="veshm-list-ftr1707">
-										<a href="JavaScript:Void(0);" data-bs-toggle="modal" data-bs-target="#offer" class="btn btn-md btn-primary font--medium">Send Offer</a>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
+					}
 				</div>
 
 				<div class="row gx-3 gy-4 mt-4">
