@@ -46,6 +46,6 @@ namespace webapp.Models
         public virtual PropertyDetail Detail { get; set; }
 
         [Required]
-        public string SubmissionStatus { get; set; }
+        public string ListingStatus { get; set; }
     }
 }

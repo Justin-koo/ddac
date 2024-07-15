@@ -63,7 +63,7 @@ namespace webapp.Controllers
 					Rooms = p.Detail.Rooms,
 					Features = p.Detail.OtherFeatures?.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList() ?? new List<string>(),
 					GalleryFolder = p.Id.ToString().ToSHA256String(),
-					SubmissionStatus = p.SubmissionStatus,
+                    ListingStatus = p.ListingStatus,
 				}).ToList()
 			};
 

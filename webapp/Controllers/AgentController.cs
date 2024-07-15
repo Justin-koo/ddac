@@ -145,7 +145,7 @@ namespace webapp.Controllers
 				ZipCode = p.Address.ZipCode,
 				BuildingAge = p.Detail.BuildingAge,
 				GalleryFolder = p.Id.ToString().ToSHA256String(),
-				SubmissionStatus = p.SubmissionStatus,
+                ListingStatus = p.ListingStatus,
 			})
 			.ToListAsync();
 
@@ -203,8 +203,8 @@ namespace webapp.Controllers
 				BuildingAge = property.Detail.BuildingAge,
 				Garage = property.Detail.Garage,
 				Rooms = property.Detail.Rooms,
-				SubmissionStatus = property.SubmissionStatus
-			};
+                ListingStatus = property.ListingStatus
+            };
 
 			var viewModel = new PropertyDetailsViewModel
             {
@@ -269,7 +269,7 @@ namespace webapp.Controllers
                 Bathrooms = model.Property.Bathrooms,
                 ListingDate = model.Property.ListingDate,
                 AgentId = user.Id,
-                SubmissionStatus = "Pending",
+                ListingStatus = "Active",
                 // GalleryPath = string.Join(";", model.GalleryPath),
             };
 
@@ -404,7 +404,7 @@ namespace webapp.Controllers
                 Rooms = p.Detail.Rooms,
                 Features = p.Detail.OtherFeatures?.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList() ?? new List<string>(),
                 GalleryFolder = p.Id.ToString().ToSHA256String(),
-                SubmissionStatus = p.SubmissionStatus,
+                ListingStatus = p.ListingStatus,
             }).ToList();
 
             ViewData["Title"] = "My Property";
