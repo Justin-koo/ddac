@@ -58,6 +58,7 @@ namespace webapp.Controllers
 				.Select(u => new AgentViewModel
 				{
 					Id = u.Id,
+                    UserName = u.UserName,
 					Name = u.FullName,
 					Email = u.Email,
 					PhoneNumber = u.PhoneNumber,
@@ -103,12 +104,69 @@ namespace webapp.Controllers
             return Json(locations);
         }
 
-        [Route("agents/details")]
-		[HttpGet]
-		public IActionResult AgentDetails()
+        [Route("agents/{username}")]
+        [HttpGet]
+		public async Task<IActionResult> AgentDetails(string username)
 		{
+			if (string.IsNullOrEmpty(username))
+			{
+				return RedirectToAction("AgentList");
+			}
+
+			var agent = await _userManager.Users
+			.FirstOrDefaultAsync(u => u.UserName == username);
+
+			if (agent == null)
+			{
+				return RedirectToAction("AgentList");
+			}
+
+			var isAgent = await _userManager.IsInRoleAsync(agent, "Agent");
+			if (!isAgent)
+			{
+				return RedirectToAction("AgentList");
+			}
+
+			var properties = await _context.Properties
+			.Where(p => p.AgentId == agent.Id)
+			.Select(p => new PropertyViewModel
+			{
+				Id = p.Id,
+				Title = p.Title,
+				Status = p.Status,
+				Price = p.Price,
+				Area = p.Area,
+				Bedrooms = p.Bedrooms,
+				Bathrooms = p.Bathrooms,
+				GalleryPath = p.GalleryPath.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList(),
+				AddressLine = p.Address.AddressLine,
+				City = p.Address.City,
+				State = p.Address.State,
+				ZipCode = p.Address.ZipCode,
+				BuildingAge = p.Detail.BuildingAge,
+				GalleryFolder = p.Id.ToString().ToSHA256String(),
+				SubmissionStatus = p.SubmissionStatus,
+			})
+			.ToListAsync();
+
+			var model = new AgentViewModel
+			{
+				Id = agent.Id,
+				Name = agent.FullName,
+				Email = agent.Email,
+				PhoneNumber = agent.PhoneNumber,
+				About = agent.About,
+				City = agent.City,
+				State = agent.State,
+				FacebookLink = agent.FacebookLink,
+				XLink = agent.XLink,
+				LinkedInLink = agent.LinkedInLink,
+				Properties = properties
+				//PropertyCount = _context.Properties.Count(p => p.AgentId == agent.Id)
+			};
+
 			ViewData["Title"] = "Agent Details";
-			return View();
+			return View(model);
 		}
 
         [HttpGet]
