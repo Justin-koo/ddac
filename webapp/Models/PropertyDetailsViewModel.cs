@@ -10,5 +10,6 @@ namespace webapp.Models
         public PropertyViewModel Property { get; set; }
         public List<PropertyFeatures>? Features { get; set; } = new List<PropertyFeatures>();
         public List<string> SelectedFeatures { get; set; } = new List<string>();
-    }
+        public List<PropertyUpdate>? PropertyUpdates { get; set; } = new List<PropertyUpdate>();
+	}
 }

@@ -23,11 +23,20 @@
 		Console.WriteLine("Selected Feature: " + feature);
 	}
 	var galleryPaths = Model.Property.GalleryPath?.Where(path => !string.IsNullOrWhiteSpace(path)).ToList() ?? new List<string>();
+	decimal propertyPrice = property.Price;
+	decimal downPayment = propertyPrice * (decimal)0.1;
 
-
+	var property_js = Newtonsoft.Json.JsonConvert.SerializeObject(property);
+	decimal? previousPrice = null; // Nullable to handle the first iteration where there is no previous price
 }
 
 <!-- ============================ Hero Banner  Start================================== -->
+<style>
+	#map {
+		height: 400px;
+	}
+</style>
+
 <div class="featured_slick_gallery gray m-0">
 	<div class="featured_slick_gallery-slide">
 		@if (Model.Property.GalleryPath.All(string.IsNullOrWhiteSpace))
@@ -115,15 +124,12 @@
 								<div id="basicinfo" class="panel-collapse collapse" aria-labelledby="basicinfo">
 									<div class="vesh-detail-bloc-body">
 										<div class="row g-3">
-											<div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-6"><div class="ilio-icon-wrap"><div class="ilio-icon"><i class="fa-solid fa-bed"></i></div><div class="ilio-text">3 Bedrooms</div></div></div>
-											<div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-6"><div class="ilio-icon-wrap"><div class="ilio-icon"><i class="fa-solid fa-bath"></i></div><div class="ilio-text">2 Bathrooms</div></div></div>
-											<div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-6"><div class="ilio-icon-wrap"><div class="ilio-icon"><i class="fa-solid fa-layer-group"></i></div><div class="ilio-text">4,240 sq ft</div></div></div>
-											<div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-6"><div class="ilio-icon-wrap"><div class="ilio-icon"><i class="fa-solid fa-building-wheat"></i></div><div class="ilio-text">Well Maintained</div></div></div>
-											<div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-6"><div class="ilio-icon-wrap"><div class="ilio-icon"><i class="fa-solid fa-building-circle-check"></i></div><div class="ilio-text">Active</div></div></div>
-											@* <div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-6"><div class="ilio-icon-wrap"><div class="ilio-icon"><i class="fa-solid fa-fan"></i></div><div class="ilio-text">Central A/C</div></div></div> *@
-											<div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-6"><div class="ilio-icon-wrap"><div class="ilio-icon"><i class="fa-regular fa-snowflake"></i></div><div class="ilio-text">Air Conditioner</div></div></div>
-											<div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-6"><div class="ilio-icon-wrap"><div class="ilio-icon"><i class="fa-solid fa-bowl-food"></i></div><div class="ilio-text">Kitchen Facilities</div></div></div>
-								<div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-6"><div class="ilio-icon-wrap"><div class="ilio-icon"><i class="fa-solid fa-shower"></i></div><div class="ilio-text">Water Heater</div></div></div>
+											<div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-6"><div class="ilio-icon-wrap"><div class="ilio-icon"><i class="fa-solid fa-bed"></i></div><div class="ilio-text">@property.Bedrooms Bedrooms</div></div></div>
+											<div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-6"><div class="ilio-icon-wrap"><div class="ilio-icon"><i class="fa-solid fa-bath"></i></div><div class="ilio-text">@property.Bathrooms Bathrooms</div></div></div>
+											<div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-6"><div class="ilio-icon-wrap"><div class="ilio-icon"><i class="fa-solid fa-layer-group"></i></div><div class="ilio-text">@property.Area sq ft</div></div></div>
+								<div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-6"><div class="ilio-icon-wrap"><div class="ilio-icon"><i class="fa-solid fa-building-wheat"></i></div><div class="ilio-text">@(!string.IsNullOrEmpty(property.BuildingAge) ? property.BuildingAge : "Building Age Not Provided")</div></div></div>
+											<div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-6"><div class="ilio-icon-wrap"><div class="ilio-icon"><i class="fa-solid fa-location-dot"></i></div><div class="ilio-text">@property.City</div></div></div>
+											<div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-6"><div class="ilio-icon-wrap"><div class="ilio-icon"><i class="fa-solid fa-building"></i></div><div class="ilio-text">@property.PropertyType</div></div></div>
 										</div>
 									</div>
 								</div>
@@ -234,7 +240,7 @@
 								</div>
 							</div>							
 							
-							<!-- Floor Plan -->
+							@* <!-- Floor Plan -->
 							<div class="vesh-detail-bloc style_2">
 								<div class="vesh-detail-bloc_header">
 									<a data-bs-toggle="collapse" data-parent="#floorinfo" data-bs-target="#floorinfo" aria-controls="floorinfo" href="javascript:void(0);" aria-expanded="false"><h4 class="property_block_title">Floor Plan</h4></a>
@@ -296,25 +302,25 @@
 										</div>
 									</div>
 								</div>
-							</div>
+							</div> *@
 							
 							<!-- Property History -->
 							<div class="vesh-detail-bloc style_2">
 								<div class="vesh-detail-bloc_header">
-									<a data-bs-toggle="collapse" data-parent="#historyinfo" data-bs-target="#historyinfo" aria-controls="historyinfo" href="javascript:void(0);" aria-expanded="false"><h4 class="property_block_title">Property History</h4></a>
+									<a data-bs-toggle="collapse" data-parent="#historyinfo" data-bs-target="#historyinfo" aria-controls="historyinfo" href="javascript:void(0);" aria-expanded="false"><h4 class="property_block_title">Property Price History</h4></a>
 								</div>
 								<div id="historyinfo" class="panel-collapse collapse show" aria-labelledby="historyinfo">
 									<div class="vesh-detail-bloc-body">
 										<ul class="nav nav-pills mb-3" id="pills-tab1" role="tablist">
 											<li class="nav-item" role="presentation">
-											<button class="nav-link active" id="pills-price-tab" data-bs-toggle="pill" data-bs-target="#pills-price" type="button" role="tab" aria-controls="pills-price" aria-selected="true">Price history</button>
+											<button class="nav-link active" id="pills-price-tab" data-bs-toggle="pill" data-bs-target="#pills-sales-price" type="button" role="tab" aria-controls="pills-price" aria-selected="true">For Sales</button>
 											</li>
 											<li class="nav-item" role="presentation">
-											<button class="nav-link" id="pills-tax-tab" data-bs-toggle="pill" data-bs-target="#pills-tax" type="button" role="tab" aria-controls="pills-tax" aria-selected="false">Tax History</button>
+											<button class="nav-link" id="pills-tax-tab" data-bs-toggle="pill" data-bs-target="#pills-rent-price" type="button" role="tab" aria-controls="pills-tax" aria-selected="false">For Rent</button>
 											</li>
 										</ul>
 										<div class="tab-content" id="pills-tabContent1">
-											<div class="tab-pane fade show active" id="pills-price" role="tabpanel" aria-labelledby="pills-price-tab" tabindex="0">
+											<div class="tab-pane fade show active" id="pills-sales-price" role="tabpanel" aria-labelledby="pills-price-tab" tabindex="0">
 												<div class="table-responsive">
 													<table class="table">
 														<thead>
@@ -327,7 +333,30 @@
 															</tr>
 														</thead>
 														<tbody>
-															<tr>
+															@{
+																var update_lenght = Model.PropertyUpdates.Count();
+																for (int i = 0;i < update_lenght; i++)
+																{
+																	Console.WriteLine(Model.PropertyUpdates.Count());
+																	Console.WriteLine("Index:  " + i);
+																	Console.WriteLine("Index + 1:  " + (i + 1));
+																	var update = Model.PropertyUpdates.OrderByDescending(u => u.UpdateDate).ToList()[i];
+																	decimal previous_price = 0;
+																	if (i + 1 < Model.PropertyUpdates.Count())
+																	{
+																		Console.WriteLine("Inside");
+																		previous_price = Model.PropertyUpdates.OrderByDescending(u => u.UpdateDate).ToList()[(i + 1)].Price;										
+																	}
+																	<tr>
+																		<td>@update.UpdateDate.ToString("dd MMM yyyy")</td>
+																		<td>@update.Status</td>
+																		<td>@String.Format("{0:C}", update.Price)</td>
+																		<td>@(previous_price != 0 ? String.Format("{0:C}",update.Price - previous_price) : "N/A")</td>
+																		<td>@Math.Round(update.Price / decimal.Parse(property.Area), 2).ToString("C") / Sqft</td>
+																	</tr>
+																}
+															}
+@* 															<tr>
 																<td>10 Jan 2020</td>
 																<td>For Sale</td>
 																<td>$40700</td>
@@ -371,13 +400,13 @@
 															</tr>
 															<tr>
 																<td colspan="5"><span class="font--medium text-success">Source: My State MLS</span></td>
-															</tr>
+															</tr> *@
 														</tbody>
 													</table>
 												</div>
 											</div>
 											
-											<div class="tab-pane fade" id="pills-tax" role="tabpanel" aria-labelledby="pills-tax-tab" tabindex="0">
+											<div class="tab-pane fade" id="pills-rent-price" role="tabpanel" aria-labelledby="pills-tax-tab" tabindex="0">
 												<div class="table-responsive">
 													<table class="table">
 														<thead>
@@ -445,8 +474,8 @@
 							</div>
 							
 							
-							<!-- All over Review -->
-							<div class="veshm-fl-rate-box">
+							@* <!-- All over Review -->
+							<!-- <div class="veshm-fl-rate-box">
 								<div class="fl-rate-box-head theme-bg">
 									<div class="flt-yuo10">
 										<h4>5.0</h4>
@@ -479,9 +508,9 @@
 									</div>
 								</div>
 							</div>
-							<!-- All over Review -->
+							All over Review --> *@
 							
-							<!-- Property Reviews Detail -->
+							@* <!-- Property Reviews Detail -->
 							<div class="vesh-detail-bloc style_2">
 								<div class="vesh-detail-bloc_header">
 									<h4 class="property_block_title no-arrow">Property Reviews</h4>
@@ -577,14 +606,59 @@
 										</div>
 									</div>
 								</div>
-							</div>
+							</div> *@
 							
 							<!-- Nearby School -->
 							<div class="vesh-detail-bloc style_2">
 								<div class="vesh-detail-bloc_header">
-									<a data-bs-toggle="collapse" data-parent="#schoolsinfo" data-bs-target="#schoolsinfo" aria-controls="schoolsinfo" href="javascript:void(0);" aria-expanded="false"><h4 class="property_block_title">Nearby Grat Schools</h4></a>
+									<a data-bs-toggle="collapse" data-parent="#schoolsinfo" data-bs-target="#schoolsinfo" aria-controls="schoolsinfo" href="javascript:void(0);" aria-expanded="false"><h4 class="property_block_title">Map</h4></a>
 								</div>
 								<div id="schoolsinfo" class="panel-collapse collapse" aria-labelledby="schoolsinfo">
+									<div id="map"></div>
+									<script>
+										var property_js = @Html.Raw(property_js);
+
+										let map;
+										let geocoder;
+										// The callback function that initializes the map
+										function initMap() {
+											map = new google.maps.Map(document.getElementById('map'), {
+												center: { lat: 3.056069, lng: 101.700466 },
+												zoom: 15,
+												mapId: "DEMO_MAP_ID", // Map ID is required for advanced markers.
+											});
+											geocoder = new google.maps.Geocoder();
+
+											// const address = 'Jalan Teknologi 5, MRANTI Park, 57000, Kuala Lumpur, Malaysia';
+											const address = `${property_js.AddressLine}, ${property_js.City}, ${property_js.ZipCode}, ${property_js.State}, Malaysia`;
+											console.log("Address before search" + address);
+											searchAddress(address);
+										}
+
+										function searchAddress(address) {
+											console.log("Geocoding address:", address);
+											// const address = document.getElementById('searchInput').value;
+											geocoder.geocode({ 'address': address }, function (results, status) {
+												if (status === 'OK') {
+													const location = results[0].geometry.location;
+													map.setCenter(location);
+													new google.maps.marker.AdvancedMarkerElement({
+														map: map,
+														position: location
+													});
+												} else {
+													alert('Geocode was not successful for the following reason: ' + status);
+												}
+											});
+							}
+									</script>
+									<!-- Load the Google Maps API asynchronously and defer execution -->
+						<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDmbu1JIMzxCG5-0SptuDVnXQw2R3GFBTI&libraries=marker&loading=async&callback=initMap" async defer></script>
+					</div>
+
+
+
+								@* <div id="schoolsinfo" class="panel-collapse collapse" aria-labelledby="schoolsinfo">
 									<div class="vesh-detail-bloc-body">
 										<div class="nerb-lists-groups">
 										
@@ -686,7 +760,7 @@
 										
 										</div>
 									</div>
-								</div>
+								</div> *@
 							</div>
 							
 							<!-- Contact More Agents -->
@@ -811,7 +885,7 @@
 								</div>
 							</div>
 							
-							<!-- Property Graph Detail -->
+							@* <!-- Property Graph Detail -->
 							<div class="vesh-detail-bloc style_2">
 								<div class="vesh-detail-bloc_header">
 									<h4 class="property_block_title no-arrow">View property Graph</h4>
@@ -832,7 +906,7 @@
 										<div class="chart" id="line-chart" style="height:300px;"></div>
 									</div>
 								</div>
-							</div>
+							</div> *@
 							
 							
 							<!-- Repayments Mortgage Calculator -->
@@ -842,76 +916,93 @@
 								</div>
 								<div class="panel">
 									<div class="vesh-detail-bloc-body">
-									
-										<div class="row align-items-end">
-											<div class="col-xl-4 col-lg-4 col-md-6 col-12">
-												 <label class="form-label font--medium small">Property value</label>
-												 <div class="input-group mb-3">
-												  <span class="input-group-text">$</span>
-												  <input type="text" class="form-control" placeholder="$10000" value="250,000">
+										<div class="row">
+											<div class="col-8">
+												<div class="row align-items-bottom">
+													@* <div class="col-xl-4 col-lg-4 col-md-6 col-12 mb-3"> *@
+													<div class="col mb-3">
+														 <label class="form-label font--medium small">Property value</label>
+														 <div class="input-group">
+															<span class="input-group-text">$</span>
+															<input type="text" id="property-value" class="form-control" value="@property.Price.ToString("N2")">
+														</div>
+														<span class="text-danger" id="property-value-error"></span>
+													</div>
+													<div class="col mb-3">
+														 <label class="form-label font--medium small">Your Down Payment</label>
+														 <div class="input-group">
+															<span class="input-group-text">@@</span>
+															<input type="text" id="down-payment" class="form-control" value="@((property.Price * (decimal)0.1).ToString("N2"))">
+														</div>
+														<span class="text-danger" id="down-payment-error"></span>
+													</div>
+													@* <div class="col-xl-4 col-lg-4 col-md-6 col-12">
+														<div class="alert alert-warning small mb-3" role="alert">
+														  Your Loan to value would be <strong>90%</strong> with a Down Payment of <strong>@((property.Price * (decimal)0.1).ToString("C"))</strong>
+														</div>
+													</div> *@
 												</div>
-											</div>
-											<div class="col-xl-4 col-lg-4 col-md-6 col-12">
-												 <label class="form-label font--medium small">Your Deposit</label>
-												 <div class="input-group mb-3">
-												  <span class="input-group-text">@@</span>
-												  <input type="text" class="form-control" placeholder="$10000" value="$45,000">
-												</div>
-											</div>
-											<div class="col-xl-4 col-lg-4 col-md-6 col-12">
-												<div class="alert alert-warning small mb-3" role="alert">
-												  Your Loan to value would be <strong>87%</strong> with a Deposit of <strong>$47,0000</strong>
-												</div>
-											</div>
-										</div>
 										
-										<div class="row align-items-bottom">
-											<div class="col-xl-4 col-lg-4 col-md-6 col-12">
-												 <label class="form-label font--medium small">Mortgage Terms Length</label>
-												 <div class="input-group mb-3">
-												  <input type="text" class="form-control" placeholder="20" value="20">
-												  <span class="input-group-text">Yers</span>
+												<div class="row align-items-bottom">
+													<div class="col mb-3">
+														 <label class="form-label font--medium small">Mortgage Terms Length</label>
+														 <div class="input-group">
+														  <input type="number" id="mortgage-term" class="form-control" value="20">
+														  <span class="input-group-text">Yrs</span>
+														</div>
+														<span class="text-danger" id="mortgage-term-error"></span>
+													</div>
+		@* 											<div class="col-xl-4 col-lg-4 col-md-6 col-12">
+														 <label class="form-label font--medium small">Fixed Term Length</label>
+														 <div class="input-group mb-3">
+														  <input type="number" class="form-control" placeholder="7" value="5">
+														  <span class="input-group-text">Yrs</span>
+														</div>
+													</div> *@
+													<div class="col mb-3">
+														 <label class="form-label font--medium small">Mortgage Fees</label>
+														 <div class="input-group">
+														  <span class="input-group-text">@@</span>
+														  <input id="mortgage-fee" type="text" class="form-control" value="1,250">
+														</div>
+														<span class="text-danger" id="mortgage-fee-error"></span>
+													</div>
+		@* 											<div class="col-xl-4 col-lg-4 col-md-6 col-12">
+														<label class="form-label font--medium small">Add fee To Mortgage</label>
+														<div class="input-group mb-3">
+															<select class="form-control">
+																<option value="1">Yes</option>
+																<option value="2">No</option>
+															</select>
+														</div>
+													</div> *@
 												</div>
-											</div>
-											<div class="col-xl-4 col-lg-4 col-md-6 col-12">
-												 <label class="form-label font--medium small">Fixed Term Length</label>
-												 <div class="input-group mb-3">
-												  <input type="text" class="form-control" placeholder="7" value="5">
-												  <span class="input-group-text">Yers</span>
-												</div>
-											</div>
-											<div class="col-xl-4 col-lg-4 col-md-6 col-12">
-												 <label class="form-label font--medium small">Mortgage Fees</label>
-												 <div class="input-group mb-3">
-												  <span class="input-group-text">@@</span>
-												  <input type="text" class="form-control" placeholder="1000" value="1,250">
-												</div>
-											</div>
-										</div>
 										
-										<div class="row align-items-end">
-											<div class="col-xl-4 col-lg-4 col-md-6 col-12">
-												 <label class="form-label font--medium small">Standard Variable Rate</label>
-												 <div class="input-group mb-3">
-												  <input type="text" class="form-control" placeholder="1" value="1.7">
-												  <span class="input-group-text">%</span>
+												<div class="row align-items-bottom">
+													<div class="col mb-3">
+														 <label class="form-label font--medium small">Standardised Base Rate (SBR)</label>
+														 <div class="input-group">
+														  <input type="text" id="base-interest-rate" class="form-control" value="1.7">
+														  <span class="input-group-text">%</span>
+														</div>
+														<span class="text-danger" id="base-interest-rate-error"></span>
+													</div>
+													<div class="col mb-3">
+														 <label class="form-label font--medium small">Loan Intrest Rate</label>
+														 <div class="input-group">
+														  <input type="text" id="loan-interest-rate" class="form-control" value="4.2">
+														  <span class="input-group-text">%</span>
+														</div>
+														<span class="text-danger" id="loan-interest-rate-error"></span>
+													</div>
 												</div>
 											</div>
-											<div class="col-xl-4 col-lg-4 col-md-6 col-12">
-												 <label class="form-label font--medium small">Fixed Terms Intrest Rate</label>
-												 <div class="input-group mb-3">
-												  <input type="text" class="form-control" placeholder="5" value="4.2">
-												  <span class="input-group-text">%</span>
-												</div>
-											</div>
-											<div class="col-xl-4 col-lg-4 col-md-6 col-12">
-												<label class="form-label font--medium small">Add fee To Mortgage</label>
-												<div class="input-group mb-3">
-													<select class="form-control">
-														<option value="1">Yes</option>
-														<option value="2">No</option>
-													</select>
-												</div>
+											@* <div class="col-xl-4 col-lg-4 col-md-6 col-2"> *@
+											<div class="col-4">
+												@* <div class="alert alert-warning small mb-3" role="alert">
+													Your Loan to value would be <strong>90%</strong> with a Down Payment of <strong>@((property.Price * (decimal)0.1).ToString("C"))</strong>
+												</div> *@
+												<canvas id="mortgageChart"></canvas>
 											</div>
 										</div>
 										
@@ -925,20 +1016,20 @@
 											<div class="col-xl-12 col-lg-12 col-12">
 												<div class="mortgage-wrp-bloc">
 													<div class="mortgage-wrp-bloc-single">
-														<div class="mrtg-wrp-title">63 months of</div>
-														<div class="mrtg-wrp-subtitle">$799.70</div>
+														<div class="mrtg-wrp-title">Monthly Payment</div>
+														<div id="monthly-payment" class="mrtg-wrp-subtitle">$799.70</div>
 													</div>
 													<div class="mortgage-wrp-bloc-single">
-														<div class="mrtg-wrp-title">235 months of</div>
-														<div class="mrtg-wrp-subtitle">$12,56.40</div>
+														<div class="mrtg-wrp-title">Total Amount Financed</div>
+														<div id="total-amount-financed" class="mrtg-wrp-subtitle">$12,56.4</div>
 													</div>
 													<div class="mortgage-wrp-bloc-single">
-														<div class="mrtg-wrp-title">APRC</div>
-														<div class="mrtg-wrp-subtitle">4.2%</div>
+														<div class="mrtg-wrp-title">Total Interest Payable</div>
+														<div id="total-interest-payable" class="mrtg-wrp-subtitle">4.2%</div>
 													</div>
 													<div class="mortgage-wrp-bloc-single">
-														<div class="mrtg-wrp-title">Initial term cost</div>
-														<div class="mrtg-wrp-subtitle">$72,890</div>
+														<div class="mrtg-wrp-title">Total Payable</div>
+														<div id="total-payable" class="mrtg-wrp-subtitle">$72,890</div>
 													</div>
 												</div>
 											</div>
@@ -1273,7 +1364,7 @@
 								</div>
 							</div>
 							
-							<!-- Submit Reviews -->
+							@* <!-- Submit Reviews -->
 							<div class="vesh-detail-bloc style_2">
 								<div class="vesh-detail-bloc_header">
 									<h4 class="property_block_title no-arrow">Submit Review</h4>
@@ -1329,7 +1420,7 @@
 										</form>
 									</div>
 								</div>
-							</div>
+							</div> *@
 							
 						</div>
 						<!-- property main detail -->
@@ -1341,9 +1432,10 @@
 							<!-- Like And Share -->
 							<div class="vesh-detail-bloc border">
 								<ul class="like_share_list">
-									<li><a href="JavaScript:Void(0);" class="btn btn-light-success" data-toggle="tooltip" data-original-title="Share"><i class="fa-solid fa-share-from-square me-2"></i>Share</a></li>
+									<li>
+										<a href="JavaScript:Void(0);" data-bs-toggle="tooltip" data-bs-title="Copy Link" data-bs-placement="bottom" id="copyLink" class="btn btn-light-success"><i class="fa-solid fa-share-from-square me-2"></i>Share</a>
+									</li>
 									<li><a href="JavaScript:Void(0);" class="btn btn-light-danger" data-toggle="tooltip" data-original-title="Save"><i class="fa-solid fa-heart-circle-check me-2"></i>Save</a></li>
-									<li><a href="JavaScript:Void(0);" class="btn btn-light-primary" data-toggle="tooltip" data-original-title="Save"><i class="fa-solid fa-print me-2"></i>Print</a></li>
 								</ul>
 							</div>
 							
@@ -1463,3 +1555,169 @@
 			</section>
 			<!-- ============================ Property Detail End ================================== -->
 
+@section Scripts{
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	<script>
+		console.log("script working?")
+		$(document).ready(function () {
+			var ctx = document.getElementById('mortgageChart').getContext('2d');
+			var mortgageChart = new Chart(ctx, {
+				type: 'pie',
+				data: {
+					labels: ['Principal', 'Interest'],
+					datasets: [{
+						label: 'Total Payable',
+						data: [12, 19],
+						backgroundColor: [
+							'rgba(54, 162, 235, 0.4)',  // Custom color for Monthly Payment Variable
+							'rgba(255, 99, 132, 0.4)', // Custom color for Monthly Payment Fixed
+						],
+						borderWidth: 2
+					}]
+				},
+			});
+		
+			function validateInput(selector, errorSelector) {
+				var value = $(selector).val();
+				if (value) {
+					var sanitizedValue = value.replace(/,/g, ''); // Remove commas
+					if (!$.isNumeric(sanitizedValue) || parseFloat(sanitizedValue) < 0) {
+						$(selector).addClass("is-invalid");
+						$(errorSelector).text("Please enter a valid number.");
+						return false;
+					} else {
+						$(errorSelector).text("");
+						$(selector).removeClass("is-invalid");
+						return true;
+					}
+				} else {
+					$(errorSelector).text("This field is required.");
+					return false;
+				}
+			}
+
+			function calculateMonthlyPayment(principal, annualInterestRate, loanTermYears) {
+				var monthlyInterestRate = annualInterestRate / 100 / 12;
+				var numberOfPayments = loanTermYears * 12;
+            
+				var monthlyPayment = principal * monthlyInterestRate / (1 - Math.pow(1 + monthlyInterestRate, -numberOfPayments));
+				return monthlyPayment;
+			}
+
+			function calculateResults() {
+				var isValid = true;
+
+				isValid &= validateInput("#property-value", "#property-value-error");
+				isValid &= validateInput("#down-payment", "#down-payment-error");
+				isValid &= validateInput("#mortgage-term", "#mortgage-term-error");
+				isValid &= validateInput("#mortgage-fee", "#mortgage-fee-error");
+				isValid &= validateInput("#base-interest-rate", "#base-interest-rate-error");
+				isValid &= validateInput("#loan-interest-rate", "#loan-interest-rate-error");
+
+				if (!isValid) {
+					return;
+				}
+
+				var propertyValue = parseFloat($("#property-value").val().replace(/,/g, ''));
+				var downPayment = parseFloat($("#down-payment").val().replace(/,/g, ''));
+				var mortgageTerm = parseInt($("#mortgage-term").val());
+				var mortgageFee = parseFloat($("#mortgage-fee").val().replace(/,/g, ''));
+				var baseInterestRate = parseFloat($("#base-interest-rate").val());
+				var loanInterestRate = parseFloat($("#loan-interest-rate").val());
+
+				var monthlyPayment = 0;
+				var totalPayment = 0;
+				var totalInterest = 0;
+
+				var loanAmount = propertyValue - downPayment;
+				if (loanAmount > 0) {
+					monthlyPayment = calculateMonthlyPayment(loanAmount, baseInterestRate + loanInterestRate, mortgageTerm) + mortgageFee / (12 * mortgageTerm);
+					totalPayment = monthlyPayment * mortgageTerm * 12;
+					totalInterest = totalPayment - loanAmount;
+				}
+
+				$("#monthly-payment").text(monthlyPayment > 0 ? monthlyPayment.toFixed(2) : "N/A");
+				$("#total-amount-financed").text(loanAmount > 0 ? loanAmount.toFixed(2) : "N/A");
+				$("#total-interest-payable").text(totalInterest > 0 ? totalInterest.toFixed(2) : "N/A");
+				$("#total-payable").text(totalPayment > 0 ? totalPayment.toFixed(2) : "N/A");
+
+				mortgageChart.data.datasets[0].data[0] = loanAmount > 0 ? loanAmount.toFixed(2) : 0;
+				mortgageChart.data.datasets[0].data[1] = totalInterest > 0 ? totalInterest.toFixed(2) : 0;
+				mortgageChart.update();
+			}
+
+			$("input").on("input", function () {
+				calculateResults();
+			});
+
+			calculateResults(); // initial calculation
+		});
+
+		// document.getElementById('copyLink').addEventListener('click', function () {
+		// 	// Create a temporary input element
+		// 	const tempInput = document.createElement('input');
+		// 	// Append it to the body
+		// 	document.body.appendChild(tempInput);
+		// 	// Set its value to the current URL
+		// 	tempInput.value = window.location.href;
+		// 	// Select the value
+		// 	tempInput.select();
+		// 	// Copy the text inside the input
+		// 	document.execCommand('copy');
+		// 	// Remove the temporary input
+		// 	document.body.removeChild(tempInput);
+
+		// 	// Optional: Alert the user that the URL has been copied
+		// 	alert('URL copied to clipboard!');
+		// });
+
+		document.getElementById('copyLink').addEventListener('click', async function () {
+			try {
+				await navigator.clipboard.writeText(window.location.href);
+				document.getElementById('copyMessage').style.display = 'inline'; // Show the message
+				setTimeout(() => { document.getElementById('copyMessage').style.display = 'none'; }, 3000); // Hide after 3 seconds
+			} catch (err) {
+				console.error('Failed to copy: ', err);
+			}
+		});
+
+		const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+		const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+
+		// $('#copyLink').on('click', function (event) {
+		// 	event.preventDefault(); // Prevent the default action
+		// 	// Change the tooltip title
+		// 	$(this).attr('data-bs-title', 'Copied!').tooltip('dispose').tooltip('show');
+		// 	var tooltip = document.getElementById('tooltip');
+		// 	if (tooltip) {
+		// 		// Close the tooltip
+		// 		tooltip.style.display = 'none';
+
+		// 		// Change the tooltip title after 3 seconds
+		// 		setTimeout(function () {
+		// 			tooltip.textContent = 'Copy Link';
+		// 		}, 3000);
+		// 	}
+		// });
+
+		$(document).ready(function () {
+			// Initialize the tooltip
+			$('[data-bs-toggle="tooltip"]').tooltip();
+
+			// Add click event listener to the anchor
+			$('#copyLink').on('click', function (event) {
+				event.preventDefault(); // Prevent the default action
+
+				var $this = $(this);
+
+				// Change the tooltip title to "Copied!" and show it
+				$this.attr('data-bs-title', 'Copied!').tooltip('dispose').tooltip('show');
+
+				// Hide the tooltip quickly
+				setTimeout(function () {
+					$this.attr('data-bs-title', 'Copy Link!').tooltip('dispose').tooltip('show');
+				}, 3000);
+			});
+		});
+	</script>
+}

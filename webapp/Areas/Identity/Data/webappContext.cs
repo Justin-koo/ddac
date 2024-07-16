@@ -18,8 +18,9 @@ public class webappContext : IdentityDbContext<webappUser>
     public DbSet<PropertyAddress> PropertyAddresses { get; set; }
     public DbSet<PropertyDetail> PropertyDetails { get; set; }
     public DbSet<PropertyFeatures> Features { get; set; }
+	public DbSet<PropertyUpdate> PropertyUpdate { get; set; }
 
-    protected override void OnModelCreating(ModelBuilder builder)
+	protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
         // Customize the ASP.NET Identity model and override the defaults if needed.

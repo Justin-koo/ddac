@@ -20,7 +20,7 @@ namespace webapp.Models
 
         public string? OtherFeatures { get; set; }  // Comma-separated list of features
 
-        public int PropertyId { get; set; }
+		public int PropertyId { get; set; }
 
         [ForeignKey("PropertyId")]
         public Property Property { get; set; }
