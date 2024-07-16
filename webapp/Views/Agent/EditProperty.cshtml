@@ -290,6 +290,9 @@
     <script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js"></script>
     <script src="https://unpkg.com/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.js"></script>
     <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
+    <script src="https://unpkg.com/filepond-plugin-image-resize/dist/filepond-plugin-image-resize.js"></script>
+    <script src="https://unpkg.com/filepond-plugin-image-transform/dist/filepond-plugin-image-transform.js"></script>
+    <script src="https://unpkg.com/filepond-plugin-image-crop/dist/filepond-plugin-image-crop.js"></script>
     <script src="https://unpkg.com/filepond/dist/filepond.js"></script>
 
     <script>
@@ -298,6 +301,9 @@
             FilePond.registerPlugin(FilePondPluginFileValidateSize);
             FilePond.registerPlugin(FilePondPluginFileValidateType);
             FilePond.registerPlugin(FilePondPluginImagePreview);
+            FilePond.registerPlugin(FilePondPluginImageResize);
+            FilePond.registerPlugin(FilePondPluginImageTransform);
+            FilePond.registerPlugin(FilePondPluginImageCrop);
 
             // Get a reference to the file input element
             const inputElement = document.querySelector('input[name="GalleryFiles"]');
@@ -309,6 +315,10 @@
                 allowMultiple: true,
                 maxFileSize: "5MB",
                 imagePreviewHeight: 256,
+                imageResizeTargetWidth: 1920,
+                imageResizeTargetHeight: 1280,
+                imageCropAspectRatio: '16:10',
+                imageResizeMode: "force",
                 acceptedFileTypes: ['image/*'],
                 instantUpload: false // Disable instant upload to use default form submission
             });
