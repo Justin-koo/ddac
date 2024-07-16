@@ -65,8 +65,10 @@
 
 		public string? GalleryFolder { get; set; }
 
-		public string? SubmissionStatus { get; set; }
+		public string? ListingStatus { get; set; }
 
 		public int Id { get; set; }
-	}
+
+        public string? EncryptedId { get; set; }
+    }
 }

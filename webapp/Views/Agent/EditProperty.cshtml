@@ -1,0 +1,325 @@
+﻿@using webapp.Areas.Identity.Data
+@model PropertyDetailsViewModel
+
+@{
+    Layout = "~/Views/Shared/_AccountLayout.cshtml";
+    var user = ViewData["User"] as webappUser;
+
+    var baseUrl = $"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.PathBase}";
+    var existingFiles = Model.Property.GalleryPath.Select(path => new
+    {
+        source = $"{baseUrl}/uploads/property/{Model.Property.GalleryFolder}/{path}",
+    }).ToList();
+}
+
+<div class="dashboard-body">
+
+    <div class="dashboard-wraper">
+        <div class="row">
+
+            <!-- Submit Form -->
+            <div class="col-lg-12 col-md-12">
+                <h2 class="align-middle">
+                    <a asp-controller="Agent" asp-action="AgentPropertyList" asp-route-username="@user.UserName">
+                        <i class="fas fa-arrow-left"></i> 
+                    </a>
+                    @ViewData["Title"]
+                </h2>
+
+                <form id="editPropertyForm" asp-controller="Agent" asp-action="EditProperty" asp-route-username="@user.UserName" asp-route-encryptedId="@Model.Property.EncryptedId" class="submit-page mt-5" method="post" enctype="multipart/form-data">
+                    @Html.AntiForgeryToken()
+                    <!-- Basic Information -->
+                    <div class="frm_submit_block">
+                        <h3>Basic Information</h3>
+                        <div class="frm_submit_wrap">
+                            @* <partial name="_StatusMessage" for="StatusMessage" /> *@
+                            <div class="row">
+
+                                <div class="form-group col-md-12">
+                                    <label asp-for="Property.Title">Property Title</label>
+                                    <input asp-for="Property.Title" class="form-control" />
+                                    <span class="text-danger" asp-validation-for="Property.Title"></span>
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    <label asp-for="Property.Status">Status</label>
+                                    <select asp-for="Property.Status" class="form-control">
+                                        <option value="Rent">For Rent</option>
+                                        <option value="Sale">For Sale</option>
+                                    </select>
+                                    <span class="text-danger" asp-validation-for="Property.Status"></span>
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    <label asp-for="Property.PropertyType">Property Type</label>
+                                    <select asp-for="Property.PropertyType" class="form-control">
+                                        <option value="Houses">Houses</option>
+                                        <option value="Apartment">Apartment</option>
+                                        <option value="Villas">Villas</option>
+                                        <option value="Commercial">Commercial</option>
+                                        <option value="Offices">Offices</option>
+                                        <option value="Garage">Garage</option>
+                                    </select>
+                                    <span class="text-danger" asp-validation-for="Property.PropertyType"></span>
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    <label asp-for="Property.Price">Price</label>
+                                    <input asp-for="Property.Price" class="form-control" />
+                                    <span class="text-danger" asp-validation-for="Property.Price"></span>
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    <label asp-for="Property.Area">Area</label>
+                                    <input asp-for="Property.Area" class="form-control" />
+                                    <span class="text-danger" asp-validation-for="Property.Area"></span>
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    <label asp-for="Property.Bedrooms">Bedrooms</label>
+                                    <input asp-for="Property.Bedrooms" class="form-control" />
+                                    <span class="text-danger" asp-validation-for="Property.Bedrooms"></span>
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    <label asp-for="Property.Bathrooms">Bathrooms</label>
+                                    <input asp-for="Property.Bathrooms" class="form-control" />
+                                    <span class="text-danger" asp-validation-for="Property.Bathrooms"></span>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gallery -->
+                    <div class="frm_submit_block">
+                        <h3>Gallery</h3>
+                        <div class="frm_submit_wrap">
+                            <div class="row">
+
+                                <div class="form-group col-md-12">
+                                    <label>Upload Gallery</label>
+                                    <input type="file" name="GalleryFiles" id="filepond" multiple>
+                                    <d@* iv class="dropzone dz-clickable primary-dropzone" id="galleryDropzone">
+                                        <div class="dz-default dz-message">
+                                            <i class="fa-solid fa-images"></i>
+                                            <span>Drag & Drop To Upload Images</span>
+                                        </div>
+                                        <input type="file" id="fileInput" name="files" multiple style="display: none;">
+                                    </div> *@
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Location -->
+                    <div class="frm_submit_block">
+                        <h3>Location</h3>
+                        <div class="frm_submit_wrap">
+                            <div class="row">
+
+                                <div class="form-group col-md-6">
+                                    <label asp-for="Property.AddressLine">Address</label>
+                                    <input asp-for="Property.AddressLine" class="form-control" />
+                                    <span class="text-danger" asp-validation-for="Property.AddressLine"></span>
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    <label asp-for="Property.City">City</label>
+                                    <input asp-for="Property.City" class="form-control" />
+                                    <span class="text-danger" asp-validation-for="Property.City"></span>
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    <label asp-for="Property.State">State</label>
+                                    <input asp-for="Property.State" class="form-control" />
+                                    <span class="text-danger" asp-validation-for="Property.State"></span>
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    <label asp-for="Property.ZipCode">Zip Code</label>
+                                    <input asp-for="Property.ZipCode" class="form-control" />
+                                    <span class="text-danger" asp-validation-for="Property.ZipCode"></span>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Detailed Information -->
+                    <div class="frm_submit_block">
+                        <h3>Detailed Information</h3>
+                        <div class="frm_submit_wrap">
+                            <div class="row">
+
+                                <div class="form-group col-md-12">
+                                    <label asp-for="Property.Description">Description</label>
+                                    <textarea asp-for="Property.Description" class="form-control h-120"></textarea>
+                                    <span class="text-danger" asp-validation-for="Property.Description"></span>
+                                </div>
+
+                                <div class="form-group col-md-4">
+                                    <label asp-for="Property.BuildingAge">Building Age (optional)</label>
+                                    <select asp-for="Property.BuildingAge" class="form-control">
+                                        <option value="">&nbsp;</option>
+                                        <option value="0-5 Years">0 - 5 Years</option>
+                                        <option value="6-10 Years">6 - 10 Years</option>
+                                        <option value="11-15 Years">11 - 15 Years</option>
+                                        <option value="16-20 Years">16 - 20 Years</option>
+                                        <option value="20+ Years">20+ Years</option>
+                                    </select>
+                                    <span class="text-danger" asp-validation-for="Property.BuildingAge"></span>
+                                </div>
+
+                                <div class="form-group col-md-4">
+                                    <label asp-for="Property.Garage">Garage (optional)</label>
+                                    <select asp-for="Property.Garage" class="form-control">
+                                        <option value="0">&nbsp;</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                    </select>
+                                    <span class="text-danger" asp-validation-for="Property.Garage"></span>
+                                </div>
+
+                                <div class="form-group col-md-4">
+                                    <label asp-for="Property.Rooms">Rooms (optional)</label>
+                                    <select asp-for="Property.Rooms" class="form-control">
+                                        <option value="0">&nbsp;</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                    </select>
+                                    <span class="text-danger" asp-validation-for="Property.Rooms"></span>
+                                </div>
+
+                                <!-- All features Detail -->
+                                <div class="form-group col-md-12 mb-4">
+                                    <h3>Other Features (optional)</h3>
+                                    <div id="featuresinfo" class="panel-collapse mx-2" aria-labelledby="featuresinfo">
+                                        <div class="vesh-detail-bloc-body">
+                                            <div class="lvs-detail mb-4">
+                                                @foreach (var category in Model.Features.GroupBy(f => f.Category))
+                                                {
+                                                    <div class="lvs-detail mb-4">
+                                                        <div class="row">
+                                                            <div class="col-xl-12 col-lg-12 col-md-12"><h6>@category.Key</h6></div>
+                                                        </div>
+                                                        <div class="row gy-3">
+                                                            @foreach (var feature in category)
+                                                            {
+                                                                <div class="col-xl-4 col-lg-4 col-md-4 col-12">
+                                                                    <div class="lvs-caption">
+                                                                        <input name="SelectedFeatures"
+                                                                               type="checkbox"
+                                                                               value="@feature.FeatureID"
+                                                                               class="form-check-input"
+                                                                               id="feature-@feature.FeatureID"
+                                                                        @(Model.SelectedFeatures.Contains(feature.FeatureID.ToString()) ? "checked" : "")>
+                                                                        <label class="form-check-label" for="feature-@feature.FeatureID">@feature.FeatureName</label>
+                                                                    </div>
+                                                                </div>
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                }
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Contact Information -->
+                        @*<div class="frm_submit_block">
+                        <h3>Contact Information</h3>
+                        <div class="frm_submit_wrap">
+                        <div class="row">
+
+                        <div class="form-group col-md-4">
+                        <label asp-for="ContactName">Name</label>
+                        <input asp-for="ContactName" class="form-control" />
+                        <span class="text-danger" asp-validation-for="ContactName"></span>
+                        </div>
+
+                        <div class="form-group col-md-4">
+                        <label asp-for="ContactEmail">Email</label>
+                        <input asp-for="ContactEmail" class="form-control" />
+                        <span class="text-danger" asp-validation-for="ContactEmail"></span>
+                        </div>
+
+                        <div class="form-group col-md-4">
+                        <label asp-for="ContactPhone">Phone (optional)</label>
+                        <input asp-for="ContactPhone" class="form-control" />
+                        <span class="text-danger" asp-validation-for="ContactPhone"></span>
+                        </div>
+
+                        </div>
+                        </div>
+                        </div>
+
+                        <div class="form-group col-lg-12 col-md-12">
+                        <div class="form-check form-check-inline">
+                        <input asp-for="Consent" class="form-check-input" />
+                        <label class="form-check-label" asp-for="Consent">I consent to having this website store my submitted information so they can respond to my inquiry.</label>
+                        </div>
+                        <span class="text-danger" asp-validation-for="Consent"></span>
+                        </div> *@
+
+                        <div class="form-group col-lg-12 col-md-12">
+                            <button id="submit-button" class="btn btn-primary" type="submit">Save Changes</button>
+                        </div>
+
+                </form>
+            </div>
+
+        </div>
+    </div>
+    <!-- row -->
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js"></script>
+    <script src="https://unpkg.com/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.js"></script>
+    <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
+    <script src="https://unpkg.com/filepond/dist/filepond.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Register the plugins
+            FilePond.registerPlugin(FilePondPluginFileValidateSize);
+            FilePond.registerPlugin(FilePondPluginFileValidateType);
+            FilePond.registerPlugin(FilePondPluginImagePreview);
+
+            // Get a reference to the file input element
+            const inputElement = document.querySelector('input[name="GalleryFiles"]');
+
+            // Create a FilePond instance
+            const pond = FilePond.create(inputElement, {
+                storeAsFile: true,
+                name: "GalleryFiles",
+                allowMultiple: true,
+                maxFileSize: "5MB",
+                imagePreviewHeight: 256,
+                acceptedFileTypes: ['image/*'],
+                instantUpload: false // Disable instant upload to use default form submission
+            });
+
+            // Load existing files
+            const existingFiles = @Html.Raw(Json.Serialize(existingFiles));
+
+            existingFiles.forEach(file => {
+                pond.addFile(file.source);
+                // pond.addFile(file.source, file.options);
+            });
+        });
+    </script>
+}

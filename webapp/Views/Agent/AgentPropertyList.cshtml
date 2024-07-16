@@ -1,6 +1,8 @@
-﻿@model IEnumerable<webapp.Models.PropertyViewModel>
+﻿@using webapp.Areas.Identity.Data
+@model IEnumerable<webapp.Models.PropertyViewModel>
 @{
     Layout = "~/Views/Shared/_AccountLayout.cshtml";
+	var user = ViewData["User"] as webappUser;
 }
 
 <div class="dashboard-body">
@@ -117,7 +119,7 @@
 										<div class="_leads_view_title"><span>Total Views</span></div>
 									</td>
 									<td class="m2_hide">
-										<div class="_leads_posted"><h5>@property.ListingDate.ToString("dd MMM - HH:mm")</h5></div>
+										<div class="_leads_posted"><h5>@property.ListingDate.ToString("dd MMM yy - HH:mm")</h5></div>
 										<div class="_leads_view_title">
 											<span>
 												@{
@@ -148,27 +150,39 @@
 									</td>
 									<td>
 										<div class="_leads_status">
-											@if (property.SubmissionStatus == "Pending")
+											<span class="active">@property.ListingStatus</span>
+											@* @if (property.ListingStatus == "Pending")
 											{
-												<span class="pending">@property.SubmissionStatus</span>
+												<span class="pending">@property.ListingStatus</span>
 											}
-											else if (property.SubmissionStatus == "Approved")
+											else if (property.ListingStatus == "Approved")
 											{
-												<span class="active">@property.SubmissionStatus</span>
+												<span class="active">@property.ListingStatus</span>
 											}
-											else if (property.SubmissionStatus == "Rejected")
+											else if (property.ListingStatus == "Rejected")
 											{
-												<span class="expired">@property.SubmissionStatus</span>
-											}
+												<span class="expired">@property.ListingStatus</span>
+											} *@
 										</div>
 										@* <div class="_leads_view_title"><span>Till 12 Oct</span></div> *@
 									</td>
 									<td>
-										<div class="_leads_action">
-											<a href="#"><i class="fas fa-edit"></i></a>
+										<div class="_leads_action d-md-flex">
+											<div class="dropdown">
+												<a href="#" class="_leads_item" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+													<i class="fas fa-edit"></i>
+												</a>
+
+												<ul class="dropdown-menu dropdown-menu-end">
+													<li><a class="dropdown-item" asp-controller="Agent" asp-action="EditProperty" asp-route-username="@user.UserName" asp-route-encryptedId="@property.EncryptedId">Edit Listing</a></li>
+													<li><a class="dropdown-item" asp-controller="Agent" asp-action="UnlistProperty" asp-route-username="@user.UserName" asp-route-encryptedId="@property.EncryptedId">Cancel Listing</a></li>
+												</ul>
+											</div>
+											
+											@* <a href="#"><i class="fas fa-edit"></i></a> *@
 											<form asp-action="DeleteProperty" asp-controller="Agent" asp-route-id="@property.Id" method="post" class="delete-property-form" style="display:inline;">
 												@Html.AntiForgeryToken()
-												<a role="button" class="delete-property-button">
+												<a role="button" class="delete-property-button _leads_item">
 													<i class="fas fa-trash"></i>
 												</a>
 											</form>
@@ -205,21 +219,26 @@
 
 @section Scripts {
 	<script>
-		$(document).on('click', '.delete-property-button', function () {
-			var form = $(this).closest('form');
+		function handleAction(button, actionText, title, text) {
 			Swal.fire({
-				title: 'Are you sure?',
-				text: "You won't be able to revert this!",
+				title: title,
+				text: text,
 				icon: 'warning',
 				showCancelButton: true,
 				confirmButtonColor: '#017efa',
 				cancelButtonColor: '#d33',
-				confirmButtonText: 'Yes, delete it!'
+				confirmButtonText: 'Yes, ' + actionText + ' it!'
 			}).then((result) => {
 				if (result.isConfirmed) {
-					form.submit();
+					button.closest('form').submit();
 				}
-			})
+			});
+		}
+
+		$(document).on('click', '.delete-property-button', function () {
+			const title = "Delete Property?"
+			const text = "You won't be able to revert this!"
+			handleAction($(this), 'delete', title, text );
 		});
 
 		let table = new DataTable('#propertyTable', {

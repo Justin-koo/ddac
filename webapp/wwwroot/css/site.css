@@ -2,3 +2,53 @@
     padding: 0 !important;
     margin: 0;
 }
+.truncate-multi-line {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: 40px;
+}
+
+.select2-container .select2-selection--single {
+    height: 50px !important;
+    border: 1px solid #e0ecf5 !important;
+    font-size: 15px !important;
+    background-image: none !important;
+}
+
+.input-with-icon .select2-container .select2-selection--single {
+    border: none !important;
+}
+
+@media (max-width: 991px){
+    .input-with-icon .select2-container .select2-selection--single {
+        border: 2px solid #e2e8ed !important;
+    }
+}
+
+.select2-container .select2-selection--single .select2-selection__rendered .select2-selection__placeholder {
+    line-height: 2.5 !important;
+}
+
+.select2-container .select2-selection--single .select2-selection__rendered {
+    line-height: 2.5 !important;
+    padding-left: 25px !important;
+}
+
+@media (min-width: 30em) {
+    .filepond--item {
+        width: calc(50% - 0.5em);
+    }
+}
+
+@media (min-width: 50em) {
+    .filepond--item {
+        width: calc(33.33% - 0.5em);
+    }
+}
+
+.filepond--root {
+    max-height: 356px;
+}

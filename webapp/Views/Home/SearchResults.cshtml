@@ -1,0 +1,86 @@
+﻿@model SearchResultViewModel
+@{
+    ViewData["Title"] = "Search Results";
+}
+
+<section class="over-top micler gray-simple">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 col-md-12 col-sm-12">
+                <div class="page-sidebar p-0">
+                    <!-- Add filters or any other content here if needed -->
+                </div>
+            </div>
+            <div class="col-lg-8 col-md-12 col-sm-12">
+                <div class="row justify-content-center mb-5">
+                    <div class="col-lg-12 col-md-12">
+                        <div class="item-shorting-box">
+                            <div class="item-shorting clearfix">
+                                <div class="left-column">
+                                    <h4 class="m-0"><span>@Model.Properties.Count()</span> Results Found</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row gx-3 gy-4">
+                    @foreach (var property in Model.Properties)
+                    {
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                            <div class="veshm-list-prty">
+                                <div class="veshm-list-prty-figure">
+                                    <div class="veshm-list-img-slide">
+                                        <div class="veshm-list-click">
+                                            @foreach (var imgPath in property.GalleryPath)
+                                            {
+                                                <div>
+                                                    <a href="single-property-1.html">
+                                                        <img src="~/uploads/@property.GalleryFolder/@imgPath" class="img-fluid mx-auto" alt="">
+                                                    </a>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="veshm-list-prty-caption">
+                                    <div class="veshm-list-kygf">
+                                        <div class="veshm-list-kygf-flex">
+                                            <div class="rlhc-price mb-2">
+                                                <h4 class="rlhc-price-name theme-cl">${property.Price}</h4>
+                                            </div>
+                                            <h5 class="rlhc-title-name verified">
+                                                <a href="single-property-1.html" class="prt-link-detail">@property.Title</a>
+                                            </h5>
+                                        </div>
+                                    </div>
+                                    <div class="veshm-list-middle">
+                                        <p class="text-mid">@property.AddressLine, @property.City, @property.State</p>
+                                    </div>
+                                    <div class="veshm-list-footers">
+                                        <div class="veshm-list-icons">
+                                            <ul>
+                                                <li><i class="fa-solid fa-bed"></i><span>@property.Bedrooms Bed</span></li>
+                                                <li><i class="fa-solid fa-bath"></i><span>@property.Bathrooms Ba</span></li>
+                                                <li><i class="fa-solid fa-vector-square"></i><span>@property.Area Sqft</span></li>
+                                                <li><i class="fa-solid fa-calendar-days"></i><span>Built @property.BuildingAge</span></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination">
+                                <!-- Add pagination here if needed -->
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
