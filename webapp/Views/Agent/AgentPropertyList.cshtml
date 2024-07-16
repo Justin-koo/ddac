@@ -175,7 +175,7 @@
 
 												<ul class="dropdown-menu dropdown-menu-end">
 													<li><a class="dropdown-item" asp-controller="Agent" asp-action="EditProperty" asp-route-username="@user.UserName" asp-route-encryptedId="@property.EncryptedId">Edit Listing</a></li>
-													<li><a class="dropdown-item" href="#">Cancel Listing</a></li>
+													<li><a class="dropdown-item" asp-controller="Agent" asp-action="UnlistProperty" asp-route-username="@user.UserName" asp-route-encryptedId="@property.EncryptedId">Cancel Listing</a></li>
 												</ul>
 											</div>
 											
@@ -219,21 +219,26 @@
 
 @section Scripts {
 	<script>
-		$(document).on('click', '.delete-property-button', function () {
-			var form = $(this).closest('form');
+		function handleAction(button, actionText, title, text) {
 			Swal.fire({
-				title: 'Are you sure?',
-				text: "You won't be able to revert this!",
+				title: title,
+				text: text,
 				icon: 'warning',
 				showCancelButton: true,
 				confirmButtonColor: '#017efa',
 				cancelButtonColor: '#d33',
-				confirmButtonText: 'Yes, delete it!'
+				confirmButtonText: 'Yes, ' + actionText + ' it!'
 			}).then((result) => {
 				if (result.isConfirmed) {
-					form.submit();
+					button.closest('form').submit();
 				}
-			})
+			});
+		}
+
+		$(document).on('click', '.delete-property-button', function () {
+			const title = "Delete Property?"
+			const text = "You won't be able to revert this!"
+			handleAction($(this), 'delete', title, text );
 		});
 
 		let table = new DataTable('#propertyTable', {

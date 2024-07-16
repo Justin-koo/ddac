@@ -602,24 +602,45 @@ namespace webapp.Controllers
             //return View(viewModel);
         }
 
+        [Authorize(Roles = "Agent")]
         [HttpPost]
-		public async Task<IActionResult> UnlistProperty(int id)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UnlistProperty(string username, string encryptedId)
 		{
-			var user = await _userManager.GetUserAsync(User);
+			var currentUser = await _userManager.GetUserAsync(User);
+
+			if (currentUser.UserName != username)
+			{
+				return RedirectToAction(nameof(AgentPropertyList), new { username = currentUser.UserName });
+			}
+
+			int id;
+			try
+			{
+				id = int.Parse(_encryptionHelper.Decrypt(encryptedId));
+			}
+			catch
+			{
+				TempData["Message"] = "Error: Invalid Property.";
+				return RedirectToAction(nameof(AgentPropertyList), new { username = currentUser.UserName });
+			}
+
 			var property = await _context.Properties
-				.Where(p => p.Id == id && p.AgentId == user.Id)
-				.FirstOrDefaultAsync();
+		        .Where(p => p.Id == id && p.AgentId == currentUser.Id)
+		        .FirstOrDefaultAsync();
 
 			if (property == null)
 			{
-				return NotFound("Property not found or you do not have permission to unlist this property.");
+				TempData["Message"] = "Error: Property not found.";
+				return RedirectToAction(nameof(AgentPropertyList), new { username = currentUser.UserName });
 			}
 
-			//property.ListingStatus = false;
-			//_context.Update(property);
+            property.ListingStatus = "Unlisted";
+			_context.Properties.Update(property);
 			await _context.SaveChangesAsync();
 
-			return RedirectToAction("AgentPropertyList");
+			TempData["Message"] = "Property unlisted successfully!";
+			return RedirectToAction(nameof(AgentPropertyList), new { username = currentUser.UserName });
 		}
 
 		[Authorize(Roles = "Agent")]
