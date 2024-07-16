@@ -8,30 +8,9 @@
 <div class="dashboard-body">
 
 	<div class="row">
-		<div class="col-lg-12 col-md-12">
-			<div class="_prt_filt_dash">
-				<div class="_prt_filt_dash_flex">
-					<div class="btn-group" role="group" id="filterList" aria-label="Basic radio toggle button group">
-						<input type="radio" class="btn-check" name="chooselists" id="alllist" checked>
-						<label class="btn btn-md btn-outline-primary font--medium" for="alllist">All</label>
-
-						<input type="radio" class="btn-check" name="chooselists" id="activelist">
-						<label class="btn btn-md btn-outline-primary font--medium" for="activelist">Pendng</label>
-
-						<input type="radio" class="btn-check" name="chooselists" id="expiredlist">
-						<label class="btn btn-md btn-outline-primary font--medium" for="expiredlist">Approved</label>
-
-						<input type="radio" class="btn-check" name="chooselists" id="draftlist">
-						<label class="btn btn-md btn-outline-primary font--medium" for="draftlist">Rejected</label>
-					</div>
-				</div>
-				<div class="_prt_filt_dash_last m2_hide">
-					<div class="_prt_filt_radius">
-					</div>
-					<div class="_prt_filt_add_new">
-						<a asp-controller="Agent" asp-action="SubmitProperty" class="prt_submit_link"><i class="fas fa-plus-circle"></i><span class="d-none d-lg-block d-md-block">List New Property</span></a>
-					</div>
-				</div>
+		<div class="col-lg-12 col-md-12 text-end mb-3">
+			<div class="_prt_filt_add_new">
+				<a asp-controller="Agent" asp-action="SubmitProperty" class="prt_submit_link"><i class="fas fa-plus-circle"></i><span>List New Property</span></a>
 			</div>
 		</div>
 	</div>
@@ -46,7 +25,7 @@
 	}
 
 	<div class="row g-3 align-items-center mb-3">
-		<div class="col-md-auto">
+		<div class="col-auto">
 			<select name="propertyTable_length" aria-controls="propertyTable" class="form-control" id="dt-length">
 				<option value="5">5</option>
 				<option value="10" selected>10</option>
@@ -54,11 +33,11 @@
 				<option value="50">50</option>
 			</select>
 		</div>
-		<div class="col-md-auto me-auto">
+		<div class="col me-auto">
 			<label for="dt-length-0"> per page</label>
 		</div>
 
-		<div class="col-md-auto ms-auto">
+		<div class="col-sm-4 col-12 ms-auto">
 			<input type="search" class="form-control" id="dt-search" placeholder="Search" aria-controls="propertyTable">
 		</div>
 	</div>
@@ -71,7 +50,7 @@
 						<thead class="thead-dark">
 							<tr>
 								<th scope="col">Property</th>
-								<th scope="col" class="m2_hide">Leads</th>
+								@* <th scope="col" class="m2_hide">Leads</th> *@
 								<th scope="col" class="m2_hide">Stats</th>
 								<th scope="col" class="m2_hide">Posted On</th>
 								<th scope="col">Status</th>
@@ -102,7 +81,7 @@
 											</div>
 										</div>
 									</td>
-									<td class="m2_hide">
+									@* <td class="m2_hide">
 										<div class="prt_leads"><span>27 till now</span></div>
 										<div class="prt_leads_list">
 											<ul>
@@ -113,7 +92,7 @@
 												<li><a href="#" class="leades_more">14+</a></li>
 											</ul>
 										</div>
-									</td>
+									</td> *@
 									<td class="m2_hide">
 										<div class="_leads_view"><h5 class="up">145</h5></div>
 										<div class="_leads_view_title"><span>Total Views</span></div>
@@ -168,7 +147,7 @@
 									</td>
 									<td>
 										<div class="_leads_action d-md-flex">
-											<a href="Javascript:void(0)" class="_leads_item @(property.ListingStatus == "Sold" ? "disabled bg-body-secondary" : "")" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+											<a href="Javascript:void(0)" class="_leads_item @(property.ListingStatus == "Sold" || property.ListingStatus == "Blocked" ? "disabled bg-body-secondary" : "")" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 												<i class="fas fa-edit"></i>
 											</a>
 
@@ -281,7 +260,7 @@
 
 
 		let table = new DataTable('#propertyTable', {
-			order: [[3, 'desc']],
+			order: [[2, 'desc']],
 			layout: null,
 			columnDefs: [
 				{

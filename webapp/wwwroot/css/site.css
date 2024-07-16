@@ -51,8 +51,19 @@
 
 .filepond--root {
     max-height: 356px;
+    height: 356px;
 }
+
+/*.featured_slick_gallery .slick-slide {
+    max-height: 400px !important;
+}*/
 
 .veshm-list-img-slide .slick-slide {
     height: 200px !important;
+}
+
+@media (max-width: 575.98px) {
+    ._prt_filt_add_new .prt_submit_link{
+        width: 100%;
+    }
 }
