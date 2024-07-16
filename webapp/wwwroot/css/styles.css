@@ -7953,7 +7953,7 @@ table.property-table-wrap .dashboard_propert_wrapper .title .table-property-pric
     line-height: 1;
 	font-size:15px;
 }
-._leads_status .pending {
+/*._leads_status .pending {
     padding: 3px 15px;
     background: #fff3cf;
     border-radius: 50px;
@@ -7963,19 +7963,19 @@ table.property-table-wrap .dashboard_propert_wrapper .title .table-property-pric
     font-weight: 600;
     margin-bottom: 3px;
     display: inline-flex;
-}
-._leads_status .active {
+}*/
+._leads_status span {
     padding: 3px 15px;
-    background: rgba(76, 175, 80,0.1);
+    /*background: rgba(76, 175, 80,0.1);*/
     border-radius: 50px;
     font-size: 12px;
-    color:#4caf50;
-    border: 1px solid rgba(76, 175, 80,0.2);
+    /*color:#4caf50;*/
+    /*border: 1px solid rgba(76, 175, 80,0.2);*/
     font-weight: 600;
     margin-bottom: 3px;
     display: inline-flex;
 }
-._leads_status .expire {
+/*._leads_status .expire {
     padding: 3px 15px;
     background: rgba(233, 30, 58,0.1);
     border-radius: 50px;
@@ -7985,7 +7985,7 @@ table.property-table-wrap .dashboard_propert_wrapper .title .table-property-pric
     font-weight: 600;
     margin-bottom: 3px;
     display: inline-flex;
-}
+}*/
 ._leads_action ._leads_item {
     width: 37px;
     height: 37px;

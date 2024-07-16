@@ -672,10 +672,10 @@ namespace webapp.Controllers
 		}
 
 		[Authorize(Roles = "Agent")]
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteProperty(string username, string encryptedId)
-        {
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> soldProperty(string username, string encryptedId)
+		{
 			var currentUser = await _userManager.GetUserAsync(User);
 
 			if (currentUser.UserName != username)
@@ -694,26 +694,58 @@ namespace webapp.Controllers
 				return RedirectToAction(nameof(AgentPropertyList), new { username = currentUser.UserName });
 			}
 
+			var property = await _context.Properties
+				.Where(p => p.Id == id && p.AgentId == currentUser.Id)
+				.FirstOrDefaultAsync();
+
+			if (property == null)
+			{
+				TempData["Message"] = "Error: Property not found.";
+				return RedirectToAction(nameof(AgentPropertyList), new { username = currentUser.UserName });
+			}
+
+			property.ListingStatus = "Sold";
+			_context.Properties.Update(property);
+			await _context.SaveChangesAsync();
+
+			TempData["Message"] = "Property marked successfully!";
+			return RedirectToAction(nameof(AgentPropertyList), new { username = currentUser.UserName });
+		}
+
+		[Authorize(Roles = "Agent")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteProperty(string username, string encryptedId)
+        {
+			var currentUser = await _userManager.GetUserAsync(User);
+
+			if (currentUser.UserName != username)
+			{
+				return RedirectToAction(nameof(AgentPropertyList), new { username = currentUser.UserName });
+			}
+
+			int id;
 			try
-            {
-                var property = await _context.Properties.FindAsync(id);
-                if (property == null)
-                {
-                    TempData["Message"] = "Error: Property not found.";
-                    return RedirectToAction("AgentPropertyList");
-                }
-
-                _context.Properties.Remove(property);
-                await _context.SaveChangesAsync();
-
-                TempData["Message"] = "Property deleted successfully!";
+			{
+                id = int.Parse(_encryptionHelper.Decrypt(encryptedId));
             }
-            catch (Exception ex)
-            {
-                TempData["Message"] = "Error: Unable to delete property.";
-                // Log the exception (ex) here if necessary
-            }
+			catch
+			{
+				TempData["Message"] = "Error: Invalid Property.";
+				return RedirectToAction(nameof(AgentPropertyList), new { username = currentUser.UserName });
+			}
 
+            var property = await _context.Properties.FindAsync(id);
+            if (property == null)
+            {
+                TempData["Message"] = "Error: Property not found.";
+				return RedirectToAction(nameof(AgentPropertyList), new { username = currentUser.UserName });
+			}
+
+            _context.Properties.Remove(property);
+            await _context.SaveChangesAsync();
+
+            TempData["Message"] = "Property deleted successfully!";
             return RedirectToAction(nameof(AgentPropertyList), new { username = currentUser.UserName });
 		}
 
