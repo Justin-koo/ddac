@@ -447,7 +447,8 @@ namespace webapp.Controllers
 			}
 			catch
 			{
-                return RedirectToAction(nameof(AgentPropertyList), new { username = currentUser.UserName });
+				TempData["Message"] = "Error: Invalid Property.";
+				return RedirectToAction(nameof(AgentPropertyList), new { username = currentUser.UserName });
             }
 
             var user = await _userManager.Users.SingleOrDefaultAsync(u => u.UserName == username);
@@ -459,8 +460,15 @@ namespace webapp.Controllers
 
             if (property == null)
             {
-                return RedirectToAction(nameof(AgentPropertyList), new { username = currentUser.UserName });
+				TempData["Message"] = "Error: Property not found.";
+				return RedirectToAction(nameof(AgentPropertyList), new { username = currentUser.UserName });
             }
+
+            if (property.ListingStatus == "Sold" || property.ListingStatus == "Blocked")
+            {
+				TempData["Message"] = "Error: Property cannot be modified.";
+				return RedirectToAction(nameof(AgentPropertyList), new { username = currentUser.UserName });
+			}
 
             var viewModel = new PropertyDetailsViewModel
 			{
@@ -525,7 +533,8 @@ namespace webapp.Controllers
             }
             catch
             {
-                return RedirectToAction(nameof(AgentPropertyList), new { username = currentUser.UserName });
+				TempData["Message"] = "Error: Invalid Property.";
+				return RedirectToAction(nameof(AgentPropertyList), new { username = currentUser.UserName });
             }
 
             if (!ModelState.IsValid)
@@ -542,10 +551,17 @@ namespace webapp.Controllers
 
             if (property == null)
             {
-                return RedirectToAction(nameof(AgentPropertyList), new { username = currentUser.UserName });
+				TempData["Message"] = "Error: Property not found.";
+				return RedirectToAction(nameof(AgentPropertyList), new { username = currentUser.UserName });
             }
 
-            property.Title = viewModel.Property.Title;
+			if (property.ListingStatus == "Sold" || property.ListingStatus == "Blocked")
+			{
+				TempData["Message"] = "Error: Property cannot be modified.";
+				return RedirectToAction(nameof(AgentPropertyList), new { username = currentUser.UserName });
+			}
+
+			property.Title = viewModel.Property.Title;
             property.Price = viewModel.Property.Price;
             property.Status = viewModel.Property.Status;
             property.PropertyType = viewModel.Property.PropertyType;
@@ -671,11 +687,64 @@ namespace webapp.Controllers
 				return RedirectToAction(nameof(AgentPropertyList), new { username = currentUser.UserName });
 			}
 
-            property.ListingStatus = "Unlisted";
+			if (property.ListingStatus == "Sold" || property.ListingStatus == "Blocked")
+			{
+				TempData["Message"] = "Error: Property cannot be modified.";
+				return RedirectToAction(nameof(AgentPropertyList), new { username = currentUser.UserName });
+			}
+
+			property.ListingStatus = "Unlisted";
 			_context.Properties.Update(property);
 			await _context.SaveChangesAsync();
 
 			TempData["Message"] = "Property unlisted successfully!";
+			return RedirectToAction(nameof(AgentPropertyList), new { username = currentUser.UserName });
+		}
+
+		[Authorize(Roles = "Agent")]
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> RelistProperty(string username, string encryptedId)
+		{
+			var currentUser = await _userManager.GetUserAsync(User);
+
+			if (currentUser.UserName != username)
+			{
+				return RedirectToAction(nameof(AgentPropertyList), new { username = currentUser.UserName });
+			}
+
+			int id;
+			try
+			{
+				id = int.Parse(_encryptionHelper.Decrypt(encryptedId));
+			}
+			catch
+			{
+				TempData["Message"] = "Error: Invalid Property.";
+				return RedirectToAction(nameof(AgentPropertyList), new { username = currentUser.UserName });
+			}
+
+			var property = await _context.Properties
+				.Where(p => p.Id == id && p.AgentId == currentUser.Id)
+				.FirstOrDefaultAsync();
+
+			if (property == null)
+			{
+				TempData["Message"] = "Error: Property not found.";
+				return RedirectToAction(nameof(AgentPropertyList), new { username = currentUser.UserName });
+			}
+
+			if (property.ListingStatus == "Sold" || property.ListingStatus == "Blocked")
+			{
+				TempData["Message"] = "Error: Property cannot be modified.";
+				return RedirectToAction(nameof(AgentPropertyList), new { username = currentUser.UserName });
+			}
+
+			property.ListingStatus = "Active";
+			_context.Properties.Update(property);
+			await _context.SaveChangesAsync();
+
+			TempData["Message"] = "Property relisted successfully!";
 			return RedirectToAction(nameof(AgentPropertyList), new { username = currentUser.UserName });
 		}
 

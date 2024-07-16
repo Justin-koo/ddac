@@ -52,3 +52,7 @@
 .filepond--root {
     max-height: 356px;
 }
+
+.veshm-list-img-slide .slick-slide {
+    height: 200px !important;
+}
