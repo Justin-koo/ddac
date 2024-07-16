@@ -378,7 +378,7 @@ namespace webapp.Controllers
             //return View(model);
         }
 
-        [Authorize(Roles = "Agent")]
+        //[Authorize(Roles = "Agent")]
         [HttpGet]
         [Route("{username}/property-listing")]
         public async Task<IActionResult> AgentPropertyList(string username)

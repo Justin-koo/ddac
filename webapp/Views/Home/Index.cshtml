@@ -29,29 +29,26 @@
 				<div class="search-from-clasic mt-5">
 					<div class="hero-search-content">
 						<div class="row">
-
 							<div class="col-xl-10 col-lg-10 col-md-9 col-sm-12 pe-xl-0 pe-lg-0 pe-md-0">
 								<div class="classic-search-box">
 									<div class="form-group full">
 										<div class="input-with-icon">
-											<input type="text" class="form-control" placeholder="Search for a location">
+											<input type="text" class="form-control" id="search-location" placeholder="Search for a location" autocomplete="off">
 											<img src="~/img/pin.svg" width="20" alt="">
 										</div>
-									</div>
-									<div class="form-group">
-										<a href="JavaScript:Void(0);" data-bs-toggle="modal" data-bs-target="#filter" class="btn btn-filter-search"><i class="fa-solid fa-filter"></i>Filter</a>
 									</div>
 								</div>
 							</div>
 
 							<div class="col-xl-2 col-lg-2 col-md-3 col-sm-12">
 								<div class="form-group">
-									<button type="submit" class="btn btn-primary full-width">Search</button>
+									<button type="button" class="btn btn-primary full-width" id="search-button">Search</button>
 								</div>
 							</div>
-
 						</div>
 					</div>
+					<div id="suggestions" class="list-group"></div>
+
 				</div>
 			</div>
 		</div>
@@ -817,6 +814,55 @@
 </section>
 
 
+@section Scripts {
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+			const searchInput = document.getElementById('search-location');
+			const suggestionsBox = document.getElementById('suggestions');
+			const searchButton = document.getElementById('search-button');
 
+			searchInput.addEventListener('input', function () {
+				const query = this.value;
+				if (query.length > 2) {
+					fetch(`/Home/GetLocationSuggestions?query=${query}`)
+						.then(response => response.json())
+						.then(data => {
+							suggestionsBox.innerHTML = '';
+							if (data.length > 0) {
+								data.forEach(item => {
+									const suggestionItem = document.createElement('a');
+									suggestionItem.href = `#`;
+									suggestionItem.className = 'list-group-item list-group-item-action';
+									suggestionItem.textContent = item;
+									suggestionItem.addEventListener('click', function () {
+										searchInput.value = item;
+										suggestionsBox.innerHTML = '';
+										performSearch(item);
+									});
+									suggestionsBox.appendChild(suggestionItem);
+								});
+							} else {
+								const noResultItem = document.createElement('div');
+								noResultItem.className = 'list-group-item';
+								noResultItem.textContent = 'No property available';
+								suggestionsBox.appendChild(noResultItem);
+							}
+						});
+				} else {
+					suggestionsBox.innerHTML = '';
+				}
+			});
+
+			searchButton.addEventListener('click', function () {
+				const query = searchInput.value;
+				performSearch(query);
+			});
+
+			function performSearch(query) {
+				window.location.href = `/Home/SearchResults?query=${query}`;
+			}
+		});
+	</script>
+}
 
 
