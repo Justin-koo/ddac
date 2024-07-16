@@ -28,6 +28,7 @@
 
 	var property_js = Newtonsoft.Json.JsonConvert.SerializeObject(property);
 	decimal? previousPrice = null; // Nullable to handle the first iteration where there is no previous price
+	var update_lenght = 0;
 }
 
 <!-- ============================ Hero Banner  Start================================== -->
@@ -334,24 +335,26 @@
 														</thead>
 														<tbody>
 															@{
-																var update_lenght = Model.PropertyUpdates.Count();
+																var salesUpdates = Model.PropertyUpdates.Where(u => u.Status == "Sale").OrderByDescending(u => u.UpdateDate).ToList();
+
+																update_lenght = salesUpdates.Count();
 																for (int i = 0;i < update_lenght; i++)
 																{
 																	Console.WriteLine(Model.PropertyUpdates.Count());
 																	Console.WriteLine("Index:  " + i);
 																	Console.WriteLine("Index + 1:  " + (i + 1));
-																	var update = Model.PropertyUpdates.OrderByDescending(u => u.UpdateDate).ToList()[i];
-																	decimal previous_price = 0;
-																	if (i + 1 < Model.PropertyUpdates.Count())
+																	var update = salesUpdates[i];
+																	decimal previous_price_sale = 0; // invalid number to indicate no changes
+																	if (i + 1 < update_lenght)
 																	{
 																		Console.WriteLine("Inside");
-																		previous_price = Model.PropertyUpdates.OrderByDescending(u => u.UpdateDate).ToList()[(i + 1)].Price;										
+																		previous_price_sale = salesUpdates[(1 + i)].Price;										
 																	}
 																	<tr>
 																		<td>@update.UpdateDate.ToString("dd MMM yyyy")</td>
 																		<td>@update.Status</td>
 																		<td>@String.Format("{0:C}", update.Price)</td>
-																		<td>@(previous_price != 0 ? String.Format("{0:C}",update.Price - previous_price) : "N/A")</td>
+																		<td>@((update.Price - previous_price_sale) != 0 ? String.Format("{0:C}", update.Price - previous_price_sale) : "N/A")</td>
 																		<td>@Math.Round(update.Price / decimal.Parse(property.Area), 2).ToString("C") / Sqft</td>
 																	</tr>
 																}
@@ -401,6 +404,9 @@
 															<tr>
 																<td colspan="5"><span class="font--medium text-success">Source: My State MLS</span></td>
 															</tr> *@
+															<tr>
+																<td colspan="5"><span class="font--medium text-success">Source: DDAC Property Database</span></td>
+															</tr>
 														</tbody>
 													</table>
 												</div>
@@ -411,15 +417,41 @@
 													<table class="table">
 														<thead>
 															<tr>
-																<th scope="col">Year</th>
-																<th scope="col">Tax Paid</th>
-																<th scope="col">Tax Assessment</th>
-																<th scope="col">Land</th>
-																<th scope="col">Improvement</th>
+																<th scope="col">Date</th>
+																<th scope="col">Event</th>
+																<th scope="col">Price</th>
+																<th scope="col">Change</th>
+																<th scope="col">Sq Ft Price</th>
 															</tr>
 														</thead>
 														<tbody>
-															<tr>
+															@{
+																var rentUpdates = Model.PropertyUpdates.Where(u => u.Status == "Rent").OrderByDescending(u => u.UpdateDate).ToList();
+																Console.WriteLine("Debug");
+																update_lenght = rentUpdates.Count();
+																Console.WriteLine("Lenght: " + update_lenght);
+																for (int i = 0; i < update_lenght; i++)
+																{
+																	Console.WriteLine(Model.PropertyUpdates.Count());
+																	Console.WriteLine("Index:  " + i);
+																	Console.WriteLine("Index + 1:  " + (i + 1));
+																	var update = rentUpdates[i];
+																	decimal previous_price_rent = 0; // invalid number to indicate no changes
+																	if (i + 1 < update_lenght)
+																	{
+																		Console.WriteLine("Inside");
+																		previous_price_rent = rentUpdates[(i + 1)].Price;
+																	}
+																	<tr>
+																		<td>@update.UpdateDate.ToString("dd MMM yyyy")</td>
+																		<td>@update.Status</td>
+																		<td>@String.Format("{0:C}", update.Price)</td>
+																		<td>@((update.Price - previous_price_rent) != 0 ? String.Format("{0:C}", update.Price - previous_price_rent) : "N/A")</td>
+																		<td>@Math.Round(update.Price / decimal.Parse(property.Area), 2).ToString("C") / Sqft</td>
+																	</tr>
+																}
+															}
+															@* <tr>
 																<td>2017</td>
 																<td>$1700</td>
 																<td>$40700</td>
@@ -460,9 +492,9 @@
 																<td>$58000</td>
 																<td>$86,800</td>
 																<td>$0</td>
-															</tr>
+															</tr> *@
 															<tr>
-																<td colspan="5"><span class="font--medium text-success">Source: My State MLS</span></td>
+																<td colspan="5"><span class="font--medium text-success">Source: DDAC Property Database</span></td>
 															</tr>
 														</tbody>
 													</table>
@@ -1041,7 +1073,7 @@
 							
 							
 							<!-- Nearby Other Places -->
-							<div class="vesh-detail-bloc style_2">
+							@* <div class="vesh-detail-bloc style_2">
 								<div class="vesh-detail-bloc_header">
 									<a data-bs-toggle="collapse" data-parent="#otherplaces" data-bs-target="#otherplaces" aria-controls="otherplaces" href="javascript:void(0);" aria-expanded="false" class="clps"><h4 class="property_block_title">Nearby Others Places</h4></a>
 								</div>
@@ -1362,7 +1394,7 @@
 
 									</div>
 								</div>
-							</div>
+							</div> *@
 							
 							@* <!-- Submit Reviews -->
 							<div class="vesh-detail-bloc style_2">

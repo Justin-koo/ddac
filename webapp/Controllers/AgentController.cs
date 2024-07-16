@@ -493,6 +493,14 @@ namespace webapp.Controllers
                 SelectedFeatures = property.Detail.OtherFeatures?.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList() ?? new List<string>(),
             };
 
+			var propertyUpdate = new PropertyUpdate
+			{
+				Status = property.Status,
+				Price = property.Price,
+				PropertyId = property.Id,
+				UpdateDate = DateTime.Now,
+			};
+
 			ViewData["Title"] = "Edit Property";
             ViewData["User"] = user;
             return View(viewModel);
