@@ -168,17 +168,27 @@
 									</td>
 									<td>
 										<div class="_leads_action d-md-flex">
-											<a href="#" class="_leads_item" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+											<a href="Javascript:void(0)" class="_leads_item @(property.ListingStatus == "Sold" ? "disabled bg-body-secondary" : "")" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 												<i class="fas fa-edit"></i>
 											</a>
 
 											<ul class="dropdown-menu dropdown-menu-end">
 												<li><a class="dropdown-item" asp-controller="Agent" asp-action="EditProperty" asp-route-username="@user.UserName" asp-route-encryptedId="@property.EncryptedId">Edit Listing</a></li>
 												<li>
-													<form method="post" asp-action="UnlistProperty" asp-controller="Agent" asp-route-username="@user.UserName" asp-route-encryptedId="@property.EncryptedId">
-														@Html.AntiForgeryToken()
-														<a role="button" class="dropdown-item unlist-property-button">Cancel Listing</a>
-													</form>
+													@if (property.ListingStatus == "Unlisted")
+													{
+														<form method="post" asp-action="RelistProperty" asp-controller="Agent" asp-route-username="@user.UserName" asp-route-encryptedId="@property.EncryptedId">
+															@Html.AntiForgeryToken()
+															<a role="button" class="dropdown-item relist-property-button">Relist Listing</a>
+														</form>
+													}else
+													{
+														<form method="post" asp-action="UnlistProperty" asp-controller="Agent" asp-route-username="@user.UserName" asp-route-encryptedId="@property.EncryptedId">
+															@Html.AntiForgeryToken()
+															<a role="button" class="dropdown-item unlist-property-button">Cancel Listing</a>
+														</form>
+													}
+													
 												</li>
 												<li>
 													<form method="post" asp-action="soldProperty" asp-controller="Agent" asp-route-username="@user.UserName" asp-route-encryptedId="@property.EncryptedId">
@@ -248,6 +258,12 @@
 			const title = "Unlist Property?"
 			const text = "You can relist it later."
 			handleAction($(this), title, text );
+		});
+
+		$(document).on('click', '.relist-property-button', function () {
+			const title = "Relist Property?"
+			const text = "The property will be active."
+			handleAction($(this), title, text);
 		});
 
 		$(document).on('click', '.delete-property-button', function () {
