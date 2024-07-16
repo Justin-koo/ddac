@@ -40,7 +40,7 @@
                         <img src="@(string.IsNullOrEmpty(user.ProfilePicture) ? Url.Content("~/uploads/user/default-user.png") : Url.Content($"~/uploads/user/{user.ProfilePicture}"))" class="img-fluid avatar" width="100" height="100" alt="Profile Picture">
                 
                         <h4>@user.FullName</h4>
-                        <span class="font--medium small"><i class="fa-solid fa-location-dot me-2"></i>@user.City, @user.Country</span>
+                        @* <span class="font--medium small"><i class="fa-solid fa-location-dot me-2"></i>@user.City, @user.Country</span> *@
                     </div>
 
                     @* <div class="adgt-wriop-social pb-3">
