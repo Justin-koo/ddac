@@ -646,9 +646,27 @@ namespace webapp.Controllers
 		[Authorize(Roles = "Agent")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteProperty(int id)
+        public async Task<IActionResult> DeleteProperty(string username, string encryptedId)
         {
-            try
+			var currentUser = await _userManager.GetUserAsync(User);
+
+			if (currentUser.UserName != username)
+			{
+				return RedirectToAction(nameof(AgentPropertyList), new { username = currentUser.UserName });
+			}
+
+			int id;
+			try
+			{
+				id = int.Parse(_encryptionHelper.Decrypt(encryptedId));
+			}
+			catch
+			{
+				TempData["Message"] = "Error: Invalid Property.";
+				return RedirectToAction(nameof(AgentPropertyList), new { username = currentUser.UserName });
+			}
+
+			try
             {
                 var property = await _context.Properties.FindAsync(id);
                 if (property == null)
@@ -668,8 +686,8 @@ namespace webapp.Controllers
                 // Log the exception (ex) here if necessary
             }
 
-            return RedirectToAction("AgentPropertyList");
-        }
+            return RedirectToAction(nameof(AgentPropertyList), new { username = currentUser.UserName });
+		}
 
     }
 }
