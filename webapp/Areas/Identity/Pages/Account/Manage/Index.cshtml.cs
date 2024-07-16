@@ -47,6 +47,8 @@ namespace webapp.Areas.Identity.Pages.Account.Manage
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
 
+            [Required(ErrorMessage = "You must enter the username before submitting your form!")]
+            [Display(Name = "Username")]
             public string UserName { get; set; }
 
             [Required(ErrorMessage = "You must enter the full name before submitting your form!")]
@@ -55,7 +57,7 @@ namespace webapp.Areas.Identity.Pages.Account.Manage
             [Display(Name = "Full Name")]
             public string FullName { get; set; }
 
-            [Required(ErrorMessage = "You must enter the Country before submitting your form!")]
+            [Required(ErrorMessage = "You must enter the country before submitting your form!")]
             [StringLength(256, ErrorMessage = "You must enter the value between 2 - 256 chars", MinimumLength = 2)]
             [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "The country must only contain alphabetic characters and spaces.")]
             [Display(Name = "Country")]
@@ -176,12 +178,19 @@ namespace webapp.Areas.Identity.Pages.Account.Manage
                 }
             }
 
-            if (Input.UserName != user.UserName)
-            {
-                user.UserName = Input.UserName;
-            }
+			if (Input.UserName != user.UserName)
+			{
+				var existingUser = await _userManager.FindByNameAsync(Input.UserName);
+				if (existingUser != null)
+				{
+					ModelState.AddModelError("Input.UserName", "Username already exists.");
+					await LoadAsync(user);
+					return Page();
+				}
+				user.UserName = Input.UserName;
+			}
 
-            if (Input.FullName != user.FullName)
+			if (Input.FullName != user.FullName)
             {
                 user.FullName = Input.FullName;
             }
