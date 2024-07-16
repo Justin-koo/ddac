@@ -3,11 +3,12 @@
 
 @inject SignInManager<webappUser> SignInManager
 @inject UserManager<webappUser> UserManager
+@inject RoleManager<IdentityRole> RoleManager
 
 @{
-	string profilePictureUrl = "~/uploads/user/default-user.png"; // Default profile picture
-
+	string profilePictureUrl = "/uploads/user/default-user.png"; // Default profile picture
 	webappUser user = null;
+	bool isUser = false;
 
 	if (SignInManager.IsSignedIn(User))
 	{
@@ -15,6 +16,12 @@
 		if (user != null && !string.IsNullOrEmpty(user.ProfilePicture))
 		{
 			profilePictureUrl = Url.Content($"~/uploads/user/{user.ProfilePicture}");
+		}
+
+		if (user != null)
+		{
+			var roles = await UserManager.GetRolesAsync(user);
+			isUser = roles.Contains("User");
 		}
 	}
 }
@@ -74,13 +81,19 @@
 					
 				</div>
 				<ul>
-					<li><a href="dashboard.html"><i class="fa fa-tachometer-alt"></i>Dashboard<span class="notti_coun style-1">4</span></a></li>
+					@if (!isUser)
+					{
+						<li><a href="dashboard.html"><i class="fa fa-tachometer-alt"></i>Dashboard<span class="notti_coun style-1">4</span></a></li>
+					}
 					<li><a asp-area="Identity" asp-page="/Account/Manage/Index"><i class="fa fa-user-tie"></i>My Profile</a></li>
 					<li><a href="bookmark-list.html"><i class="fa fa-bookmark"></i>Saved Property<span class="notti_coun style-2">7</span></a></li>
-					<li><a asp-controller="Agent" asp-action="AgentPropertyList" asp-route-username="@user.UserName"><i class="fa fa-tasks"></i>My Properties</a></li>
-					@* <li><a href="messages.html"><i class="fa fa-envelope"></i>Messages<span class="notti_coun style-3">3</span></a></li> *@
-					@* <li><a href="choose-package.html"><i class="fa fa-gift"></i>Choose Package</a></li> *@
-					<li><a asp-controller="Agent" asp-action="SubmitProperty"><i class="fa fa-pen-nib"></i>Submit New Property</a></li>
+					
+					@if (!isUser)
+					{
+						<li><a asp-controller="Agent" asp-action="AgentPropertyList" asp-route-username="@user.UserName"><i class="fa fa-tasks"></i>My Properties</a></li>
+						<li><a asp-controller="Agent" asp-action="SubmitProperty"><i class="fa fa-pen-nib"></i>Submit New Property</a></li>
+					}
+					
 					<li><a asp-area="Identity" asp-page="/Account/Manage/ChangePassword"><i class="fa fa-unlock-alt"></i>Change Password</a></li>
 				</ul>
 			</div>
