@@ -113,7 +113,7 @@ namespace webapp.Areas.Identity.Pages.Account.Manage
 
         private async Task LoadAsync(webappUser user)
         {
-            var email = await _userManager.GetUserNameAsync(user);
+            var email = await _userManager.GetEmailAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
 
             Email = email;

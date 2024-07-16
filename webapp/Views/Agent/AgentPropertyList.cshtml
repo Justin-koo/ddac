@@ -29,7 +29,7 @@
 					<div class="_prt_filt_radius">
 					</div>
 					<div class="_prt_filt_add_new">
-						<a asp-controller="Property" asp-action="SubmitProperty" class="prt_submit_link"><i class="fas fa-plus-circle"></i><span class="d-none d-lg-block d-md-block">List New Property</span></a>
+						<a asp-controller="Agent" asp-action="SubmitProperty" class="prt_submit_link"><i class="fas fa-plus-circle"></i><span class="d-none d-lg-block d-md-block">List New Property</span></a>
 					</div>
 				</div>
 			</div>
@@ -150,37 +150,46 @@
 									</td>
 									<td>
 										<div class="_leads_status">
-											<span class="active">@property.ListingStatus</span>
-											@* @if (property.ListingStatus == "Pending")
+											@* <span class="active">@property.ListingStatus</span>  *@
+											@if (property.ListingStatus == "Active")
 											{
-												<span class="pending">@property.ListingStatus</span>
+												<span class="text-success border border-success-subtle bg-success-subtle">@property.ListingStatus</span>
 											}
-											else if (property.ListingStatus == "Approved")
+											else if (property.ListingStatus == "Unlisted")
 											{
-												<span class="active">@property.ListingStatus</span>
+												<span class="text-secondary border border-tertiary bg-secondary-subtle">@property.ListingStatus</span>
 											}
-											else if (property.ListingStatus == "Rejected")
+											else if (property.ListingStatus == "Sold")
 											{
-												<span class="expired">@property.ListingStatus</span>
-											} *@
+												<span class="text-primary border border-primary-subtle bg-primary-subtle">@property.ListingStatus</span>
+											}
 										</div>
 										@* <div class="_leads_view_title"><span>Till 12 Oct</span></div> *@
 									</td>
 									<td>
 										<div class="_leads_action d-md-flex">
-											<div class="dropdown">
-												<a href="#" class="_leads_item" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-													<i class="fas fa-edit"></i>
-												</a>
+											<a href="#" class="_leads_item" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+												<i class="fas fa-edit"></i>
+											</a>
 
-												<ul class="dropdown-menu dropdown-menu-end">
-													<li><a class="dropdown-item" asp-controller="Agent" asp-action="EditProperty" asp-route-username="@user.UserName" asp-route-encryptedId="@property.EncryptedId">Edit Listing</a></li>
-													<li><a class="dropdown-item" asp-controller="Agent" asp-action="UnlistProperty" asp-route-username="@user.UserName" asp-route-encryptedId="@property.EncryptedId">Cancel Listing</a></li>
-												</ul>
-											</div>
+											<ul class="dropdown-menu dropdown-menu-end">
+												<li><a class="dropdown-item" asp-controller="Agent" asp-action="EditProperty" asp-route-username="@user.UserName" asp-route-encryptedId="@property.EncryptedId">Edit Listing</a></li>
+												<li>
+													<form method="post" asp-action="UnlistProperty" asp-controller="Agent" asp-route-username="@user.UserName" asp-route-encryptedId="@property.EncryptedId">
+														@Html.AntiForgeryToken()
+														<a role="button" class="dropdown-item unlist-property-button">Cancel Listing</a>
+													</form>
+												</li>
+												<li>
+													<form method="post" asp-action="soldProperty" asp-controller="Agent" asp-route-username="@user.UserName" asp-route-encryptedId="@property.EncryptedId">
+														@Html.AntiForgeryToken()
+														<a role="button" class="dropdown-item sold-property-button">Mark Listing as Sold</a>
+													</form>
+												</li>
+											</ul>
 											
 											@* <a href="#"><i class="fas fa-edit"></i></a> *@
-											<form asp-action="DeleteProperty" asp-controller="Agent" asp-route-id="@property.Id" method="post" class="delete-property-form" style="display:inline;">
+											<form asp-action="DeleteProperty" asp-controller="Agent" asp-route-username="@user.UserName" asp-route-encryptedId="@property.EncryptedId" method="post" class="delete-property-form" style="display:inline;">
 												@Html.AntiForgeryToken()
 												<a role="button" class="delete-property-button _leads_item">
 													<i class="fas fa-trash"></i>
@@ -219,7 +228,7 @@
 
 @section Scripts {
 	<script>
-		function handleAction(button, actionText, title, text) {
+		function handleAction(button, title, text) {
 			Swal.fire({
 				title: title,
 				text: text,
@@ -227,7 +236,7 @@
 				showCancelButton: true,
 				confirmButtonColor: '#017efa',
 				cancelButtonColor: '#d33',
-				confirmButtonText: 'Yes, ' + actionText + ' it!'
+				confirmButtonText: 'Yes'
 			}).then((result) => {
 				if (result.isConfirmed) {
 					button.closest('form').submit();
@@ -235,11 +244,25 @@
 			});
 		}
 
+		$(document).on('click', '.unlist-property-button', function () {
+			const title = "Unlist Property?"
+			const text = "You can relist it later."
+			handleAction($(this), title, text );
+		});
+
 		$(document).on('click', '.delete-property-button', function () {
 			const title = "Delete Property?"
 			const text = "You won't be able to revert this!"
-			handleAction($(this), 'delete', title, text );
+			handleAction($(this), title, text);
 		});
+		
+		$(document).on('click', '.sold-property-button', function () {
+			const title = "Set Property to Sold?"
+			const text = "You won't be able to revert this!"
+			handleAction($(this), title, text);
+		});
+
+
 
 		let table = new DataTable('#propertyTable', {
 			order: [[3, 'desc']],

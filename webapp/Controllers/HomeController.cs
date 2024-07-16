@@ -15,6 +15,7 @@ using webapp.Data;
 using webapp.Models;
 using webapp.Areas.Identity.Pages.Account.Manage;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using System.Drawing.Printing;
 
 
 namespace webapp.Controllers
@@ -23,6 +24,8 @@ namespace webapp.Controllers
     {
         private readonly ILogger<HomeController> _logger;
                 private readonly webappContext _context;
+        private const int PageSize = 10; // Number of items per page
+
 
         public HomeController(ILogger<HomeController> logger, webappContext context)
         {
@@ -71,7 +74,82 @@ namespace webapp.Controllers
             return View(viewModel);
         }
 
-		[Route("about")]
+
+		[HttpGet]
+		public async Task<IActionResult> GetLocationSuggestions(string query)
+		{
+			var locations = await _context.Properties
+				.Include(p => p.Address)
+				.Where(p => p.Address.City.Contains(query) ||
+							p.Address.State.Contains(query) ||
+							p.Address.AddressLine.Contains(query))
+				.Select(p => $"{p.Address.AddressLine}, {p.Address.City}, {p.Address.State}, {p.Address.ZipCode}")
+				.Distinct()
+				.ToListAsync();
+
+			return Json(locations);
+		}
+
+        [HttpGet]
+        public async Task<IActionResult> SearchResults(string query, int page = 1)
+        {
+            var totalProperties = await _context.Properties
+                .Include(p => p.Address)
+                .Include(p => p.Detail)
+                .Where(p => p.Address.City.Contains(query) ||
+                            p.Address.State.Contains(query) ||
+                            p.Address.AddressLine.Contains(query))
+                .CountAsync();
+
+            var properties = await _context.Properties
+                .Include(p => p.Address)
+                .Include(p => p.Detail)
+                .Where(p => p.Address.City.Contains(query) ||
+                            p.Address.State.Contains(query) ||
+                            p.Address.AddressLine.Contains(query))
+            .Skip((page - 1) * PageSize)
+                .Take(PageSize)
+                .ToListAsync();
+
+            var viewModel = new SearchResultViewModel
+            {
+                Properties = properties.Select(p => new PropertyViewModel
+                {
+                    Id = p.Id,
+                    Title = p.Title,
+                    Status = p.Status,
+                    PropertyType = p.PropertyType,
+                    Price = p.Price,
+                    Area = p.Area,
+                    Bedrooms = p.Bedrooms,
+                    Bathrooms = p.Bathrooms,
+                    GalleryPath = p.GalleryPath.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList(),
+                    ListingDate = p.ListingDate,
+                    AgentId = p.AgentId,
+                    AddressLine = p.Address.AddressLine,
+                    City = p.Address.City,
+                    State = p.Address.State,
+                    ZipCode = p.Address.ZipCode,
+                    Description = p.Detail.Description,
+                    BuildingAge = p.Detail.BuildingAge,
+                    Garage = p.Detail.Garage,
+                    Rooms = p.Detail.Rooms,
+                    Features = p.Detail.OtherFeatures?.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList() ?? new List<string>(),
+                    GalleryFolder = p.Id.ToString().ToSHA256String(),
+                    ListingStatus = p.ListingStatus,
+                }).ToList(),
+                CurrentPage = page,
+                TotalPages = (int)Math.Ceiling(totalProperties / (double)PageSize),
+                Query = query
+            };
+
+            return View(viewModel);
+        }
+
+
+
+
+        [Route("about")]
 		public IActionResult About()
 		{
 			return View();
