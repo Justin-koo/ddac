@@ -31,8 +31,6 @@
 }
 
 <!-- ============================ Hero Banner  Start================================== -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <style>
 	#map {
 		height: 400px;
@@ -313,16 +311,16 @@
 								</div>
 								<div id="historyinfo" class="panel-collapse collapse show" aria-labelledby="historyinfo">
 									<div class="vesh-detail-bloc-body">
-										@* <ul class="nav nav-pills mb-3" id="pills-tab1" role="tablist">
+										<ul class="nav nav-pills mb-3" id="pills-tab1" role="tablist">
 											<li class="nav-item" role="presentation">
-											<button class="nav-link active" id="pills-price-tab" data-bs-toggle="pill" data-bs-target="#pills-price" type="button" role="tab" aria-controls="pills-price" aria-selected="true">Price history</button>
+											<button class="nav-link active" id="pills-price-tab" data-bs-toggle="pill" data-bs-target="#pills-sales-price" type="button" role="tab" aria-controls="pills-price" aria-selected="true">For Sales</button>
 											</li>
 											<li class="nav-item" role="presentation">
-											<button class="nav-link" id="pills-tax-tab" data-bs-toggle="pill" data-bs-target="#pills-tax" type="button" role="tab" aria-controls="pills-tax" aria-selected="false">Tax History</button>
+											<button class="nav-link" id="pills-tax-tab" data-bs-toggle="pill" data-bs-target="#pills-rent-price" type="button" role="tab" aria-controls="pills-tax" aria-selected="false">For Rent</button>
 											</li>
-										</ul> *@
+										</ul>
 										<div class="tab-content" id="pills-tabContent1">
-											<div class="tab-pane fade show active" id="pills-price" role="tabpanel" aria-labelledby="pills-price-tab" tabindex="0">
+											<div class="tab-pane fade show active" id="pills-sales-price" role="tabpanel" aria-labelledby="pills-price-tab" tabindex="0">
 												<div class="table-responsive">
 													<table class="table">
 														<thead>
@@ -335,16 +333,28 @@
 															</tr>
 														</thead>
 														<tbody>
-															@foreach (var update in Model.PropertyUpdates.OrderByDescending(u => u.UpdateDate))
-															{
-																<tr>
-																	<td>@update.UpdateDate.ToString("dd MMM yyyy")</td>
-																	<td>@update.Status</td>
-																	<td>@String.Format("{0:C}", update.Price)</td>
-																	<td>@(previousPrice.HasValue ? String.Format("{0:C}",update.Price - previousPrice) : "N/A")</td>
-																	<td>@Math.Round(update.Price / decimal.Parse(property.Area), 2).ToString("C") / Sqft</td>
-																</tr>
-																previousPrice = update.Price;
+															@{
+																var update_lenght = Model.PropertyUpdates.Count();
+																for (int i = 0;i < update_lenght; i++)
+																{
+																	Console.WriteLine(Model.PropertyUpdates.Count());
+																	Console.WriteLine("Index:  " + i);
+																	Console.WriteLine("Index + 1:  " + (i + 1));
+																	var update = Model.PropertyUpdates.OrderByDescending(u => u.UpdateDate).ToList()[i];
+																	decimal previous_price = 0;
+																	if (i + 1 < Model.PropertyUpdates.Count())
+																	{
+																		Console.WriteLine("Inside");
+																		previous_price = Model.PropertyUpdates.OrderByDescending(u => u.UpdateDate).ToList()[(i + 1)].Price;										
+																	}
+																	<tr>
+																		<td>@update.UpdateDate.ToString("dd MMM yyyy")</td>
+																		<td>@update.Status</td>
+																		<td>@String.Format("{0:C}", update.Price)</td>
+																		<td>@(previous_price != 0 ? String.Format("{0:C}",update.Price - previous_price) : "N/A")</td>
+																		<td>@Math.Round(update.Price / decimal.Parse(property.Area), 2).ToString("C") / Sqft</td>
+																	</tr>
+																}
 															}
 @* 															<tr>
 																<td>10 Jan 2020</td>
@@ -396,7 +406,7 @@
 												</div>
 											</div>
 											
-											@* <div class="tab-pane fade" id="pills-tax" role="tabpanel" aria-labelledby="pills-tax-tab" tabindex="0">
+											<div class="tab-pane fade" id="pills-rent-price" role="tabpanel" aria-labelledby="pills-tax-tab" tabindex="0">
 												<div class="table-responsive">
 													<table class="table">
 														<thead>
@@ -457,7 +467,7 @@
 														</tbody>
 													</table>
 												</div>
-											</div> *@
+											</div>
 										</div>
 									</div>
 								</div>
@@ -1423,8 +1433,7 @@
 							<div class="vesh-detail-bloc border">
 								<ul class="like_share_list">
 									<li>
-										<a href="JavaScript:Void(0);" id="copyLink" class="btn btn-light-success" data-toggle="tooltip" data-original-title="Share"><i class="fa-solid fa-share-from-square me-2"></i>Share</a>
-										<span id="copyMessage" style="display:none;">Link Copied!</span> 
+										<a href="JavaScript:Void(0);" data-bs-toggle="tooltip" data-bs-title="Copy Link" data-bs-placement="bottom" id="copyLink" class="btn btn-light-success"><i class="fa-solid fa-share-from-square me-2"></i>Share</a>
 									</li>
 									<li><a href="JavaScript:Void(0);" class="btn btn-light-danger" data-toggle="tooltip" data-original-title="Save"><i class="fa-solid fa-heart-circle-check me-2"></i>Save</a></li>
 								</ul>
@@ -1546,128 +1555,169 @@
 			</section>
 			<!-- ============================ Property Detail End ================================== -->
 
-
-<script>
-	console.log("script working?")
-	$(document).ready(function () {
-		var ctx = document.getElementById('mortgageChart').getContext('2d');
-		var mortgageChart = new Chart(ctx, {
-			type: 'pie',
-			data: {
-				labels: ['Principal', 'Interest'],
-				datasets: [{
-					label: 'Total Payable',
-					data: [12, 19],
-					backgroundColor: [
-                        'rgba(54, 162, 235, 0.4)',  // Custom color for Monthly Payment Variable
-						'rgba(255, 99, 132, 0.4)', // Custom color for Monthly Payment Fixed
-                    ],
-					borderWidth: 2
-				}]
-			},
-		});
+@section Scripts{
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	<script>
+		console.log("script working?")
+		$(document).ready(function () {
+			var ctx = document.getElementById('mortgageChart').getContext('2d');
+			var mortgageChart = new Chart(ctx, {
+				type: 'pie',
+				data: {
+					labels: ['Principal', 'Interest'],
+					datasets: [{
+						label: 'Total Payable',
+						data: [12, 19],
+						backgroundColor: [
+							'rgba(54, 162, 235, 0.4)',  // Custom color for Monthly Payment Variable
+							'rgba(255, 99, 132, 0.4)', // Custom color for Monthly Payment Fixed
+						],
+						borderWidth: 2
+					}]
+				},
+			});
 		
-		function validateInput(selector, errorSelector) {
-			var value = $(selector).val();
-			if (value) {
-				var sanitizedValue = value.replace(/,/g, ''); // Remove commas
-				if (!$.isNumeric(sanitizedValue) || parseFloat(sanitizedValue) < 0) {
-					$(selector).addClass("is-invalid");
-					$(errorSelector).text("Please enter a valid number.");
-					return false;
+			function validateInput(selector, errorSelector) {
+				var value = $(selector).val();
+				if (value) {
+					var sanitizedValue = value.replace(/,/g, ''); // Remove commas
+					if (!$.isNumeric(sanitizedValue) || parseFloat(sanitizedValue) < 0) {
+						$(selector).addClass("is-invalid");
+						$(errorSelector).text("Please enter a valid number.");
+						return false;
+					} else {
+						$(errorSelector).text("");
+						$(selector).removeClass("is-invalid");
+						return true;
+					}
 				} else {
-					$(errorSelector).text("");
-					$(selector).removeClass("is-invalid");
-					return true;
+					$(errorSelector).text("This field is required.");
+					return false;
 				}
-			} else {
-				$(errorSelector).text("This field is required.");
-				return false;
 			}
-		}
 
-		function calculateMonthlyPayment(principal, annualInterestRate, loanTermYears) {
-            var monthlyInterestRate = annualInterestRate / 100 / 12;
-            var numberOfPayments = loanTermYears * 12;
+			function calculateMonthlyPayment(principal, annualInterestRate, loanTermYears) {
+				var monthlyInterestRate = annualInterestRate / 100 / 12;
+				var numberOfPayments = loanTermYears * 12;
             
-            var monthlyPayment = principal * monthlyInterestRate / (1 - Math.pow(1 + monthlyInterestRate, -numberOfPayments));
-            return monthlyPayment;
-        }
-
-		function calculateResults() {
-			var isValid = true;
-
-			isValid &= validateInput("#property-value", "#property-value-error");
-			isValid &= validateInput("#down-payment", "#down-payment-error");
-			isValid &= validateInput("#mortgage-term", "#mortgage-term-error");
-			isValid &= validateInput("#mortgage-fee", "#mortgage-fee-error");
-			isValid &= validateInput("#base-interest-rate", "#base-interest-rate-error");
-			isValid &= validateInput("#loan-interest-rate", "#loan-interest-rate-error");
-
-			if (!isValid) {
-				return;
+				var monthlyPayment = principal * monthlyInterestRate / (1 - Math.pow(1 + monthlyInterestRate, -numberOfPayments));
+				return monthlyPayment;
 			}
 
-			var propertyValue = parseFloat($("#property-value").val().replace(/,/g, ''));
-            var downPayment = parseFloat($("#down-payment").val().replace(/,/g, ''));
-            var mortgageTerm = parseInt($("#mortgage-term").val());
-            var mortgageFee = parseFloat($("#mortgage-fee").val().replace(/,/g, ''));
-            var baseInterestRate = parseFloat($("#base-interest-rate").val());
-            var loanInterestRate = parseFloat($("#loan-interest-rate").val());
+			function calculateResults() {
+				var isValid = true;
 
-			var monthlyPayment = 0;
-			var totalPayment = 0;
-			var totalInterest = 0;
+				isValid &= validateInput("#property-value", "#property-value-error");
+				isValid &= validateInput("#down-payment", "#down-payment-error");
+				isValid &= validateInput("#mortgage-term", "#mortgage-term-error");
+				isValid &= validateInput("#mortgage-fee", "#mortgage-fee-error");
+				isValid &= validateInput("#base-interest-rate", "#base-interest-rate-error");
+				isValid &= validateInput("#loan-interest-rate", "#loan-interest-rate-error");
 
-			var loanAmount = propertyValue - downPayment;
-			if (loanAmount > 0) {
-				monthlyPayment = calculateMonthlyPayment(loanAmount, baseInterestRate + loanInterestRate, mortgageTerm) + mortgageFee / (12 * mortgageTerm);
-				totalPayment = monthlyPayment * mortgageTerm * 12;
-				totalInterest = totalPayment - loanAmount;
+				if (!isValid) {
+					return;
+				}
+
+				var propertyValue = parseFloat($("#property-value").val().replace(/,/g, ''));
+				var downPayment = parseFloat($("#down-payment").val().replace(/,/g, ''));
+				var mortgageTerm = parseInt($("#mortgage-term").val());
+				var mortgageFee = parseFloat($("#mortgage-fee").val().replace(/,/g, ''));
+				var baseInterestRate = parseFloat($("#base-interest-rate").val());
+				var loanInterestRate = parseFloat($("#loan-interest-rate").val());
+
+				var monthlyPayment = 0;
+				var totalPayment = 0;
+				var totalInterest = 0;
+
+				var loanAmount = propertyValue - downPayment;
+				if (loanAmount > 0) {
+					monthlyPayment = calculateMonthlyPayment(loanAmount, baseInterestRate + loanInterestRate, mortgageTerm) + mortgageFee / (12 * mortgageTerm);
+					totalPayment = monthlyPayment * mortgageTerm * 12;
+					totalInterest = totalPayment - loanAmount;
+				}
+
+				$("#monthly-payment").text(monthlyPayment > 0 ? monthlyPayment.toFixed(2) : "N/A");
+				$("#total-amount-financed").text(loanAmount > 0 ? loanAmount.toFixed(2) : "N/A");
+				$("#total-interest-payable").text(totalInterest > 0 ? totalInterest.toFixed(2) : "N/A");
+				$("#total-payable").text(totalPayment > 0 ? totalPayment.toFixed(2) : "N/A");
+
+				mortgageChart.data.datasets[0].data[0] = loanAmount > 0 ? loanAmount.toFixed(2) : 0;
+				mortgageChart.data.datasets[0].data[1] = totalInterest > 0 ? totalInterest.toFixed(2) : 0;
+				mortgageChart.update();
 			}
 
-			$("#monthly-payment").text(monthlyPayment > 0 ? monthlyPayment.toFixed(2) : "N/A");
-			$("#total-amount-financed").text(loanAmount > 0 ? loanAmount.toFixed(2) : "N/A");
-			$("#total-interest-payable").text(totalInterest > 0 ? totalInterest.toFixed(2) : "N/A");
-			$("#total-payable").text(totalPayment > 0 ? totalPayment.toFixed(2) : "N/A");
+			$("input").on("input", function () {
+				calculateResults();
+			});
 
-			mortgageChart.data.datasets[0].data[0] = loanAmount > 0 ? loanAmount.toFixed(2) : 0;
-            mortgageChart.data.datasets[0].data[1] = totalInterest > 0 ? totalInterest.toFixed(2) : 0;
-            mortgageChart.update();
-		}
-
-		$("input").on("input", function () {
-			calculateResults();
+			calculateResults(); // initial calculation
 		});
 
-		calculateResults(); // initial calculation
-	});
+		// document.getElementById('copyLink').addEventListener('click', function () {
+		// 	// Create a temporary input element
+		// 	const tempInput = document.createElement('input');
+		// 	// Append it to the body
+		// 	document.body.appendChild(tempInput);
+		// 	// Set its value to the current URL
+		// 	tempInput.value = window.location.href;
+		// 	// Select the value
+		// 	tempInput.select();
+		// 	// Copy the text inside the input
+		// 	document.execCommand('copy');
+		// 	// Remove the temporary input
+		// 	document.body.removeChild(tempInput);
 
-	// document.getElementById('copyLink').addEventListener('click', function () {
-	// 	// Create a temporary input element
-	// 	const tempInput = document.createElement('input');
-	// 	// Append it to the body
-	// 	document.body.appendChild(tempInput);
-	// 	// Set its value to the current URL
-	// 	tempInput.value = window.location.href;
-	// 	// Select the value
-	// 	tempInput.select();
-	// 	// Copy the text inside the input
-	// 	document.execCommand('copy');
-	// 	// Remove the temporary input
-	// 	document.body.removeChild(tempInput);
+		// 	// Optional: Alert the user that the URL has been copied
+		// 	alert('URL copied to clipboard!');
+		// });
 
-	// 	// Optional: Alert the user that the URL has been copied
-	// 	alert('URL copied to clipboard!');
-	// });
+		document.getElementById('copyLink').addEventListener('click', async function () {
+			try {
+				await navigator.clipboard.writeText(window.location.href);
+				document.getElementById('copyMessage').style.display = 'inline'; // Show the message
+				setTimeout(() => { document.getElementById('copyMessage').style.display = 'none'; }, 3000); // Hide after 3 seconds
+			} catch (err) {
+				console.error('Failed to copy: ', err);
+			}
+		});
 
-	document.getElementById('copyLink').addEventListener('click', async function () {
-		try {
-			await navigator.clipboard.writeText(window.location.href);
-			document.getElementById('copyMessage').style.display = 'inline'; // Show the message
-			setTimeout(() => { document.getElementById('copyMessage').style.display = 'none'; }, 3000); // Hide after 3 seconds
-		} catch (err) {
-			console.error('Failed to copy: ', err);
-		}
-	});
-</script>
+		const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+		const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+
+		// $('#copyLink').on('click', function (event) {
+		// 	event.preventDefault(); // Prevent the default action
+		// 	// Change the tooltip title
+		// 	$(this).attr('data-bs-title', 'Copied!').tooltip('dispose').tooltip('show');
+		// 	var tooltip = document.getElementById('tooltip');
+		// 	if (tooltip) {
+		// 		// Close the tooltip
+		// 		tooltip.style.display = 'none';
+
+		// 		// Change the tooltip title after 3 seconds
+		// 		setTimeout(function () {
+		// 			tooltip.textContent = 'Copy Link';
+		// 		}, 3000);
+		// 	}
+		// });
+
+		$(document).ready(function () {
+			// Initialize the tooltip
+			$('[data-bs-toggle="tooltip"]').tooltip();
+
+			// Add click event listener to the anchor
+			$('#copyLink').on('click', function (event) {
+				event.preventDefault(); // Prevent the default action
+
+				var $this = $(this);
+
+				// Change the tooltip title to "Copied!" and show it
+				$this.attr('data-bs-title', 'Copied!').tooltip('dispose').tooltip('show');
+
+				// Hide the tooltip quickly
+				setTimeout(function () {
+					$this.attr('data-bs-title', 'Copy Link!').tooltip('dispose').tooltip('show');
+				}, 3000);
+			});
+		});
+	</script>
+}
