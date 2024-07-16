@@ -39,6 +39,9 @@ namespace webapp.Controllers
             var properties = await _context.Properties
             .Include(p => p.Address)
             .Include(p => p.Detail)
+			.Where(p => p.ListingStatus == "Active")
+			.OrderByDescending(p => p.ListingDate) // Sort by ListingDate in descending order
+		    .Take(8)
 			.ToListAsync();
 
 			var viewModel = new HomepageViewModel
