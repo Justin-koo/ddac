@@ -56,7 +56,7 @@
 								</div>
 							</td>
 							<td class="m2_hide">
-								<a href="" class="text-primary text-decoration-underline">@property.ListedBy</a>
+								<a asp-controller="Admin" asp-action="UserList" asp-route-username="@property.ListedBy" class="text-primary text-decoration-underline">@property.ListedBy</a>
 							</td>
 							<td class="m2_hide">
 								<div class="_leads_posted"><h5>@property.ListingDate.ToString("dd MMM yy - HH:mm")</h5></div>
@@ -162,6 +162,7 @@
 					$("#userTable").wrap("<div style='overflow:auto; width:100%;position:relative;'></div>");
 					$('.dt-length').addClass("d-flex align-items-center")
 					$('.dt-length').find(".form-select").addClass("me-2")
+					$('.dt-length, .dt-info').closest(".row").addClass("mx-1")
 				},
 			});
         });

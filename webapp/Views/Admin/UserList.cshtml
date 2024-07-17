@@ -105,7 +105,7 @@
 			handleAction($(this), title, text);
 		});
 
-        $('#userTable').DataTable({
+        var table = $('#userTable').DataTable({
 			columnDefs: [
 				{
 					orderable: false,
@@ -121,7 +121,16 @@
                 $("#userTable").wrap("<div style='overflow:auto; width:100%;position:relative;'></div>");
 				$('.dt-length').addClass("d-flex align-items-center")
 				$('.dt-length').find(".form-select").addClass("me-2")
+				$('.dt-length, .dt-info').closest(".row").addClass("mx-1")
             },
         });
+
+		var urlParams = new URLSearchParams(window.location.search);
+		var username = urlParams.get('username');
+
+		// If the username query parameter exists, filter the DataTable
+		if (username) {
+			table.search(username).draw();
+		}
     </script>
 }

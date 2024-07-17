@@ -13,7 +13,7 @@
 		</div> *@
 		<div class="sidebar-menu">
 			<ul class="menu">
-				<li class="sidebar-title">Menu</li>
+				@* <li class="sidebar-title">Menu</li> *@
 
 				<li class="sidebar-item @(NavigationHelper.IsControllerAndActionActive(ViewContext, "Admin", "Index") ? "active" : "")">
 					<a asp-controller="Admin" asp-action="Index" class='sidebar-link'>
