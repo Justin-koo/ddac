@@ -28,12 +28,47 @@ namespace webapp.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
 
-        public IActionResult Index()
+		[HttpGet]
+		public async Task<IActionResult> Index()
 		{
+			var allUsers = _userManager.Users.ToList();
+			var totalUsers = allUsers.Count;
+
+			// Exclude agents and admins
+			var agentRoleId = (await _context.Roles.FirstOrDefaultAsync(r => r.Name == "Agent"))?.Id;
+			var adminRoleId = (await _context.Roles.FirstOrDefaultAsync(r => r.Name == "Admin"))?.Id;
+			var agentUserIds = _context.UserRoles.Where(ur => ur.RoleId == agentRoleId).Select(ur => ur.UserId);
+			var adminUserIds = _context.UserRoles.Where(ur => ur.RoleId == adminRoleId).Select(ur => ur.UserId);
+			var userRoleIds = allUsers.Select(u => u.Id).Except(agentUserIds).Except(adminUserIds);
+
+			var registeredUsersCount = allUsers.Count(u => userRoleIds.Contains(u.Id));
+
+			var activePropertiesCount = await _context.Properties.CountAsync(p => p.ListingStatus == "Active");
+			var soldPropertiesCount = await _context.Properties.CountAsync(p => p.ListingStatus == "Sold");
+
+			var recentlySoldProperties = await _context.Properties
+				.Where(p => p.ListingStatus == "Sold")
+				.Include(p => p.Address)
+				.OrderByDescending(p => p.ListingDate)
+				.Take(7)
+				.ToListAsync();
+
+			var recentAgents = await _userManager.Users
+				.Where(u => agentUserIds.Contains(u.Id))
+				.OrderByDescending(u => u.Id) // Assuming Id is incremented, otherwise use a proper date field
+				.Take(5)
+				.ToListAsync();
+
+			ViewBag.RegisteredUsersCount = registeredUsersCount;
+			ViewBag.ActivePropertiesCount = activePropertiesCount;
+			ViewBag.SoldPropertiesCount = soldPropertiesCount;
+			ViewBag.RecentlySoldProperties = recentlySoldProperties;
+			ViewBag.RecentAgents = recentAgents;
+
 			return View();
 		}
 
-        [HttpGet]
+		[HttpGet]
         public async Task<IActionResult> UserList()
         {
 			var currentUserId = _userManager.GetUserId(User);

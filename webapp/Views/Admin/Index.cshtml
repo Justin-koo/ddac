@@ -3,3 +3,133 @@
     ViewData["Title"] = "Admin Dashboard";
 }
 
+<div class="dashboard-body mt-3">
+
+	<div class="row">
+
+		<div class="col-lg-4 col-md-6 col-sm-12">
+			<div class="veshm-dash-wrapper widget-1">
+				<div class="veshm-dash-icon">
+					<div class="vsm-icon-lio bg-light-success text-success"><i class="fa-solid fa-sack-dollar"></i></div>
+				</div>
+				<div class="veshm-dash-block">
+					<div class="veshm-dash-block_content">
+						<h4>
+							@ViewBag.RegisteredUsersCount
+							@* <span class="label font--medium label-purple me-2">
+								<i class="fa-solid fa-arrow-trend-down"></i>07%
+							</span> *@
+						</h4>
+						<h6>New Users</h6>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-lg-4 col-md-6 col-sm-12">
+			<div class="veshm-dash-wrapper widget-2">
+				<div class="veshm-dash-icon">
+					<div class="vsm-icon-lio bg-light-danger text-danger"><i class="fa-brands fa-gg-circle"></i></div>
+				</div>
+				<div class="veshm-dash-block">
+					<div class="veshm-dash-block_content"><h4>@ViewBag.ActivePropertiesCount</h4><h6>Total Active Properties</h6></div>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-lg-4 col-md-6 col-sm-12">
+			<div class="veshm-dash-wrapper widget-3">
+				<div class="veshm-dash-icon">
+					<div class="vsm-icon-lio bg-light-warning text-warning"><i class="fa-solid fa-chart-line"></i></div>
+				</div>
+				<div class="veshm-dash-block">
+					<div class="veshm-dash-block_content">
+						<h4>@ViewBag.SoldPropertiesCount</h4>
+						<h6>Total Sold Propertiese</h6>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+	<!--  row -->
+
+	<div class="row">
+		<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12">
+			<div class="card">
+				<div class="card-header">
+					<h4 class="mb-0">Sold Property</h4>
+				</div>
+				<div class="card-body p-0">
+					<div class="table-responsive">
+						<table class="table table-lg">
+							<thead>
+								<tr>
+									<th>Name</th>
+									<th>Address</th>
+									<th class="text-end">Price</th>
+									<th>Date Created</th>
+								</tr>
+							</thead>
+
+							<tbody>
+								@foreach (var property in ViewBag.RecentlySoldProperties)
+								{
+								<tr>
+									<td>
+										<a href="#" class="font--medium text-primary">
+											@* @if (property.GalleryPath.Any())
+											{
+												<img src="~/uploads/property/@property.GalleryFolder/@property.GalleryPath.First()" class="img-fluid rounded" alt="Property Image" width="60">
+											}
+											else
+											{
+												<img src="https://via.placeholder.com/1280x880" class="img-fluid rounded" alt="Placeholder Image" width="60">
+											} *@
+											@property.Title
+										</a>
+									</td>
+									<td>@property.Address.AddressLine</td>
+									<td class="text-end">@property.Price.ToString("C")</td>
+									<td>@property.ListingDate.ToString("dd/mm/yyyy")</td>
+								</tr>
+								}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-xl-4 col-lg-12 col-md-12 col-sm-12">
+			<div class="card">
+				<div class="card-header">
+					<h6>New Agents</h6>
+				</div>
+				<div class="ground-client-list">
+					@foreach (var agent in ViewBag.RecentAgents)
+					{
+						<div class="ground-client-single-list">
+							<div class="ground-client-first">
+								<div class="ground-client-thumb"><img src="https://via.placeholder.com/650x650" class="img-fluid circle" alt=""></div>
+								<div class="ground-client-caption">
+									<h5>@agent.FullName</h5>
+									@* <span class="text-mid">Art Designer</span> *@
+								</div>
+							</div>
+							<div class="ground-client-last">
+								<div class="ground-btn">
+									<a href="https://wa.me/@agent.PhoneNumber" class="btns bg-light-success text-success me-2"><i class="fa-brands fa-whatsapp"></i></a>
+									<a href="JavaScript:Void(0);" onclick="window.location.href='tel:@agent.PhoneNumber'" class="btns bg-light-info text-info"><i class="fa-solid fa-phone"></i></a>
+								</div>
+							</div>
+						</div>
+					}
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- row -->
+
+</div>
+
