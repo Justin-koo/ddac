@@ -1,8 +1,8 @@
 ﻿@model IEnumerable<webapp.Models.Admin.UserViewModel>
 
 @{
-    Layout = "~/Views/Shared/_AdminLayout.cshtml";
-    ViewData["Title"] = "User List";
+	Layout = "~/Views/Shared/_AdminLayout.cshtml";
+	ViewData["Title"] = "User List";
 }
 
 <div class="row align-items-center p-3 mt-3">
@@ -26,8 +26,8 @@
 }
 
 <div class="card p-3 mt-3 border-0 shadow">
-    <div class="dashboard_property shadow-none bg-transparent">
-        <div class="table-responsive">
+	<div class="dashboard_property shadow-none bg-transparent">
+		<div class="table-responsive">
 			<table class="table" id="userTable" width="100%">
 				<thead class="thead-dark">
 					<tr>
@@ -76,36 +76,14 @@
 					}
 				</tbody>
 			</table>
-        </div>
-    </div>
-    
+		</div>
+	</div>
+
 </div>
 
 @section Scripts {
-    <script>
-		function handleAction(button, title, text) {
-			Swal.fire({
-				title: title,
-				text: text,
-				icon: 'warning',
-				showCancelButton: true,
-				confirmButtonColor: '#017efa',
-				cancelButtonColor: '#d33',
-				confirmButtonText: 'Yes'
-			}).then((result) => {
-				if (result.isConfirmed) {
-					button.closest('form').submit();
-				}
-			});
-		}
-
-		$(document).on('click', '.delete-user-button', function () {
-			const title = "Delete this user?"
-			const text = "You won't be able to revert this!"
-			handleAction($(this), title, text);
-		});
-
-        $('#userTable').DataTable({
+	<script>
+		$('#userTable').DataTable({
 			columnDefs: [
 				{
 					orderable: false,
@@ -117,11 +95,11 @@
 					targets: "_all"
 				}
 			],
-            initComplete: function (settings, json) {
-                $("#userTable").wrap("<div style='overflow:auto; width:100%;position:relative;'></div>");
+			initComplete: function (settings, json) {
+				$("#userTable").wrap("<div style='overflow:auto; width:100%;position:relative;'></div>");
 				$('.dt-length').addClass("d-flex align-items-center")
 				$('.dt-length').find(".form-select").addClass("me-2")
-            },
-        });
-    </script>
+			},
+		});
+	</script>
 }

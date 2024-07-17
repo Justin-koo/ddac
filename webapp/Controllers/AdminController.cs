@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using webapp.Areas.Identity.Data;
 using webapp.Models.Admin;
@@ -51,6 +52,12 @@ namespace webapp.Controllers
 
             return View(userList);
         }
+
+		[HttpGet]
+		public async Task<IActionResult> PropertyList()
+		{
+			return View();
+		}
 
 		[HttpGet]
         public async Task<IActionResult> CreateUser()
@@ -176,5 +183,26 @@ namespace webapp.Controllers
             return View(model);
         }
 
-    }
+		[HttpPost]
+		public async Task<IActionResult> DeleteUser(string username)
+		{
+			var user = await _userManager.FindByNameAsync(username);
+			if (user == null)
+			{
+				TempData["Message"] = "Error: User not found.";
+				return RedirectToAction(nameof(UserList));
+			}
+
+			var result = await _userManager.DeleteAsync(user);
+			if (!result.Succeeded)
+			{
+				TempData["Message"] = "Error: Something went wrong.";
+				return RedirectToAction(nameof(UserList));
+			}
+
+			TempData["Message"] = "User deleted successfully!";
+			return RedirectToAction(nameof(UserList));
+		}
+
+	}
 }
