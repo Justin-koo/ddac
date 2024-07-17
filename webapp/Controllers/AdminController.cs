@@ -19,12 +19,14 @@ namespace webapp.Controllers
 		private readonly UserManager<webappUser> _userManager;
 		private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly SignInManager<webappUser> _signInManager;
 
-        public AdminController(webappContext context, UserManager<webappUser> userManager, RoleManager<IdentityRole> roleManager, IWebHostEnvironment webHostEnvironment)
+        public AdminController(webappContext context, UserManager<webappUser> userManager, SignInManager<webappUser> signInManager, RoleManager<IdentityRole> roleManager, IWebHostEnvironment webHostEnvironment)
         {
 			_context = context;
 			_userManager = userManager;
-			_roleManager = roleManager;
+            _signInManager = signInManager;
+            _roleManager = roleManager;
             _webHostEnvironment = webHostEnvironment;
         }
 
@@ -313,5 +315,41 @@ namespace webapp.Controllers
 			return RedirectToAction(nameof(PropertyList));
 		}
 
-	}
+		[HttpGet]
+		public IActionResult ChangePassword()
+		{
+			return View();
+		}
+
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return RedirectToPage("/login");
+            }
+
+            var result = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
+            if (result.Succeeded)
+            {
+                await _signInManager.RefreshSignInAsync(user);
+                TempData["message"] = "Your password has been changed successfully.";
+				return View();
+			}
+
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+
+            return View(model);
+        }
+
+    }
 }

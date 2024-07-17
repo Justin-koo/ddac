@@ -49,6 +49,13 @@
 						</li>
 					</ul>
 				</li>
+
+				<li class="sidebar-item @(NavigationHelper.IsControllerAndActionActive(ViewContext, "Admin", "ChangePassword") ? "active" : "")">
+					<a asp-controller="Admin" asp-action="ChangePassword" class='sidebar-link'>
+						<i class="fa-solid fa-lock"></i>
+						<span>Change Password</span>
+					</a>
+				</li>
 			</ul>
 		</div>
 		<button class="sidebar-toggler btn x"><i data-feather="x"></i></button>

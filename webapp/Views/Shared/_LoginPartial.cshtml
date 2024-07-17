@@ -118,9 +118,9 @@
 					{
 						<li><a href="dashboard.html"><i class="fa fa-tachometer-alt"></i>Dashboard<span class="notti_coun style-1">4</span></a></li>
 					}
-					<li><a asp-area="Identity" asp-page="/Account/Manage/Index"><i class="fa fa-user-tie"></i>My Profile</a></li>
 					@if (userRole != "Admin")
 					{
+							<li><a asp-area="Identity" asp-page="/Account/Manage/Index"><i class="fa fa-user-tie"></i>My Profile</a></li>
 						<li><a href="bookmark-list.html"><i class="fa fa-bookmark"></i>Saved Property<span class="notti_coun style-2">7</span></a></li>
 					}
 					else
