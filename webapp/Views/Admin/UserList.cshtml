@@ -1,0 +1,136 @@
+﻿@model IEnumerable<webapp.Models.Admin.UserViewModel>
+
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "User List";
+}
+
+<div class="row align-items-center p-3 mt-3">
+	<div class="col-auto">
+		<h2>@ViewData["Title"]</h2>
+	</div>
+	<div class="ms-auto col-auto">
+		<div class="_prt_filt_add_new">
+			<a asp-controller="Admin" asp-action="CreateUser" class="prt_submit_link"><i class="fas fa-plus-circle"></i><span>Add User</span></a>
+		</div>
+	</div>
+</div>
+
+@if (TempData["Message"] != null)
+{
+	var statusMessageClass = TempData["Message"]?.ToString()?.StartsWith("Error") == true ? "danger" : "success";
+	<div class="alert alert-@statusMessageClass alert-dismissible" role="alert">
+		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+		@TempData["Message"]
+	</div>
+}
+
+<div class="card p-3 mt-3 border-0 shadow-sm">
+    <div class="dashboard_property shadow-none bg-transparent">
+        <div class="table-responsive">
+			<table class="table" id="userTable" width="100%">
+				<thead class="thead-dark">
+					<tr>
+						<th scope="col">User Name</th>
+						<th scope="col">Email</th>
+						<th scope="col">Full Name</th>
+						<th scope="col">Roles</th>
+						<th scope="col">Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var user in Model)
+					{
+						<tr>
+							<td>@user.UserName</td>
+							<td>@user.Email</td>
+							<td>@user.FullName</td>
+							<td>
+								<div class="_leads_status">
+									@if (user.SelectedRole == "Agent")
+									{
+										<span class="text-success border border-success-subtle bg-success-subtle">@user.SelectedRole</span>
+									}
+									else if (user.SelectedRole == "User")
+									{
+										<span class="text-secondary border border-tertiary bg-secondary-subtle">@user.SelectedRole</span>
+									}
+									else if (user.SelectedRole == "Admin")
+									{
+										<span class="text-primary border border-primary-subtle bg-primary-subtle">@user.SelectedRole</span>
+									}
+								</div>
+							</td>
+							<td>
+								<div class="_leads_action d-md-flex">
+									<a asp-action="EditUser" asp-route-username="@user.UserName" class="_leads_item" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+										<i class="fas fa-edit"></i>
+									</a>
+									<form method="post" asp-action="DeleteUser" asp-route-username="@user.UserName">
+										@Html.AntiForgeryToken()
+										<a role="button" class="_leads_item delete-user-button"><i class="fas fa-trash"></i></a>
+									</form>
+								</div>
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+        </div>
+    </div>
+    
+</div>
+
+@section Scripts {
+    <script>
+		function handleAction(button, title, text) {
+			Swal.fire({
+				title: title,
+				text: text,
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonColor: '#017efa',
+				cancelButtonColor: '#d33',
+				confirmButtonText: 'Yes'
+			}).then((result) => {
+				if (result.isConfirmed) {
+					button.closest('form').submit();
+				}
+			});
+		}
+
+		$(document).on('click', '.delete-user-button', function () {
+			const title = "Delete this user?"
+			const text = "You won't be able to revert this!"
+			handleAction($(this), title, text);
+		});
+
+        var table = $('#userTable').DataTable({
+			columnDefs: [
+				{
+					orderable: false,
+					searchable: false,
+					targets: -1,
+				},
+				{
+					orderSequence: ['asc', 'desc'],
+					targets: "_all"
+				}
+			],
+            initComplete: function (settings, json) {
+                $("#userTable").wrap("<div style='overflow:auto; width:100%;position:relative;'></div>");
+				$('.dt-length').addClass("d-flex align-items-center")
+				$('.dt-length').find(".form-select").addClass("me-2")
+				$('.dt-length, .dt-info').closest(".row").addClass("mx-1")
+            },
+        });
+
+		var urlParams = new URLSearchParams(window.location.search);
+		var username = urlParams.get('username');
+
+		// If the username query parameter exists, filter the DataTable
+		if (username) {
+			table.search(username).draw();
+		}
+    </script>
+}

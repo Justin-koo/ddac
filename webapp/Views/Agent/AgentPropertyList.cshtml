@@ -142,6 +142,10 @@
 											{
 												<span class="text-primary border border-primary-subtle bg-primary-subtle">@property.ListingStatus</span>
 											}
+											else if (property.ListingStatus == "Blocked")
+											{
+												<span class="text-danger border border-danger-subtle bg-danger-subtle">@property.ListingStatus</span>
+											}
 										</div>
 										@* <div class="_leads_view_title"><span>Till 12 Oct</span></div> *@
 									</td>
@@ -180,7 +184,7 @@
 											@* <a href="#"><i class="fas fa-edit"></i></a> *@
 											<form asp-action="DeleteProperty" asp-controller="Agent" asp-route-username="@user.UserName" asp-route-encryptedId="@property.EncryptedId" method="post" class="delete-property-form" style="display:inline;">
 												@Html.AntiForgeryToken()
-												<a role="button" class="delete-property-button _leads_item @(property.ListingStatus == "Blocked" ? "disabled bg-body-secondary" : "")">
+												<a role="button" class="_leads_item @(property.ListingStatus == "Blocked" ? "disabled bg-body-secondary" : "delete-property-button")">
 													<i class="fas fa-trash"></i>
 												</a>
 											</form>

@@ -8,7 +8,7 @@
 @{
 	string profilePictureUrl = "/uploads/user/default-user.png"; // Default profile picture
 	webappUser user = null;
-	bool isUser = false;
+	string userRole = null;
 
 	if (SignInManager.IsSignedIn(User))
 	{
@@ -21,11 +21,16 @@
 		if (user != null)
 		{
 			var roles = await UserManager.GetRolesAsync(user);
-			isUser = roles.Contains("User");
+
+			if (roles.Any())
+			{
+				userRole = roles.First();
+			}
 		}
 	}
 }
 
+<ul class="nav-menu nav-menu-social align-to-right">
 @if (SignInManager.IsSignedIn(User))
 {
 	@* <li>
@@ -81,19 +86,25 @@
 					
 				</div>
 				<ul>
-					@if (!isUser)
+					@if (userRole == "Agent")
 					{
 						<li><a href="dashboard.html"><i class="fa fa-tachometer-alt"></i>Dashboard<span class="notti_coun style-1">4</span></a></li>
 					}
-					<li><a asp-area="Identity" asp-page="/Account/Manage/Index"><i class="fa fa-user-tie"></i>My Profile</a></li>
-					<li><a href="bookmark-list.html"><i class="fa fa-bookmark"></i>Saved Property<span class="notti_coun style-2">7</span></a></li>
-					
-					@if (!isUser)
+					@if (userRole != "Admin")
+					{
+							<li><a asp-area="Identity" asp-page="/Account/Manage/Index"><i class="fa fa-user-tie"></i>My Profile</a></li>
+						<li><a href="bookmark-list.html"><i class="fa fa-bookmark"></i>Saved Property<span class="notti_coun style-2">7</span></a></li>
+					}
+					else
+					{
+						<li><a asp-controller="Admin" asp-action="Index"><i class="fa-solid fa-gauge"></i>Dashboard</a></li>
+					}
+
+					@if (userRole == "Agent")
 					{
 						<li><a asp-controller="Agent" asp-action="AgentPropertyList" asp-route-username="@user.UserName"><i class="fa fa-tasks"></i>My Properties</a></li>
 						<li><a asp-controller="Agent" asp-action="SubmitProperty"><i class="fa fa-pen-nib"></i>Submit New Property</a></li>
 					}
-					
 					<li><a asp-area="Identity" asp-page="/Account/Manage/ChangePassword"><i class="fa fa-unlock-alt"></i>Change Password</a></li>
 				</ul>
 			</div>
@@ -110,11 +121,11 @@
 }
 else
 {
-    <li class="list-buttons border">
+	<li class="list-buttons border">
         <a id="login" asp-area="Identity" asp-page="/Account/Login"><i class="fas fa-sign-in-alt me-2"></i>Log In</a>
         @* <a href="JavaScript:Void(0);" data-bs-toggle="modal" data-bs-target="#login"><i class="fas fa-sign-in-alt me-2"></i>Sign In</a> *@
     </li>
-    <li class="list-buttons ms-2">
+	<li class="list-buttons ms-2">
         <a asp-area="Identity" asp-page="/Account/Register"><i class="fas fa-user-alt me-2"></i>Sign Up</a>
     </li>
    @*  <li class="nav-item">
@@ -124,3 +135,4 @@ else
         <a class="nav-link text-dark" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
     </li> *@
 }
+</ul>

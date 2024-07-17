@@ -1,0 +1,75 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div id="sidebar" class="active">
+	<div class="sidebar-wrapper active">
+		@* <div class="sidebar-header">
+		<div class="d-flex justify-content-between">
+		<div class="toggler">
+		<a href="#" class="sidebar-hide d-xl-none d-block"><i class="bi bi-x bi-middle"></i></a>
+		</div>
+		</div>
+		</div> *@
+		<div class="sidebar-menu">
+			<ul class="menu">
+				@* <li class="sidebar-title">Menu</li> *@
+
+				<li class="sidebar-item @(NavigationHelper.IsControllerAndActionActive(ViewContext, "Admin", "Index") ? "active" : "")">
+					<a asp-controller="Admin" asp-action="Index" class='sidebar-link'>
+						<i class="fa-solid fa-gauge"></i>
+						<span>Dashboard</span>
+					</a>
+				</li>
+
+				<li class="sidebar-item @(NavigationHelper.IsControllerAndActionActive(ViewContext, "Admin", "UserList") ? "active" : "") has-sub">
+					<a href="#" class='sidebar-link'>
+						<i class="fa-solid fa-user"></i>
+						<span>User</span>
+					</a>
+					<ul class="submenu @(NavigationHelper.IsControllerAndActionActive(ViewContext, "Admin", "UserList") || NavigationHelper.IsControllerAndActionActive(ViewContext, "Admin", "CreateUser") ? "active" : "") ">
+						<li class="submenu-item @(NavigationHelper.IsControllerAndActionActive(ViewContext, "Admin", "UserList") ? "active" : "") ">
+							<a asp-controller="Admin" asp-action="UserList">List</a>
+						</li>
+
+						<li class="submenu-item @(NavigationHelper.IsControllerAndActionActive(ViewContext, "Admin", "CreateUser") ? "active" : "") ">
+							<a asp-controller="Admin" asp-action="CreateUser">Create User</a>
+						</li>
+					</ul>
+				</li>
+
+				<li class="sidebar-item @(NavigationHelper.IsControllerAndActionActive(ViewContext, "Admin", "PropertyList") ? "active" : "") has-sub">
+					<a href="#" class='sidebar-link'>
+						<i class="fa-solid fa-house"></i>
+						<span>Property</span>
+					</a>
+					<ul class="submenu  @(NavigationHelper.IsControllerAndActionActive(ViewContext, "Admin", "PropertyList") ? "active" : "") ">
+						<li class="submenu-item  @(NavigationHelper.IsControllerAndActionActive(ViewContext, "Admin", "PropertyList") ? "active" : "") ">
+							<a asp-controller="Admin" asp-action="PropertyList">List</a>
+						</li>
+					</ul>
+				</li>
+
+				<li class="sidebar-item @(NavigationHelper.IsControllerAndActionActive(ViewContext, "Admin", "ChangePassword") ? "active" : "")">
+					<a asp-controller="Admin" asp-action="ChangePassword" class='sidebar-link'>
+						<i class="fa-solid fa-lock"></i>
+						<span>Change Password</span>
+					</a>
+				</li>
+			</ul>
+		</div>
+		<button class="sidebar-toggler btn x"><i data-feather="x"></i></button>
+	</div>
+</div>
+
+<section id="main" class="gray-simple" style="min-height: 100vh;">
+    <div class="container">
+		@RenderBody()
+    </div>
+</section>
+
+@section Scripts {
+    @RenderSection("Scripts", required: false)
+    <script src="~/js/main.js"></script>
+}
+

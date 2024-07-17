@@ -1,0 +1,201 @@
+﻿@using Microsoft.AspNetCore.Identity
+@model webapp.Models.Admin.UserViewModel
+
+@inject RoleManager<IdentityRole> RoleManager
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Create User";
+
+    var roles = RoleManager.Roles.Select(r => new SelectListItem
+        {
+            Value = r.Name,
+            Text = r.Name
+        }).ToList();
+}
+
+<div class="row align-items-center p-3 mt-3">
+    <div class="col-auto">
+        <h2>
+            <a asp-controller="Admin" asp-action="UserList">
+            <i class="fas fa-arrow-left"></i>
+            </a>
+            @ViewData["Title"]
+        </h2>
+    </div>
+</div>
+
+<div class="dashboard-body">
+    <div class="dashboard-wraper">
+        <form asp-action="CreateUser" class="frm_submit_block" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-4" role="alert"></div>
+            <h3>User Information</h3>
+            @* <partial name="_StatusMessage" for="StatusMessage" /> *@
+            <div class="frm_submit_wrap">
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label asp-for="FullName" class="form-label"></label>
+                        <input asp-for="FullName" class="form-control" />
+                        <span asp-validation-for="FullName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label asp-for="PhoneNumber" class="form-label"></label>
+                        <input asp-for="PhoneNumber" class="form-control" />
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label asp-for="UserName" class="form-label"></label>
+                        <input asp-for="UserName" class="form-control" AutoCompleteType="Disabled" />
+                        <span asp-validation-for="UserName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label asp-for="Email" class="form-label"></label>
+                        <input asp-for="Email" class="form-control" AutoCompleteType="Disabled" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label asp-for="SelectedRole" class="form-label"></label>
+                        <select asp-for="SelectedRole" class="form-control" asp-items="@roles" id="roleSelect"></select>
+                        <span asp-validation-for="SelectedRole" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="frm_submit_block mt-4">
+                <h3>Password</h3>
+                <div class="frm_submit_wrap">
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label asp-for="Password" class="form-label"></label>
+                            <input asp-for="Password" class="form-control" AutoCompleteType="Disabled" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label asp-for="ConfirmPassword" class="form-label"></label>
+                            <input asp-for="ConfirmPassword" class="form-control" />
+                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="frm_submit_block mt-4">
+                <h3>Profile Picture</h3>
+                <div class="frm_submit_wrap">
+                    <div class="row">
+                        <div class="form-group col-md-12">
+                            <label>Upload Picture</label>
+                            <input type="file" name="profilepic" id="filepond" multiple>
+                            @* <div class="previews"></div>
+                            <div class="dropzone dz-clickable primary-dropzone" id="agentpicDropzone">
+                            <div class="dz-default dz-message">
+                            <i class="fa-solid fa-images"></i>
+                            <span>Drag & Drop To Upload Images</span>
+                            </div>
+                            <input type="hidden" id="uploadedImageUrl" name="Input.ProfilePicture" value="@Model.Input.ProfilePicture" />
+                            </div> *@
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+			<div class="frm_submit_block mt-4" id="agentFields" style="display:none;">
+                <h3>Agent Information</h3>
+                <div class="frm_submit_wrap">
+					<div class="row">
+						<div class="form-group col-md-6">
+							<label asp-for="Country" class="form-label"></label>
+							<input asp-for="Country" class="form-control" />
+							<span asp-validation-for="Country" class="text-danger"></span>
+						</div>
+						<div class="form-group col-md-6">
+							<label asp-for="Address" class="form-label"></label>
+							<input asp-for="Address" class="form-control" />
+							<span asp-validation-for="Address" class="text-danger"></span>
+						</div>
+						<div class="form-group col-md-6">
+							<label asp-for="State" class="form-label"></label>
+							<input asp-for="State" class="form-control" />
+							<span asp-validation-for="State" class="text-danger"></span>
+						</div>
+						<div class="form-group col-md-6">
+							<label asp-for="City" class="form-label"></label>
+							<input asp-for="City" class="form-control" />
+							<span asp-validation-for="City" class="text-danger"></span>
+						</div>
+						<div class="form-group col-md-6">
+							<label asp-for="Zip" class="form-label"></label>
+							<input asp-for="Zip" class="form-control" />
+							<span asp-validation-for="Zip" class="text-danger"></span>
+						</div>
+						<div class="form-group col-md-12">
+							<label asp-for="About" class="form-label"></label>
+							<textarea asp-for="About" class="form-control"></textarea>
+							<span asp-validation-for="About" class="text-danger"></span>
+						</div>
+                    </div>
+				</div>
+            </div>
+
+            <div class="form-group col-lg-12 col-md-12 mt-4">
+                <button id="update-profile-button" type="submit" class="btn btn-theme btn-lg">Create</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js"></script>
+    <script src="https://unpkg.com/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.js"></script>
+    <script src="https://unpkg.com/filepond-plugin-image-transform/dist/filepond-plugin-image-transform.js"></script>
+    <script src="https://unpkg.com/filepond-plugin-image-resize/dist/filepond-plugin-image-resize.js"></script>
+    <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
+    <script src="https://unpkg.com/filepond-plugin-image-crop/dist/filepond-plugin-image-crop.js"></script>
+    <script src="https://unpkg.com/filepond/dist/filepond.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Register the plugins
+            FilePond.registerPlugin(FilePondPluginFileValidateSize);
+            FilePond.registerPlugin(FilePondPluginFileValidateType);
+            FilePond.registerPlugin(FilePondPluginImagePreview);
+            FilePond.registerPlugin(FilePondPluginImageResize);
+            FilePond.registerPlugin(FilePondPluginImageTransform);
+            FilePond.registerPlugin(FilePondPluginImageCrop);
+
+            // Get a reference to the file input element
+            const inputElement = document.querySelector('input[name="profilepic"]');
+
+            // Create a FilePond instance
+            const pond = FilePond.create(inputElement, {
+                storeAsFile: true,
+                name: "profilepic",
+                imageResizeTargetWidth: 650,
+                imageResizeTargetHeight: 650,
+                imageResizeMode: "force",
+                imageCropAspectRatio: 1,
+                imageTransformOutputQuality: 90,
+                // allowMultiple: true,
+                maxFileSize: "5MB",
+                acceptedFileTypes: ['image/*'],
+                instantUpload: false // Disable instant upload to use default form submission
+            });
+        });
+
+        var agentFields = document.getElementById('agentFields');
+
+        $('#roleSelect').on('change', function () {
+            var selectedRole = this.value;
+            if (selectedRole === 'Agent') {
+                agentFields.style.display = 'block';
+            } else {
+                agentFields.style.display = 'none';
+            }
+        });
+
+        $('#roleSelect').val() == 'Agent' ? agentFields.style.display = 'block' : agentFields.style.display = 'none';
+    </script>
+}

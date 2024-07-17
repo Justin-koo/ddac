@@ -1,4 +1,33 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@using webapp.Areas.Identity.Data
+
+@inject SignInManager<webappUser> SignInManager
+@inject UserManager<webappUser> UserManager
+@inject RoleManager<IdentityRole> RoleManager
+@{
+	webappUser user = null;
+	bool isAdmin = false;
+	string fixedNav = "";
+
+	if (SignInManager.IsSignedIn(User))
+	{
+		user = await UserManager.GetUserAsync(User);
+
+		if (user != null)
+		{
+			var roles = await UserManager.GetRolesAsync(user);
+			isAdmin = roles.Contains("Admin");
+		}
+
+		if (isAdmin)
+		{
+			fixedNav = "position-fixed w-100";
+		}
+		
+	}
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -11,10 +40,8 @@
 	<link href="~/css/styles.css" rel="stylesheet" asp-append-version="true" />
 	<link href="~/css/site.css" rel="stylesheet" asp-append-version="true" />
 	<link href="https://unpkg.com/filepond/dist/filepond.css" rel="stylesheet" />
-	<link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css"
-		  rel="stylesheet" />
+	<link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css" rel="stylesheet" />
 	<link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.bootstrap5.css" asp-append-version="true" />
-
 	<script src="~/js/jquery.min.js" asp-append-version="true"></script>
 	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
@@ -33,18 +60,14 @@
 <body>
     <div id="preloader"><div class="preloader"><span></span><span></span></div></div>
     <div id="main-wrapper">
-		<div class="header header-light head-shadow">
+		<div class="header @fixedNav header-light head-shadow">
 			<div class="container">
 				<nav id="navigation" class="navigation navigation-landscape">
 					<div class="nav-header">
 						<a class="nav-brand" asp-area="" asp-controller="Home" asp-action="Index"><img src="~/img/logo.png" class="logo" alt=""></a>
 						<div class="nav-toggle"></div>
 						<div class="mobile_nav dhsbrd">
-							<ul>
-								<li class="list-buttons">
-									<partial name="_LoginPartial" />
-								</li>
-							</ul>
+							<partial name="_LoginPartial" />
 						</div>
 					</div>
 					<div class="nav-menus-wrapper" style="transition-property: none;">
@@ -71,18 +94,15 @@
 							</li>
 
 							<li><a asp-area="" asp-controller="Home" asp-action="Contact">Contacts Us</a></li>
+							@if (isAdmin)
+							{
+								<li><a asp-controller="Admin" asp-action="Index">Dashboard</a></li>
+								<li class="d-lg-none d-inline-block"><a asp-controller="Admin" asp-action="UserList">User</a></li>
+								<li class="d-lg-none d-inline-block"><a asp-controller="Admin" asp-action="PropertyList">Property</a></li>
+							}
 
 						</ul>
-
-						<ul class="nav-menu nav-menu-social align-to-right">
-							<partial name="_LoginPartial" />
-							@* <li class="list-buttons light">
-								<a href="JavaScript:Void(0);" data-bs-toggle="modal" data-bs-target="#login"><i class="fas fa-sign-in-alt me-2"></i>Sign In</a>
-							</li>
-							<li class="list-buttons ms-2">
-								<a href="signup.html"><i class="fas fa-user-alt me-2"></i>Sign Up</a>
-							</li> *@
-						</ul>
+						<partial name="_LoginPartial" />
 					</div>
 				</nav>
 			</div>
@@ -92,7 +112,9 @@
 
 		@RenderBody()
 
-		@* call to action *@
+
+		@if (!isAdmin)
+		{
 		<section class="bg-cover call-action-container dark" style="background:#065eb5 url('@Url.Content("~/img/footer-bg-dark.png")') no-repeat;">
 			<div class="container">
 				<div class="row justify-content-center">
@@ -118,7 +140,6 @@
 			</div>
 		</section>
 
-		@* footer *@
 		<footer class="skin-light-footer">
 			<div>
 				<div class="container">
@@ -200,7 +221,7 @@
 				</div>
 			</div>
 		</footer>
-
+		}
 		<div class="modal fade" id="message" tabindex="-1" role="dialog" aria-labelledby="messagemodal" aria-hidden="true">
 			<div class="modal-dialog modal-dialog-centered message-pop-form" role="document">
 				<div class="modal-content" id="messagemodal">
@@ -333,6 +354,7 @@
 
 		<script src="~/js/custom.js"></script>
 		<script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
+		<script src="https://cdn.datatables.net/2.0.8/js/dataTables.bootstrap5.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 		<script src="https://code.jquery.com/ui/1.14.0-beta.2/jquery-ui.min.js" integrity="sha256-E7PeZTkHU61hmvmEMwtUMgm9Aff574wswy5F1Y0oIRA=" crossorigin="anonymous"></script>
 
@@ -361,7 +383,7 @@
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
-    </div> *@
+    </div>
 
     @* <footer class="border-top footer text-muted">
         <div class="container">

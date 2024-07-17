@@ -92,7 +92,13 @@ namespace webapp.Areas.Identity.Pages.Account.Manage
                 return RedirectToPage("./SetPassword");
             }
 
-            return Page();
+			var roles = await _userManager.GetRolesAsync(user);
+			if (roles.Contains("Admin"))
+			{
+				return RedirectToAction("ChangePassword", "Admin");
+			}
+
+			return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
