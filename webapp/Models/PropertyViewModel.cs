@@ -23,7 +23,7 @@
         public decimal Price { get; set; }
 
         [Required(ErrorMessage = "The area is required.")]
-        public string Area { get; set; }
+		public int Area { get; set; }
 
         [Required(ErrorMessage = "The number of bedrooms is required.")]
         public int Bedrooms { get; set; }

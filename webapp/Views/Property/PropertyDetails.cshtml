@@ -1,11 +1,16 @@
-﻿@model PropertyDetailsViewModel
-
-@using System;
+﻿@using System;
 @using System.Security.Cryptography;
 @using System.Text;
+@using System.Text.Json;
+@using Microsoft.AspNetCore.Http.Extensions
+@using webapp.Models
+
+@model PropertyDetailsViewModel
 
 @{
 	ViewData["Title"] = "PropertyDetails";
+
+	var agent = Model.Agent;
 
 	var property = Model.Property;
 	var propertyIdString = property.Id.ToString(); // Ensure this is a string
@@ -37,6 +42,8 @@
 		height: 400px;
 	}
 </style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pickadate.js/3.6.4/compressed/themes/classic.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pickadate.js/3.6.4/compressed/themes/classic.date.css">
 
 <div class="featured_slick_gallery gray m-0">
 	<div class="featured_slick_gallery-slide">
@@ -128,7 +135,10 @@
 											<div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-6"><div class="ilio-icon-wrap"><div class="ilio-icon"><i class="fa-solid fa-bed"></i></div><div class="ilio-text">@property.Bedrooms Bedrooms</div></div></div>
 											<div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-6"><div class="ilio-icon-wrap"><div class="ilio-icon"><i class="fa-solid fa-bath"></i></div><div class="ilio-text">@property.Bathrooms Bathrooms</div></div></div>
 											<div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-6"><div class="ilio-icon-wrap"><div class="ilio-icon"><i class="fa-solid fa-layer-group"></i></div><div class="ilio-text">@property.Area sq ft</div></div></div>
-								<div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-6"><div class="ilio-icon-wrap"><div class="ilio-icon"><i class="fa-solid fa-building-wheat"></i></div><div class="ilio-text">@(!string.IsNullOrEmpty(property.BuildingAge) ? property.BuildingAge : "Building Age Not Provided")</div></div></div>
+											@if (!string.IsNullOrEmpty(property.BuildingAge))
+											{
+												<div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-6"><div class="ilio-icon-wrap"><div class="ilio-icon"><i class="fa-solid fa-building-wheat"></i></div><div class="ilio-text">@property.BuildingAge</div></div></div>
+											}
 											<div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-6"><div class="ilio-icon-wrap"><div class="ilio-icon"><i class="fa-solid fa-location-dot"></i></div><div class="ilio-text">@property.City</div></div></div>
 											<div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-6"><div class="ilio-icon-wrap"><div class="ilio-icon"><i class="fa-solid fa-building"></i></div><div class="ilio-text">@property.PropertyType</div></div></div>
 										</div>
@@ -167,25 +177,36 @@
 								</div>
 								<div id="featuresinfo" class="panel-collapse collapse" aria-labelledby="featuresinfo">
 									<div class="vesh-detail-bloc-body">
-										@foreach (var category in Model.Features
-												.Where(f => Model.SelectedFeatures.Contains(f.FeatureID.ToString()))
-												.GroupBy(f => f.Category)
-												.ToList())
+										@if (!string.IsNullOrWhiteSpace(string.Join(";", Model.SelectedFeatures)))
 										{
-											<div class="lvs-detail mb-4">
-												<div class="row">
-													<div class="col-xl-12 col-lg-12 col-md-12"><h6>@category.Key</h6></div>
+											@foreach (var category in Model.Features
+													.Where(f => Model.SelectedFeatures.Contains(f.FeatureID.ToString()))
+													.GroupBy(f => f.Category)
+													.ToList())
+											{
+												<div class="lvs-detail mb-4">
+													<div class="row">
+														<div class="col-xl-12 col-lg-12 col-md-12"><h6>@category.Key</h6></div>
+													</div>
+													<div class="row gy-3">
+														@foreach (var feature in category)
+														{
+															<div class="col-xl-4 col-lg-4 col-md-4 col-12">
+																<div class="lvs-caption"><i class="fa-solid @feature.IconClass"></i>@feature.FeatureName</div>
+															</div>
+														}
+													</div>
 												</div>
-												<div class="row gy-3">
-													@foreach (var feature in category)
-													{
-														<div class="col-xl-4 col-lg-4 col-md-4 col-12">
-															<div class="lvs-caption"><i class="fa-solid @feature.IconClass"></i>@feature.FeatureName</div>
-														</div>
-													}
-												</div>
+											}
+										}
+										else
+										{
+											Console.WriteLine("No Feature");
+											<div class="col-xl-4 col-lg-4 col-md-4 col-12">
+												<div class="lvs-caption">No features is selected for this property.</div>
 											</div>
 										}
+										
 										@* <div class="lvs-detail mb-4">
 											<div class="row">
 												<div class="col-xl-12 col-lg-12 col-md-12"><h6>Interior Details</h6></div>
@@ -340,22 +361,24 @@
 																update_lenght = salesUpdates.Count();
 																for (int i = 0;i < update_lenght; i++)
 																{
-																	Console.WriteLine(Model.PropertyUpdates.Count());
-																	Console.WriteLine("Index:  " + i);
-																	Console.WriteLine("Index + 1:  " + (i + 1));
 																	var update = salesUpdates[i];
-																	decimal previous_price_sale = 0; // invalid number to indicate no changes
+																	decimal previous_price_sale = 0;
 																	if (i + 1 < update_lenght)
 																	{
-																		Console.WriteLine("Inside");
-																		previous_price_sale = salesUpdates[(1 + i)].Price;										
+																		previous_price_sale = salesUpdates[(1 + i)].Price;
 																	}
+																	var priceChange = update.Price - previous_price_sale;
+																	var cssClass = priceChange > 0 ? "text-success" // price increased
+																						: priceChange < 0 ? "text-danger" // price decreased
+																						: "text-body";                   // no change
 																	<tr>
 																		<td>@update.UpdateDate.ToString("dd MMM yyyy")</td>
 																		<td>@update.Status</td>
 																		<td>@String.Format("{0:C}", update.Price)</td>
-																		<td>@((update.Price - previous_price_sale) != 0 ? String.Format("{0:C}", update.Price - previous_price_sale) : "N/A")</td>
-																		<td>@Math.Round(update.Price / decimal.Parse(property.Area), 2).ToString("C") / Sqft</td>
+																		<td class="@cssClass">
+																			@((update.Price - previous_price_sale) != 0 ? String.Format("{0:C}", update.Price - previous_price_sale) : "N/A")
+																		</td>
+																		<td>@Math.Round(update.Price / property.Area, 2).ToString("C") / Sqft</td>
 																	</tr>
 																}
 															}
@@ -427,27 +450,25 @@
 														<tbody>
 															@{
 																var rentUpdates = Model.PropertyUpdates.Where(u => u.Status == "Rent").OrderByDescending(u => u.UpdateDate).ToList();
-																Console.WriteLine("Debug");
 																update_lenght = rentUpdates.Count();
-																Console.WriteLine("Lenght: " + update_lenght);
 																for (int i = 0; i < update_lenght; i++)
 																{
-																	Console.WriteLine(Model.PropertyUpdates.Count());
-																	Console.WriteLine("Index:  " + i);
-																	Console.WriteLine("Index + 1:  " + (i + 1));
 																	var update = rentUpdates[i];
 																	decimal previous_price_rent = 0; // invalid number to indicate no changes
 																	if (i + 1 < update_lenght)
 																	{
-																		Console.WriteLine("Inside");
 																		previous_price_rent = rentUpdates[(i + 1)].Price;
 																	}
+																	var priceChange = update.Price - previous_price_rent;
+																	var cssClass = priceChange > 0 ? "text-success" // price increased
+																						: priceChange < 0 ? "text-danger" // price decreased
+																						: "text-body";                   // no change
 																	<tr>
 																		<td>@update.UpdateDate.ToString("dd MMM yyyy")</td>
 																		<td>@update.Status</td>
 																		<td>@String.Format("{0:C}", update.Price)</td>
-																		<td>@((update.Price - previous_price_rent) != 0 ? String.Format("{0:C}", update.Price - previous_price_rent) : "N/A")</td>
-																		<td>@Math.Round(update.Price / decimal.Parse(property.Area), 2).ToString("C") / Sqft</td>
+																		<td class="@cssClass">@((update.Price - previous_price_rent) != 0 ? String.Format("{0:C}", update.Price - previous_price_rent) : "N/A")</td>
+																		<td>@Math.Round(update.Price / property.Area, 2).ToString("C") / Sqft</td>
 																	</tr>
 																}
 															}
@@ -640,12 +661,12 @@
 								</div>
 							</div> *@
 							
-							<!-- Nearby School -->
+							<!-- Google Map -->
 							<div class="vesh-detail-bloc style_2">
 								<div class="vesh-detail-bloc_header">
-									<a data-bs-toggle="collapse" data-parent="#schoolsinfo" data-bs-target="#schoolsinfo" aria-controls="schoolsinfo" href="javascript:void(0);" aria-expanded="false"><h4 class="property_block_title">Map</h4></a>
+									<a data-bs-toggle="collapse" data-parent="#schoolsinfo" data-bs-target="#schoolsinfo" aria-controls="schoolsinfo" href="javascript:void(0);" aria-expanded="true"><h4 class="property_block_title">Map</h4></a>
 								</div>
-								<div id="schoolsinfo" class="panel-collapse collapse" aria-labelledby="schoolsinfo">
+								<div id="schoolsinfo" class="panel-collapse collapse show" aria-labelledby="schoolsinfo">
 									<div id="map"></div>
 									<script>
 										var property_js = @Html.Raw(property_js);
@@ -795,7 +816,7 @@
 								</div> *@
 							</div>
 							
-							<!-- Contact More Agents -->
+							@* <!-- Contact More Agents -->
 							<div class="vesh-detail-bloc style_2">
 								<div class="vesh-detail-bloc_header">
 									<a data-bs-toggle="collapse" data-parent="#ctagent" data-bs-target="#ctagent" aria-controls="ctagent" href="javascript:void(0);" aria-expanded="false"><h4 class="property_block_title">Contact Other Agents</h4></a>
@@ -915,7 +936,7 @@
 										</div>
 									</div>
 								</div>
-							</div>
+							</div> *@
 							
 							@* <!-- Property Graph Detail -->
 							<div class="vesh-detail-bloc style_2">
@@ -1489,90 +1510,206 @@
 											<div class="tab-pane fade show active" id="pills-request" role="tabpanel" aria-labelledby="pills-request-tab" tabindex="0">
 												<div class="pg-side-block-head b-0">
 													<div class="pg-side-left">
-														<div class="pg-side-thumb"><img src="https://via.placeholder.com/650x650" class="img-fluid circle" alt=""></div>
+											<div class="pg-side-thumb"><img src="@Url.Content(Model.Agent.ProfilePicture != null ? "~/uploads/user/" + Model.Agent.ProfilePicture : "~/uploads/user/default-user.png")" class="img-fluid circle" alt="Agent Profile Picture"></div>
 													</div>
 													<div class="pg-side-right">
 														<div class="pg-side-right-caption">
-															<h4>Ht. Mickle Hussy</h4>
-															<span><i class="fa-solid fa-location-dot me-2"></i>Liverpool, UK</span>
+															<h4>@Model.Agent.UserName</h4>
+															<span><i class="fa-solid fa-location-dot me-2"></i>@Model.Agent.Location</span>
 														</div>
 													</div>
 												</div>
 												<div class="pg-side-block-info pt-0 pb-4">
-													<div class="sides-widget-body simple-form">
+@* 													<form>
+														<div class="sides-widget-body simple-form">
+															<div class="form-group">
+																<label class="font--bold">Name*</label>
+																<input type="text" class="form-control" placeholder="Your Name">
+															</div>
+															<div class="form-group">
+																<label>Email*</label>
+																<input type="text" class="form-control" placeholder="Your Email">
+															</div>
+															<div class="form-group">
+																<label>Phone No.*</label>
+																<input type="text" class="form-control" placeholder="Your Phone">
+															</div>
+															<div class="form-group">
+																<label>Description</label>
+																<textarea class="form-control">I'm interested in this property.</textarea>
+															</div>
+															<button class="btn btn-theme font--medium full-width">Send Message</button>
+														</div>
+													</form> *@
+													@if (TempData["Message"] != null)
+													{
+														var statusMessageClass = TempData["Message"]?.ToString()?.StartsWith("Error") == true ? "danger" : "success";
+														<div class="alert alert-@statusMessageClass alert-dismissible" role="alert">
+															<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+															@TempData["Message"]
+														</div>
+													}
+													<form asp-controller="Property" asp-action="ScheduleTour" method="post">
 														<div class="form-group">
-															<label class="font--bold">Name*</label>
-															<input type="text" class="form-control" placeholder="Your Name">
+															<label for="Name">Name*</label>
+															<input asp-for="InquiryModel.Name" type="text" class="form-control" placeholder="Your Name" />
+															<span class="text-danger" asp-validation-for="InquiryModel.Name"></span>
 														</div>
 														<div class="form-group">
-															<label>Email*</label>
-															<input type="text" class="form-control" placeholder="Your Email">
+															<label for="Email">Email*</label>
+															<input asp-for="InquiryModel.Email" type="email" class="form-control" placeholder="Your Email" />
+															<span class="text-danger" asp-validation-for="InquiryModel.Email"></span>
 														</div>
 														<div class="form-group">
-															<label>Phone No.*</label>
-															<input type="text" class="form-control" placeholder="Your Phone">
+															<label for="Phone">Phone No.*</label>
+															<input asp-for="InquiryModel.Phone" type="tel" class="form-control" placeholder="Your Phone" />
+															<span class="text-danger" asp-validation-for="InquiryModel.Phone"></span>
 														</div>
 														<div class="form-group">
-															<label>Description</label>
-															<textarea class="form-control">I'm interested in this property.</textarea>
+															<label for="Description">Description</label>
+															<textarea asp-for="InquiryModel.Description" class="form-control">I'm interested in this property.</textarea>
+															<span class="text-danger" asp-validation-for="InquiryModel.Description"></span>
 														</div>
-														<button class="btn btn-theme font--medium full-width">Send Message</button>
-													</div>	
+														<input asp-for="InquiryModel.Type" type="hidden" value="Info" />
+@* 														<input asp-for="InquiryModel.PropertyId" type="hidden" value="@Model.Property.Id" />
+														<input asp-for="InquiryModel.PropertyTitle" type="hidden" value="@Model.Property.Title" />
+														<input asp-for="InquiryModel.PropertyAddress" type="hidden"
+														   value="@property.AddressLine
+															,
+															@property.City
+															,
+															@property.State
+															,
+															@property.ZipCode" 
+														/> *@
+														<input asp-for="InquiryModel.PropertyLink" type="hidden" value="@Context.Request.GetDisplayUrl()" />
+
+
+														@* This is to fking reinput the missing value when submit form to the sohai idiot model *@
+															<input asp-for="Property.Title" type="hidden" value="@Model.Property.Title" />
+															<input asp-for="Property.AddressLine" type="hidden" value="@Model.Property.AddressLine" />
+															<input asp-for="Property.City" type="hidden" value="@Model.Property.City" />
+															<input asp-for="Property.State" type="hidden" value="@Model.Property.State" />
+															<input asp-for="Property.ZipCode" type="hidden" value="@Model.Property.ZipCode" />
+															<input asp-for="Property.PropertyType" type="hidden" value="@Model.Property.PropertyType" />
+															<input asp-for="Property.Status" type="hidden" value="@Model.Property.Status" />
+															<input asp-for="Property.Description" type="hidden" value="@Model.Property.Description" />
+
+															<input asp-for="Agent.Id" type="hidden" value="@Model.Agent.Id ?? '' " />
+															<input asp-for="Agent.UserName" type="hidden" value="@Model.Agent.UserName ?? '' " />
+															<input asp-for="Agent.Email" type="hidden" value="@Model.Agent.Email ?? '' " />
+															<input asp-for="Agent.City" type="hidden" value="@Model.Agent.City ?? '' " />
+															<input asp-for="Agent.Name" type="hidden" value="@Model.Agent.Name ?? '' " />
+															<input asp-for="Agent.About" type="hidden" value="@Model.Agent.About ?? '' " />
+															<input asp-for="Agent.State" type="hidden" value="@Model.Agent.State ?? '' " />
+															<input asp-for="Agent.XLink" type="hidden" value="@Model.Agent.XLink ?? '' " />
+															<input asp-for="Agent.Location" type="hidden" value="@Model.Agent.Location ?? '' " />
+															<input asp-for="Agent.GoogleLink" type="hidden" value="@Model.Agent.GoogleLink ?? '' " />
+															<input asp-for="Agent.Properties" type="hidden" value="@Model.Agent.Properties ?? '' " />
+															<input asp-for="Agent.PhoneNumber" type="hidden" value="@Model.Agent.PhoneNumber ?? '' " />
+															<input asp-for="Agent.FacebookLink" type="hidden" value="@Model.Agent.FacebookLink ?? '' " />
+															<input asp-for="Agent.LinkedInLink" type="hidden" value="@Model.Agent.LinkedInLink ?? '' " />
+															<input asp-for="Agent.ProfilePicture" type="hidden" value="@Model.Agent.ProfilePicture ?? '' " />
+
+															@* <input asp-for="Agent.Id" type="hidden" value="@Model.Agent.Id" />
+															<input asp-for="Agent.UserName" type="hidden" value="@Model.Agent.UserName" />
+															<input asp-for="Agent.City" type="hidden" value="@Model.Agent.City" />
+															<input asp-for="Agent.Name" type="hidden" value="@Model.Agent.Name" />
+															<input asp-for="Agent.About" type="hidden" value="@Model.Agent.About" />
+															<input asp-for="Agent.State" type="hidden" value="@Model.Agent.State" />
+															<input asp-for="Agent.XLink" type="hidden" value="@Model.Agent.XLink" />
+															<input asp-for="Agent.Location" type="hidden" value="@Model.Agent.Location" />
+															<input asp-for="Agent.GoogleLink" type="hidden" value="@Model.Agent.GoogleLink" />
+															<input asp-for="Agent.Properties" type="hidden" value="@Model.Agent.Properties" />
+															<input asp-for="Agent.PhoneNumber" type="hidden" value="@Model.Agent.PhoneNumber" />
+															<input asp-for="Agent.FacebookLink" type="hidden" value="@Model.Agent.FacebookLink" />
+															<input asp-for="Agent.LinkedInLink" type="hidden" value="@Model.Agent.LinkedInLink" />
+															<input asp-for="Agent.ProfilePicture" type="hidden" value="@Model.Agent.ProfilePicture" /> *@
+														@* stupid af, waste me so many time debug until i want to suicide *@
+
+
+														<button type="submit" class="btn btn-primary">Schedule A Tour</button>
+													</form>
 												</div>
 											</div>
 											
 											<div class="tab-pane fade" id="pills-schedule" role="tabpanel" aria-labelledby="pills-schedule-tab" tabindex="0">
 												<div class="pg-side-block-info pt-0 pb-4">
-													<div class="sides-widget-body simple-form mt-2">
-														<div class="form-group">
-															<input type="text" id="choosedate" data-dd-opt-custom-class="datedrp" class="form-control" placeholder="Choose Date" >
+													@if (TempData["Message"] != null)
+													{
+														var statusMessageClass = TempData["Message"]?.ToString()?.StartsWith("Error") == true ? "danger" : "success";
+														<div class="alert alert-@statusMessageClass alert-dismissible" role="alert">
+															<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+															@TempData["Message"]
 														</div>
-														<div class="form-group">
-															<select class="form-control">
-																<option value="1">07:00 AM</option>
-																<option value="2">08:00 AM</option>
-																<option value="3">09:00 AM</option>
-																<option value="4">10:00 AM</option>
-																<option value="5">11:00 AM</option>
-																<option value="6">12:00 PM</option>
-																<option value="7">01:00 PM</option>
-																<option value="8">02:00 PM</option>
-																<option value="9">03:00 PM</option>
-																<option value="10">04:00 PM</option>
-																<option value="11">05:00 PM</option>
-															</select>
-														</div>
+													}
+													@*<form asp-controller="Property" asp-action="ScheduleTour" method="post">
+														<div class="sides-widget-body simple-form mt-2">
+															<div class="form-group">
+																<input asp-for="InquiryModel.Date" type="text" id="choosedate" class="form-control" placeholder="Choose Date">
+															</div>
+															<div class="form-group">
+																<select asp-for="InquiryModel.Time" class="form-control">
+																	<option value="1">07:00 AM</option>
+																	<option value="2">08:00 AM</option>
+																	<option value="3">09:00 AM</option>
+																	<option value="4">10:00 AM</option>
+																	<option value="5">11:00 AM</option>
+																	<option value="6">12:00 PM</option>
+																	<option value="7">01:00 PM</option>
+																	<option value="8">02:00 PM</option>
+																	<option value="9">03:00 PM</option>
+																	<option value="10">04:00 PM</option>
+																	<option value="11">05:00 PM</option>
+																</select>
+															</div>
 
-														<div class="form-group row">
-															<div class="col-6">
-																<input type="radio" class="btn-check" name="meeting" id="person-meeting" autocomplete="off" checked>
-																<label class="full-width btn btn-outline-success" for="person-meeting"><i class="fa-regular fa-user me-2"></i>In Person</label>
+															<div class="form-group row">
+																<div class="col-6">
+																	<button onclick="setTourType(true) type="radio" class="btn-check" name="meeting" id="person-meeting" autocomplete="off" checked>
+																	<label class="full-width btn btn-outline-success" for="person-meeting"><i class="fa-regular fa-user me-2"></i>In Person</label>
+																</div> 
+																<div class="col-6">
+																	<button onclick="setTourType(false) type="radio" class="btn-check" name="meeting" id="video-meeting" autocomplete="off">
+																	<label class="full-width btn btn-outline-success" for="video-meeting"><i class="fa-solid fa-video me-2"></i>Video Chat</label>
+																</div>
+																<input asp-for="InquiryModel.IsInPerson" type="hidden" />
 															</div>
-															<div class="col-6">
-																<input type="radio" class="btn-check" name="meeting" id="video-meeting" autocomplete="off">
-																<label class="full-width btn btn-outline-success" for="video-meeting"><i class="fa-solid fa-video me-2"></i>Video Chat</label>
+														</div>
+														<div class="sides-widget-body simple-form">
+															<div class="form-group">
+																<label for="Name">Name*</label>
+																<input asp-for="InquiryModel.Name" type="text" class="form-control" placeholder="Your Name" />
 															</div>
-														</div>
-													</div>
-													<div class="sides-widget-body simple-form">
-														<div class="form-group">
-															<label class="font--bold">Name*</label>
-															<input type="text" class="form-control" placeholder="Your Name">
-														</div>
-														<div class="form-group">
-															<label>Email*</label>
-															<input type="text" class="form-control" placeholder="Your Email">
-														</div>
-														<div class="form-group">
-															<label>Phone No.*</label>
-															<input type="text" class="form-control" placeholder="Your Phone">
-														</div>
-														<div class="form-group">
-															<label>Description</label>
-															<textarea class="form-control">I'm interested in this property.</textarea>
-														</div>
-														<button class="btn btn-theme font--medium full-width">Send Message</button>
-													</div>												
+															<div class="form-group">
+																<label for="Email">Email*</label>
+																<input asp-for="InquiryModel.Email" type="email" class="form-control" placeholder="Your Email" />
+															</div>
+															<div class="form-group">
+																<label for="Phone">Phone No.*</label>
+																<input asp-for="InquiryModel.Phone" type="tel" class="form-control" placeholder="Your Phone" />
+															</div>
+															<div class="form-group">
+																<label for="Description">Description</label>
+																<textarea asp-for="InquiryModel.Description" class="form-control">I'm interested in this property.</textarea>
+															</div>
+																													<input asp-for="InquiryModel.Type" type="hidden" value="Info" />
+															<input asp-for="InquiryModel.AgentEmail" type="hidden" value="@Model.Agent.Email" />
+															<input asp-for="InquiryModel.PropertyId" type="hidden" value="@Model.Property.Id" />
+															<input asp-for="InquiryModel.PropertyTitle" type="hidden" value="@Model.Property.Title" />
+															<input asp-for="InquiryModel.PropertyAddress" type="hidden"
+															   value="@property.AddressLine
+																,
+																@property.City
+																,
+																@property.State
+																,
+																@property.ZipCode" 
+															/>
+															<input asp-for="InquiryModel.PropertyLink" type="hidden" value="@Context.Request.GetDisplayUrl()" />
+															<button type="submit" class="btn btn-primary">Schedule A Tour</button>
+														</div>	
+													</form> *@
 												</div>
 											</div>
 										</div>
@@ -1581,7 +1718,6 @@
 							
 							</div>
 						</div>
-						
 					</div>
 				</div>
 			</section>
@@ -1589,10 +1725,25 @@
 
 @section Scripts{
 	<partial name="_ValidationScriptsPartial" />
+	<!-- Include CSS for Pickadate.js -->
+
+	<!-- Include JavaScript for Pickadate.js -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/pickadate.js/3.6.4/compressed/picker.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/pickadate.js/3.6.4/compressed/picker.date.js"></script>
+
 	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 	<script>
 		console.log("script working?")
 		$(document).ready(function () {
+			$('#choosedate').pickadate({
+				format: 'yyyy-mm-dd', // Change this to your preferred format
+				selectMonths: false,
+				selectYears: false,
+				today: 'Today',
+				clear: 'Clear selection',
+				close: ''
+			});
+
 			var ctx = document.getElementById('mortgageChart').getContext('2d');
 			var mortgageChart = new Chart(ctx, {
 				type: 'pie',
@@ -1752,5 +1903,9 @@
 				}, 3000);
 			});
 		});
+
+		function setTourType(isInPerson) {
+			document.querySelector('input[name="IsInPerson"]').value = isInPerson;
+		}
 	</script>
 }

@@ -13,10 +13,10 @@ using webapp.Helpers; //used only for the Jpeg encoder below
 
 namespace webapp.Controllers
 {
-    public class AgentController : Controller
-    {
-        private readonly UserManager<webappUser> _userManager;
-        private readonly webappContext _context;
+	public class AgentController : Controller
+	{
+		private readonly UserManager<webappUser> _userManager;
+		private readonly webappContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly EncryptionHelper _encryptionHelper;
 
@@ -217,6 +217,28 @@ namespace webapp.Controllers
 	            .Where(p => p.PropertyId == id)  // Assuming 'PropertyId' is the foreign key linking to the property
 	            .ToListAsync();
 
+			var user = await _userManager.Users
+			    .FirstOrDefaultAsync(u => u.Id == property.AgentId);
+
+            var agent = new AgentViewModel
+            {
+                //Id = u.Id,
+                UserName = user.UserName,
+                Name = user.FullName,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                About = user.About,
+                City = user.City,
+                State = user.State,
+                //FacebookLink = u.FacebookLink,
+                //XLink = u.XLink,
+                //LinkedInLink = u.LinkedInLink,
+                //GoogleLink = u.GoogleLink,
+                //PropertyCount = _context.Properties.Count(p => p.AgentId == u.Id),
+                Location = user.City + ", " + user.State,
+                ProfilePicture = user.ProfilePicture,
+            };
+
 
 			var viewModel = new PropertyDetailsViewModel
             {
@@ -235,7 +257,8 @@ namespace webapp.Controllers
         [HttpGet]
         public async Task<IActionResult> SubmitProperty()
         {
-            var viewModel = new PropertyDetailsViewModel
+			var currentUser = await _userManager.GetUserAsync(User);
+            var viewModel = new PropertySubmitViewModel
             {
                 Property = new PropertyViewModel(),
                 Features = await _context.Features.ToListAsync(),
@@ -247,7 +270,7 @@ namespace webapp.Controllers
 
         [Authorize(Roles = "Agent")]
         [HttpPost]
-        public async Task<IActionResult> SubmitProperty(PropertyDetailsViewModel model, List<IFormFile> files)
+        public async Task<IActionResult> SubmitProperty(PropertySubmitViewModel model, List<IFormFile> files)
         {
 
             if (!ModelState.IsValid)
@@ -356,6 +379,8 @@ namespace webapp.Controllers
 
             _context.PropertyDetails.Add(propertyDetail);
             await _context.SaveChangesAsync();
+
+
 
 			var propertyUpdate = new PropertyUpdate
 			{
@@ -474,7 +499,7 @@ namespace webapp.Controllers
 				return RedirectToAction(nameof(AgentPropertyList), new { username = currentUser.UserName });
 			}
 
-            var viewModel = new PropertyDetailsViewModel
+            var viewModel = new PropertySubmitViewModel
 			{
 				Property = new PropertyViewModel
                 {
@@ -522,7 +547,7 @@ namespace webapp.Controllers
         [HttpPost]
         [Route("{username}/edit/{encryptedId}")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditProperty(string username, string encryptedId, PropertyDetailsViewModel viewModel, List<IFormFile> GalleryFiles)
+        public async Task<IActionResult> EditProperty(string username, string encryptedId, PropertySubmitViewModel viewModel, List<IFormFile> GalleryFiles)
         {
             var currentUser = await _userManager.GetUserAsync(User);
             if (currentUser.UserName != username)
@@ -553,7 +578,9 @@ namespace webapp.Controllers
                 .Include(p => p.Detail)
                 .SingleOrDefaultAsync(p => p.Id == id && p.AgentId == currentUser.Id);
 
-            if (property == null)
+			var oldPropertyDetails = property.DeepCopy();
+
+			if (property == null)
             {
 				TempData["Message"] = "Error: Property not found.";
 				return RedirectToAction(nameof(AgentPropertyList), new { username = currentUser.UserName });
@@ -635,16 +662,21 @@ namespace webapp.Controllers
             _context.Properties.Update(property);
             await _context.SaveChangesAsync();
 
-            var propertyUpdate = new PropertyUpdate
+            // record update only if the price or the status is changed
+            Console.WriteLine("Old Price:  " + oldPropertyDetails.Price + "  :  " + oldPropertyDetails.Status);
+            Console.WriteLine("Old Price:  " + property.Price + "  :  " + property.Status);
+            if (property.Price != oldPropertyDetails.Price || property.Status != oldPropertyDetails.Status)
             {
-                Status = property.Status,
-                Price = property.Price,
-                PropertyId = property.Id,
-                UpdateDate = DateTime.Now,
-			};
-
-			_context.PropertyUpdate.Add(propertyUpdate);
-			await _context.SaveChangesAsync();
+                var propertyUpdate = new PropertyUpdate
+                {
+                    Status = property.Status,
+                    Price = property.Price,
+                    PropertyId = property.Id,
+                    UpdateDate = DateTime.Now,
+			    };
+				_context.PropertyUpdate.Add(propertyUpdate);
+				await _context.SaveChangesAsync();
+			}
 
 			TempData["Message"] = "Property updated successfully.";
             return RedirectToAction(nameof(AgentPropertyList), new { username = currentUser.UserName });

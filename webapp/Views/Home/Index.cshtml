@@ -165,7 +165,18 @@
 					{<!-- Single Property -->
 					<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
 						<div class="veshm-list-wraps">
-							<div class="veshm-type"><span>For @property.Status</span></div>
+							@if(property.Status == "Rent")
+							{
+								<div class="veshm-type">
+									<span>For @property.Status</span>
+								</div>
+							}
+							else if (property.Status == "Sale")
+							{
+								<div class="veshm-type fr-sale">
+									<span>For @property.Status</span>
+								</div>
+							}
 
 							<div class="veshm-list-thumb">
 @* 								<button type="button" class="compare-btn"><i class="fa-solid fa-repeat"></i>Compare</button> *@
@@ -174,7 +185,7 @@
 										@if (property.GalleryPath.All(string.IsNullOrWhiteSpace))
 										{
 											<div>
-												<a asp-controller="Agent" asp-action="PropertyDetails" asp-route-id="@property.Id">
+												<a asp-controller="Property" asp-action="PropertyDetails" asp-route-id="@property.Id">
 													<img src="uploads/property/default/default_property.jpeg" class="slick-img mx-auto" alt="">
 												</a>
 											</div>
@@ -182,7 +193,7 @@
 										@foreach (var img in property.GalleryPath) {
 
 											<div>
-												<a asp-controller="Agent" asp-action="PropertyDetails" asp-route-id="@property.Id">
+												<a asp-controller="Property" asp-action="PropertyDetails" asp-route-id="@property.Id">
 													<img src="/uploads/property/@(property.GalleryFolder)/@img" class="slick-img mx-auto" alt="">
 												</a>
 											</div>
