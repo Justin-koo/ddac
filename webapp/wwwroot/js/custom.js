@@ -168,15 +168,15 @@ $(function() {
 		$("#navigation").navigation()
 	});
 	
-	$(window).scroll(function() {    
-		var scroll = $(window).scrollTop();
+	//$(window).scroll(function() {    
+	//	var scroll = $(window).scrollTop();
 
-		if (scroll >= 50) {
-			$(".header").addClass("header-fixed");
-		} else {
-			$(".header").removeClass("header-fixed");
-		}
-	});
+	//	if (scroll >= 50) {
+	//		$(".header").addClass("header-fixed");
+	//	} else {
+	//		$(".header").removeClass("header-fixed");
+	//	}
+	//});
 	
 	// Script For Select Adult & Child Number
 	$(function() {
