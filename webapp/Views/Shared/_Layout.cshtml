@@ -97,7 +97,10 @@
 							@if (isAdmin)
 							{
 								<li><a asp-controller="Admin" asp-action="Index">Dashboard</a></li>
+								<li class="d-lg-none d-inline-block"><a asp-controller="Admin" asp-action="UserList">User</a></li>
+								<li class="d-lg-none d-inline-block"><a asp-controller="Admin" asp-action="PropertyList">Property</a></li>
 							}
+
 						</ul>
 						<partial name="_LoginPartial" />
 					</div>
