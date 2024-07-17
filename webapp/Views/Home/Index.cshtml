@@ -343,98 +343,34 @@
 		<div class="row justify-content-center">
 			<div class="col-lg-8 col-md-10 text-center">
 				<div class="sec-heading center">
-					<h2>Select Your City</h2>
-					<p>Choose Your City to Begin Your Real Estate Journey</p>
+					<h2>Select Your State</h2>
+					<p>Choose Your State to Begin Your Real Estate Journey</p>
 				</div>
 			</div>
 		</div>
 
 		<div class="row g-xl-3 g-lg-3">
 
-			<div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12">
-				<div class="veshm-location-prt">
-					<div class="veshm-location-lists">32 Lists</div>
-					<a href="search-property.html" class="veshm-location-figure">
-						<img src="https://via.placeholder.com/650x850" class="img-fluid" alt="">
-					</a>
-					<div class="veshm-location-content">
-						<h4>California, USA</h4>
-						<div class="vesh-aget-rates">
-							<i class="fa-solid fa-star"></i>
-							<i class="fa-solid fa-star"></i>
-							<i class="fa-solid fa-star"></i>
-							<i class="fa-solid fa-star"></i>
-							<i class="fa-solid fa-star"></i>
-							<span class="resy-98">322 Reviews</span>
+			@foreach (var state in Model.States)
+			{
+				<div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12">
+					<div class="veshm-location-prt">
+						<div class="veshm-location-lists">@state.PropertyCount Lists</div>
+						<a href="search-property.html" class="veshm-location-figure">
+							<img src="~/uploads/state/kuala-lumpur.jfif" style="height: 425px; width: 325px; object-fit: cover" class="img-fluid" alt="">
+						</a>
+						<div class="veshm-location-content">
+							<h4>@state.State</h4>
+							<span class="resy-98">Malaysia</span>
 						</div>
 					</div>
 				</div>
-			</div>
-
-			<div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12">
-				<div class="veshm-location-prt">
-					<div class="veshm-location-lists">22 Lists</div>
-					<a href="search-property.html" class="veshm-location-figure">
-						<img src="https://via.placeholder.com/650x850" class="img-fluid" alt="">
-					</a>
-					<div class="veshm-location-content">
-						<h4>Denver City, USA</h4>
-						<div class="vesh-aget-rates">
-							<i class="fa-solid fa-star"></i>
-							<i class="fa-solid fa-star"></i>
-							<i class="fa-solid fa-star"></i>
-							<i class="fa-solid fa-star"></i>
-							<i class="fa-solid fa-star"></i>
-							<span class="resy-98">410 Reviews</span>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12">
-				<div class="veshm-location-prt">
-					<div class="veshm-location-lists">52 Lists</div>
-					<a href="search-property.html" class="veshm-location-figure">
-						<img src="https://via.placeholder.com/650x850" class="img-fluid" alt="">
-					</a>
-					<div class="veshm-location-content">
-						<h4>Washington, USA</h4>
-						<div class="vesh-aget-rates">
-							<i class="fa-solid fa-star"></i>
-							<i class="fa-solid fa-star"></i>
-							<i class="fa-solid fa-star"></i>
-							<i class="fa-solid fa-star"></i>
-							<i class="fa-solid fa-star"></i>
-							<span class="resy-98">340 Reviews</span>
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12">
-				<div class="veshm-location-prt">
-					<div class="veshm-location-lists">42 Lists</div>
-					<a href="search-property.html" class="veshm-location-figure">
-						<img src="https://via.placeholder.com/650x850" class="img-fluid" alt="">
-					</a>
-					<div class="veshm-location-content">
-						<h4>Liverpool, UK</h4>
-						<div class="vesh-aget-rates">
-							<i class="fa-solid fa-star"></i>
-							<i class="fa-solid fa-star"></i>
-							<i class="fa-solid fa-star"></i>
-							<i class="fa-solid fa-star"></i>
-							<i class="fa-solid fa-star"></i>
-							<span class="resy-98">512 Reviews</span>
-						</div>
-					</div>
-				</div>
-			</div>
-
+			}
 		</div>
 
 		<div class="row">
 			<div class="col-lg-12 col-md-12 col-sm-12 text-center">
-				<a href="JavaScript:Void(0);" class="btn btn-outline-gray">Explore More Cities<i class="fa-regular fa-circle-right ms-2"></i></a>
+				<a href="JavaScript:Void(0);" class="btn btn-outline-gray">Explore More States<i class="fa-regular fa-circle-right ms-2"></i></a>
 			</div>
 		</div>
 

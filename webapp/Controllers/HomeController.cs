@@ -44,33 +44,47 @@ namespace webapp.Controllers
 		    .Take(8)
 			.ToListAsync();
 
+			var propertyViewModels = properties.Select(p => new PropertyViewModel
+			{
+				Id = p.Id,
+				Title = p.Title,
+				Status = p.Status,
+				PropertyType = p.PropertyType,
+				Price = p.Price,
+				Area = p.Area,
+				Bedrooms = p.Bedrooms,
+				Bathrooms = p.Bathrooms,
+				GalleryPath = p.GalleryPath.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList(),
+				ListingDate = p.ListingDate,
+				AgentId = p.AgentId,
+				AddressLine = p.Address.AddressLine,
+				City = p.Address.City,
+				State = p.Address.State,
+				ZipCode = p.Address.ZipCode,
+				Description = p.Detail.Description,
+				BuildingAge = p.Detail.BuildingAge,
+				Garage = p.Detail.Garage,
+				Rooms = p.Detail.Rooms,
+				Features = p.Detail.OtherFeatures?.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList() ?? new List<string>(),
+				GalleryFolder = p.Id.ToString().ToSHA256String(),
+				ListingStatus = p.ListingStatus,
+			}).ToList();
+
+			var topStates = properties
+		        .GroupBy(p => p.Address.State)
+		        .OrderByDescending(g => g.Count())
+		        .Take(4)
+		        .Select(g => new StateViewModel
+		        {
+			        State = g.Key,
+			        PropertyCount = g.Count()
+		        })
+		        .ToList();
+
 			var viewModel = new HomepageViewModel
 			{
-				HomepagePropertyViewModel = properties.Select(p => new PropertyViewModel
-				{
-					Id = p.Id,
-					Title = p.Title,
-					Status = p.Status,
-					PropertyType = p.PropertyType,
-					Price = p.Price,
-					Area = p.Area,
-					Bedrooms = p.Bedrooms,
-					Bathrooms = p.Bathrooms,
-					GalleryPath = p.GalleryPath.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList(),
-					ListingDate = p.ListingDate,
-					AgentId = p.AgentId,
-					AddressLine = p.Address.AddressLine,
-					City = p.Address.City,
-					State = p.Address.State,
-					ZipCode = p.Address.ZipCode,
-					Description = p.Detail.Description,
-					BuildingAge = p.Detail.BuildingAge,
-					Garage = p.Detail.Garage,
-					Rooms = p.Detail.Rooms,
-					Features = p.Detail.OtherFeatures?.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList() ?? new List<string>(),
-					GalleryFolder = p.Id.ToString().ToSHA256String(),
-                    ListingStatus = p.ListingStatus,
-				}).ToList()
+				HomepagePropertyViewModel = propertyViewModels,
+				States = topStates
 			};
 
 			ViewData["Title"] = "My Property";

@@ -14,7 +14,7 @@ namespace webapp.Models
         [Required]
         public string City { get; set; }
 
-        [Required]
+        [Required(AllowEmptyStrings = false, ErrorMessage = "The state is required.")]
         public string State { get; set; }
 
         [Required]

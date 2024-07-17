@@ -1123,12 +1123,24 @@
 										<div class="modal-body">
 											<form id="reportForm" method="post" action="/Property/ReportListing">
 												<div class="custom-control custom-radio">
-													<input type="radio" id="customRadio1" name="customRadio" class="custom-control-input" value="Report Reason 2">
-													<label class="custom-control-label" for="customRadio1">Report Reason 1</label>
+													<input type="radio" id="customRadio1" name="customRadio" class="custom-control-input" value="Incorrect Information">
+													<label class="custom-control-label" for="customRadio1">Incorrect Information</label>
 												</div>
 												<div class="custom-control custom-radio">
-													<input type="radio" id="customRadio2" name="customRadio" class="custom-control-input" value="Report Reason 2">
-													<label class="custom-control-label" for="customRadio2">Report Reason 2</label>s
+													<input type="radio" id="customRadio2" name="customRadio" class="custom-control-input" value="Fake Listing">
+													<label class="custom-control-label" for="customRadio2">Fake Listing</label>
+												</div>
+												<div class="custom-control custom-radio">
+													<input type="radio" id="customRadio3" name="customRadio" class="custom-control-input" value="Inappropriate Content">
+													<label class="custom-control-label" for="customRadio3">Inappropriate Content</label>
+												</div>
+												<div class="custom-control custom-radio">
+													<input type="radio" id="customRadio4" name="customRadio" class="custom-control-input" value="Duplicate Listing">
+													<label class="custom-control-label" for="customRadio4">Duplicate Listing</label>
+												</div>
+												<div class="custom-control custom-radio">
+													<input type="radio" id="customRadio5" name="customRadio" class="custom-control-input" value="Outdated Information">
+													<label class="custom-control-label" for="customRadio5">Outdated Information</label>
 												</div>
 												<input asp-for="ReportProperty.Reason" type="hidden" id="selectedReasonRadio" name="selectedReasonRadio">
 												<input asp-for="ReportProperty.PropertyId" type="hidden" id="propertyIdRadio" name="propertyIdRadio" value="@Model.Property.Id">
