@@ -184,7 +184,7 @@
 											@* <a href="#"><i class="fas fa-edit"></i></a> *@
 											<form asp-action="DeleteProperty" asp-controller="Agent" asp-route-username="@user.UserName" asp-route-encryptedId="@property.EncryptedId" method="post" class="delete-property-form" style="display:inline;">
 												@Html.AntiForgeryToken()
-												<a role="button" class="delete-property-button _leads_item @(property.ListingStatus == "Blocked" ? "disabled bg-body-secondary" : "")">
+												<a role="button" class="_leads_item @(property.ListingStatus == "Blocked" ? "disabled bg-body-secondary" : "delete-property-button")">
 													<i class="fas fa-trash"></i>
 												</a>
 											</form>

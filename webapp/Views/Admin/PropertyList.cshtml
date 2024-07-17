@@ -87,7 +87,7 @@
 									{
 										<form asp-action="BlockProperty" asp-controller="Admin" asp-route-id="@property.Id" method="post" class="block-property-form" style="display:inline;">
 											@Html.AntiForgeryToken()
-											<a role="button" class="block-property-button text-danger _leads_item @(property.ListingStatus == "Sold" ? "disabled bg-body-secondary" : "")">
+											<a role="button" class="text-danger _leads_item @(property.ListingStatus == "Sold" ? "disabled bg-body-secondary" : "block-property-button")">
 												<i class="fa-solid fa-ban"></i>
 											</a>
 										</form>

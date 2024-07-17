@@ -30,30 +30,31 @@
 	}
 }
 <ul class="nav-menu d-none d-lg-block">
-	@if (userRole != "Admin")
+	<li>
+		<a href="#">Buy</a>
+	</li>
+
+	<li>
+		<a href="#">Rent</a>
+	</li>
+
+	<li>
+		<a asp-controller="Agent" asp-action="AgentList">Find an Agent</a>
+	</li>
+
+	<li>
+		<a href="JavaScript:Void(0);">About<span class="submenu-indicator"></span></a>
+		<ul class="nav-dropdown nav-submenu">
+			<li><a asp-area="" asp-controller="Home" asp-action="About">Our Team</a></li>
+			<li><a asp-area="" asp-controller="Home" asp-action="Privacy">Terms & Privacy</a></li>
+			<li><a asp-area="" asp-controller="Home" asp-action="Faq">FAQ's</a></li>
+		</ul>
+	</li>
+
+	<li><a asp-area="" asp-controller="Home" asp-action="Contact">Contacts Us</a></li>
+	@if (userRole != null)
 	{
-		<li>
-			<a href="#">Buy</a>
-		</li>
-
-		<li>
-			<a href="#">Rent</a>
-		</li>
-
-		<li>
-			<a asp-controller="Agent" asp-action="AgentList">Find an Agent</a>
-		</li>
-
-		<li>
-			<a href="JavaScript:Void(0);">About<span class="submenu-indicator"></span></a>
-			<ul class="nav-dropdown nav-submenu">
-				<li><a asp-area="" asp-controller="Home" asp-action="About">Our Team</a></li>
-				<li><a asp-area="" asp-controller="Home" asp-action="Privacy">Terms & Privacy</a></li>
-				<li><a asp-area="" asp-controller="Home" asp-action="Faq">FAQ's</a></li>
-			</ul>
-		</li>
-
-		<li><a asp-area="" asp-controller="Home" asp-action="Contact">Contacts Us</a></li>
+		<li><a asp-controller="Admin" asp-action="Index">Dashboard</a></li>
 	}
 </ul>
 
