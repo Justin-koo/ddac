@@ -201,79 +201,140 @@
 			</div>
 		</footer>
 
-		@* login modal *@
-		<div class="modal fade" id="login" tabindex="-1" role="dialog" aria-labelledby="registermodal" aria-hidden="true">
-			<div class="modal-dialog modal-dialog-centered login-pop-form" role="document">
-				<div class="modal-content" id="registermodal">
+		<div class="modal fade" id="message" tabindex="-1" role="dialog" aria-labelledby="messagemodal" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered message-pop-form" role="document">
+				<div class="modal-content" id="messagemodal">
 					<span class="mod-close" data-bs-dismiss="modal" aria-hidden="true"><i class="fas fa-close"></i></span>
-					<div class="modal-header">
-						<div class="mdl-thumb"><img src="~/img/ico.png" class="img-fluid" width="70" alt=""></div>
-						<div class="mdl-title"><h4 class="modal-header-title">Hello, Again</h4></div>
-					</div>
 					<div class="modal-body">
-						<div class="modal-login-form">
-							<form id="loginModalForm">
-								<div class="form-floating mb-4">
-									<input type="email" class="form-control" placeholder="name@example.com">
-									<label>User Name</label>
+						<div class="text-center">
+							<h2 class="mb-0">Say Hi,</h2>
+							<h4 class="mb-0">Mr. Dhananjay Preet</h4>
+							<a class="text-success font--bold" href="tel:4048651904">(404) 865-1904</a>
+						</div>
+						<div class="message-form">
+							<form>
+
+								<div class="row">
+
+									<div class="col-lg-12 col-md-12">
+										<div class="form-group">
+											<label>Message</label>
+											<textarea class="form-control ht-60">I'm interested in 5689 Resot Relly, Canada. Please send me current availability and additional details.</textarea>
+										</div>
+									</div>
+
+									<div class="col-lg-12 col-md-12">
+										<div class="form-group">
+											<label>Email*</label>
+											<input type="email" class="form-control">
+										</div>
+									</div>
+
+									<div class="col-lg-12 col-md-12">
+										<div class="form-group">
+											<label>Phone</label>
+											<input type="text" class="form-control">
+										</div>
+									</div>
+
 								</div>
 
-								<div class="form-floating mb-4">
-									<input type="password" class="form-control" placeholder="Password">
-									<label>Password</label>
+								<div class="default-terms_wrap mb-3">
+									<div class="default-terms_flex">
+										<div class="form-check form-check-inline">
+											<input class="form-check-input" type="checkbox" id="msg" value="option1">
+											<label class="form-check-label small font--medium" for="msg">By submitting this form, you agree to our <a href="JavaScript:Void(0);" title="Terms of Service" class="theme-cl font--medium">Terms of Service</a> and <a href="JavaScript:Void(0);" title="Privacy Policy" class="theme-cl font--medium">Privacy Policy</a>.</label>
+										</div>
+									</div>
 								</div>
 
 								<div class="form-group">
-									<button type="submit" class="btn btn-primary full-width font--bold btn-lg">Log In</button>
+									<button type="submit" class="btn full-width btn-primary">Send Message</button>
 								</div>
 
-								<div class="modal-flex-item mb-3">
-									<div class="modal-flex-first">
-										<div class="form-check form-check-inline">
-											<input class="form-check-input" type="checkbox" id="savepassword" value="option1">
-											<label class="form-check-label" for="savepassword">Save Password</label>
-										</div>
-									</div>
-									<div class="modal-flex-last">
-										<a href="JavaScript:Void(0);">Forget Password?</a>
-									</div>
-								</div>
 							</form>
 						</div>
-						<div class="social-login">
-							<ul>
-								<li><a href="JavaScript:Void(0);" class="btn connect-fb"><i class="fa-brands fa-facebook"></i>Facebook</a></li>
-								<li><a href="JavaScript:Void(0);" class="btn connect-google"><i class="fa-brands fa-google"></i>Google+</a></li>
-							</ul>
-						</div>
-					</div>
-					<div class="modal-footer">
-						<p>Don't have an account yet?<a asp-area="Identity" asp-page="/Account/Register" class="theme-cl font--bold ms-1">Sign Up</a></p>
 					</div>
 				</div>
 			</div>
 		</div>
-		<a id="back2Top" class="top-scroll" title="Back to top" href="#"><i class="ti-arrow-up"></i></a>
-    </div>
 
-	<!-- jQuery and other dependencies -->
-	<script src="~/js/popper.min.js" asp-append-version="true"></script>
-	<script src="~/js/bootstrap.min.js" asp-append-version="true"></script>
-	<script src="~/js/rangeslider.js" asp-append-version="true"></script>
-	<script src="~/js/jquery.nice-select.min.js" asp-append-version="true"></script>
-	<script src="~/js/jquery.magnific-popup.min.js" asp-append-version="true"></script>
-	<script src="~/js/slick.js" asp-append-version="true"></script>
-	<script src="~/js/lightbox.js" asp-append-version="true"></script>
-	<script src="~/js/imagesloaded.js" asp-append-version="true"></script>
-	<script src="~/js/dropzone.js" asp-append-version="true"></script>
-	<script src="~/js/datedropper-javascript.js" asp-append-version="true"></script>
+		<div class="modal fade" id="offer" tabindex="-1" role="dialog" aria-labelledby="offermodal" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered offer-pop-form" role="document">
+				<div class="modal-content" id="offermodal">
+					<span class="mod-close" data-bs-dismiss="modal" aria-hidden="true"><i class="fas fa-close"></i></span>
+					<div class="modal-body">
+						<div class="text-center">
+							<h2 class="mb-0">Bid Your Offer</h2>
+							<h4 class="mb-0">For 5689 Resot Relly, Canada</h4>
+							<a class="text-success font--bold" href="tel:4048651904">(404) 865-1904</a>
+						</div>
+						<div class="offer-form">
+							<form>
 
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/pica/8.1.0/pica.min.js"></script>
+								<div class="row">
 
-	<script src="~/js/custom.js"></script>
-	<script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-	<script src="https://code.jquery.com/ui/1.14.0-beta.2/jquery-ui.min.js" integrity="sha256-E7PeZTkHU61hmvmEMwtUMgm9Aff574wswy5F1Y0oIRA=" crossorigin="anonymous"></script>
+									<div class="col-lg-12 col-md-12">
+										<div class="form-group">
+											<label>Name</label>
+											<input type="text" class="form-control">
+										</div>
+									</div>
+
+									<div class="col-lg-12 col-md-12">
+										<div class="form-group">
+											<label>Phone</label>
+											<input type="text" class="form-control">
+										</div>
+									</div>
+
+									<div class="col-lg-12 col-md-12">
+										<div class="form-group">
+											<label>Your Offer</label>
+											<input type="text" class="form-control" placeholder="RM47,500">
+										</div>
+									</div>
+
+								</div>
+
+								<div class="default-terms_wrap mb-3">
+									<div class="default-terms_flex">
+										<div class="form-check form-check-inline">
+											<input class="form-check-input" type="checkbox" id="terms" value="option1">
+											<label class="form-check-label small font--medium" for="terms">By submitting this form, you agree to our <a href="JavaScript:Void(0);" title="Terms of Service" class="theme-cl font--medium">Terms of Service</a> and <a href="JavaScript:Void(0);" title="Privacy Policy" class="theme-cl font--medium">Privacy Policy</a>.</label>
+										</div>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<button type="submit" class="btn full-width btn-primary">Submit Offer</button>
+								</div>
+
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- jQuery and other dependencies -->
+		<script src="~/js/popper.min.js" asp-append-version="true"></script>
+		<script src="~/js/bootstrap.min.js" asp-append-version="true"></script>
+		<script src="~/js/rangeslider.js" asp-append-version="true"></script>
+		<script src="~/js/jquery.nice-select.min.js" asp-append-version="true"></script>
+		<script src="~/js/jquery.magnific-popup.min.js" asp-append-version="true"></script>
+		<script src="~/js/slick.js" asp-append-version="true"></script>
+		<script src="~/js/lightbox.js" asp-append-version="true"></script>
+		<script src="~/js/imagesloaded.js" asp-append-version="true"></script>
+		<script src="~/js/dropzone.js" asp-append-version="true"></script>
+		<script src="~/js/datedropper-javascript.js" asp-append-version="true"></script>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/pica/8.1.0/pica.min.js"></script>
+
+		<script src="~/js/custom.js"></script>
+		<script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+		<script src="https://code.jquery.com/ui/1.14.0-beta.2/jquery-ui.min.js" integrity="sha256-E7PeZTkHU61hmvmEMwtUMgm9Aff574wswy5F1Y0oIRA=" crossorigin="anonymous"></script>
 
 @*     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">

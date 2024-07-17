@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Configuration;
+using System.Data;
 using System.Linq;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
@@ -155,13 +156,6 @@ namespace webapp.Areas.Identity.Pages.Account.Manage
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
-
-            //var roles = await _userManager.GetRolesAsync(user);
-            //if (roles.Contains("User"))
-            //{
-            //    return RedirectToAction("ManageAccount", "User");
-            //}
-
 
             await LoadAsync(user);
             return Page();

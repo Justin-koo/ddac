@@ -23,13 +23,13 @@
 			<!-- Side Search -->
 			<div class="col-xl-4 col-lg-4 col-md-12 col-sm-12">
 				<div class="adgt-wriop-block border rounded">
-					<div class="adgt-wriop-head">
+					@* <div class="adgt-wriop-head">
 						<div class="adgt-wriop-bg" style="background:red url(https://via.placeholder.com/1920x1250) no-repeat"></div>
-					</div>
-					<div class="adgt-wriop-header-info px-3">
+					</div> *@
+					<div class="adgt-wriop-header-info mt-0 p-3">
 						<div class="adgt-wriop-img">
 							<div class="adgt-wriop-img-fig">
-								<img src="https://via.placeholder.com/650x650" class="img-fluid circle" alt="">
+								<img src="@(string.IsNullOrEmpty(Model.ProfilePicture) ? Url.Content("~/uploads/user/default-user.png") : Url.Content($"~/uploads/user/{Model.ProfilePicture}"))" class="img-fluid circle" alt="">
 								<span class="verify-icon"><i class="fa-solid fa-check"></i></span>
 							</div>
 						</div>
@@ -39,10 +39,38 @@
 						</div>
 						<div class="adgt-wriop-social">
 							<ul>
-								<li><a href="@Model.FacebookLink" target="_blank" class="bg--facebook"><i class="fa-brands fa-facebook-f"></i></a></li>
-								<li><a href="JavaScript:Void(0);" class="bg--twitter"><i class="fa-brands fa-twitter"></i></a></li>
-								<li><a href="JavaScript:Void(0);" class="bg--googleplus"><i class="fa-brands fa-google-plus-g"></i></a></li>
-								<li><a href="JavaScript:Void(0);" class="bg--linkedin"><i class="fa-brands fa-linkedin-in"></i></a></li>
+								@if (!string.IsNullOrEmpty(Model.FacebookLink))
+								{
+									<li>
+										<a href="@Model.FacebookLink" target="_blank" class="bg--facebook">
+											<i class="fa-brands fa-facebook-f"></i>
+										</a>
+									</li>
+								}
+								@if (!string.IsNullOrEmpty(Model.XLink))
+								{
+									<li>
+										<a href="@Model.XLink" target="_blank" class="bg--twitter">
+											<i class="fa-brands fa-twitter"></i>
+										</a>
+									</li>
+								}
+								@if (!string.IsNullOrEmpty(Model.GoogleLink))
+								{
+									<li>
+										<a href="@Model.GoogleLink" target="_blank" class="bg--googleplus">
+											<i class="fa-brands fa-google-plus-g"></i>
+										</a>
+									</li>
+								}
+								@if (!string.IsNullOrEmpty(Model.LinkedInLink))
+								{
+									<li>
+										<a href="@Model.LinkedInLink" target="_blank" class="bg--linkedin">
+											<i class="fa-brands fa-linkedin-in"></i>
+										</a>
+									</li>
+								}
 							</ul>
 						</div>
 					</div>
@@ -70,7 +98,10 @@
 					</div>
 					<div class="adgt-wriop-footer py-3 px-3">
 						<div class="single-button d-flex align-items-center justify-content-between">
-							<button type="button" class="btn btn-md font--bold btn-light-primary me-2 full-width"><i class="fa-solid fa-phone me-2"></i>856 742 672</button>
+							<button type="button" class="btn btn-md font--bold btn-light-primary me-2 full-width" onclick="window.location.href='tel:@Model.PhoneNumber'">
+								<i class="fa-solid fa-phone me-2"></i>@Model.PhoneNumber
+							</button>
+
 							<button type="button" data-bs-toggle="modal" data-bs-target="#offer" class="btn btn-md font--bold btn-light-success full-width"><i class="fa-solid fa-paper-plane me-2"></i>Send Message</button>
 						</div>
 					</div>
@@ -98,431 +129,129 @@
 				<div class="row gx-3 gy-4">
 					@foreach (var property in Model.Properties)
 					{
-					<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-						<div class="veshm-list-prty">
-							<div class="veshm-list-prty-figure">
-								<div class="veshm-list-img-slide">
-									<div class="veshm-list-click">
-										<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
-										<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
-										<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
-										<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
-									</div>
-								</div>
-							</div>
-							<div class="veshm-list-prty-caption">
-								<div class="veshm-list-kygf">
-									<div class="veshm-list-kygf-flex">
-										<div class="veshm-list-typess rent"><span>For Rent</span></div>
-										<h5 class="rlhc-title-name verified"><a href="single-property-1.html" class="prt-link-detail">Hearthstone Real Property</a></h5>
-										<div class="vesh-aget-rates">
-											<i class="fa-solid fa-star"></i>
-											<i class="fa-solid fa-star"></i>
-											<i class="fa-solid fa-star"></i>
-											<i class="fa-solid fa-star"></i>
-											<i class="fa-solid fa-star"></i>
-											<span class="resy-98">210 Reviews</span>
+						if (property.ListingStatus == "Active")
+						{
+						<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+							<div class="veshm-list-prty">
+								<div class="veshm-list-prty-figure">
+									<div class="veshm-list-img-slide">
+										<div class="veshm-list-click">
+											<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
+											<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
+											<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
+											<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
 										</div>
 									</div>
-									<div class="veshm-list-head-flex">
-										<button class="btn btn-like active" type="button"><i class="fa-solid fa-heart-circle-check"></i></button>
-									</div>
 								</div>
-								<div class="veshm-list-middle">
-									<div class="veshm-list-icons">
-										<ul>
-											<li><i class="fa-solid fa-bed"></i><span>4 Bed</span></li>
-											<li><i class="fa-solid fa-bath"></i><span>2 Ba</span></li>
-											<li><i class="fa-solid fa-vector-square"></i><span>3200 Sqft</span></li>
-											<li><i class="fa-solid fa-calendar-days"></i><span>Built 2020</span></li>
-										</ul>
-									</div>
-								</div>
-								<div class="veshm-list-footers">
-									<div class="veshm-list-ftr786">
-										<div class="rlhc-price">
-											<h4 class="rlhc-price-name theme-cl">$10,590<span class="monthly">/Months</span></h4>
+								<div class="veshm-list-prty-caption">
+									<div class="veshm-list-kygf">
+										<div class="veshm-list-kygf-flex">
+											@if (property.Status == "Rent")
+											{
+												<div class="veshm-list-typess rent"><span>For Rent</span></div>
+											}
+											else if (property.Status == "Sale")
+											{
+												<div class="veshm-list-typess bg-danger-subtle text-danger"><span>For Sale</span></div>
+											}
+
+												<h5 class="rlhc-title-name verified"><a href="single-property-1.html" class="prt-link-detail">@property.Title</a></h5>
+												<div class="rlhc-prt-location"><img src="~/img/pin.svg" width="16" class="me-1" alt="">@property.City, @property.State</div>
+										</div>
+										<div class="veshm-list-head-flex">
+											<button class="btn btn-like active" type="button"><i class="fa-solid fa-heart-circle-check"></i></button>
 										</div>
 									</div>
-									<div class="veshm-list-ftr1707">
-										<a href="JavaScript:Void(0);" data-bs-toggle="modal" data-bs-target="#offer" class="btn btn-md btn-primary font--medium">Send Offer</a>
+									<div class="veshm-list-middle">
+										<div class="veshm-list-icons">
+											<ul>
+												<li><i class="fa-solid fa-bed"></i><span>@property.Bedrooms Bed</span></li>
+												<li><i class="fa-solid fa-bath"></i><span>@property.Bathrooms Ba</span></li>
+												<li><i class="fa-solid fa-vector-square"></i><span>@property.Area Sqft</span></li>
+												@* <li><i class="fa-solid fa-calendar-days"></i><span>Built 2020</span></li> *@
+											</ul>
+										</div>
+									</div>
+									<div class="veshm-list-footers">
+										<div class="veshm-list-ftr786">
+											<div class="rlhc-price">
+													<h4 class="rlhc-price-name theme-cl">@property.Price.ToString("C")
+														@{
+															if (property.Status == "Rent")
+															{
+																<span class="monthly">/Months</span>
+															}
+														}
+													</h4>
+											</div>
+										</div>
+										<div class="veshm-list-ftr1707">
+											<a href="JavaScript:Void(0);" data-bs-toggle="modal" data-bs-target="#offer" class="btn btn-md btn-primary font--medium">Send Offer</a>
+										</div>
 									</div>
 								</div>
 							</div>
 						</div>
-					</div>
+						}
 					}
 				</div>
 
 				<div class="row gx-3 gy-4 mt-4">
-					<div class="col-xl-12 col-lg-12 col-md-12 mb-2"><h6>Recently Properties</h6></div>
+					<div class="col-xl-12 col-lg-12 col-md-12 mb-2"><h6>Recently Sold Properties</h6></div>
 				</div>
 
 				<div class="row gx-3 gy-4">
-					<!-- Single Property -->
-					<div class="col-xl-4 col-lg-6 col-md-6 col-sm-12">
-						<div class="veshm-list-wraps">
-							<div class="veshm-type"><span>For rent</span></div>
+					@foreach (var property in Model.Properties)
+					{
+						if (property.ListingStatus == "Sold")
+						{
+						<div class="col-xl-4 col-lg-6 col-md-6 col-sm-12">
+							<div class="veshm-list-wraps">
+								<div class="veshm-type"><span>For rent</span></div>
 
-							<div class="veshm-list-thumb">
-								<button type="button" class="compare-btn"><i class="fa-solid fa-repeat"></i>Compare</button>
-								<div class="veshm-list-img-slide">
-									<div class="veshm-list-click">
-										<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
-										<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
-										<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
-									</div>
-								</div>
-							</div>
-							<div class="veshm-list-block">
-								<div class="veshm-tags trending"><span><i class="fa-solid fa-meteor"></i>Trending</span></div>
-								<div class="veshm-list-head">
-									<div class="veshm-list-head-caption">
-										<div class="rlhc-price">
-											<h4 class="rlhc-price-name theme-cl">$7,549<span class="monthly">/Months</span></h4>
-										</div>
-										<div class="listing-short-detail-flex">
-											<h5 class="rlhc-title-name verified"><a href="single-property-1.html" class="prt-link-detail">Goldfinch Real Property</a></h5>
-											<div class="rlhc-prt-location"><img src="assets/img/pin.svg" width="16" class="me-1" alt="">210 Zirak Road, Canada</div>
+								<div class="veshm-list-thumb">
+									<button type="button" class="compare-btn"><i class="fa-solid fa-repeat"></i>Compare</button>
+									<div class="veshm-list-img-slide">
+										<div class="veshm-list-click">
+											<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
+											<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
+											<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
 										</div>
 									</div>
-									<div class="veshm-list-head-flex">
-										<button class="btn btn-like" type="button"><i class="fa-solid fa-heart-circle-check"></i></button>
+								</div>
+								<div class="veshm-list-block">
+									<div class="veshm-tags trending"><span><i class="fa-solid fa-meteor"></i>Trending</span></div>
+									<div class="veshm-list-head">
+										<div class="veshm-list-head-caption">
+											<div class="rlhc-price">
+												<h4 class="rlhc-price-name theme-cl">$7,549<span class="monthly">/Months</span></h4>
+											</div>
+											<div class="listing-short-detail-flex">
+												<h5 class="rlhc-title-name verified"><a href="single-property-1.html" class="prt-link-detail">Goldfinch Real Property</a></h5>
+												<div class="rlhc-prt-location"><img src="assets/img/pin.svg" width="16" class="me-1" alt="">210 Zirak Road, Canada</div>
+											</div>
+										</div>
+										<div class="veshm-list-head-flex">
+											<button class="btn btn-like" type="button"><i class="fa-solid fa-heart-circle-check"></i></button>
+										</div>
+									</div>
+
+									<div class="veshm-list-footer">
+										<div class="veshm-list-circls">
+											<ul>
+												<li><span class="bed-inf"><i class="fa-solid fa-bed"></i></span>3 Bed</li>
+												<li><span class="bath-inf"><i class="fa-solid fa-bath"></i></span>2 Ba</li>
+												<li><span class="area-inf"><i class="fa-solid fa-vector-square"></i></span>2200 Sft</li>
+											</ul>
+										</div>
 									</div>
 								</div>
 
-								<div class="veshm-list-footer">
-									<div class="veshm-list-circls">
-										<ul>
-											<li><span class="bed-inf"><i class="fa-solid fa-bed"></i></span>3 Bed</li>
-											<li><span class="bath-inf"><i class="fa-solid fa-bath"></i></span>2 Ba</li>
-											<li><span class="area-inf"><i class="fa-solid fa-vector-square"></i></span>2200 Sft</li>
-										</ul>
-									</div>
-								</div>
 							</div>
-
 						</div>
-					</div>
-					<!-- End Single Property -->
-					<!-- Single Property -->
-					<div class="col-xl-4 col-lg-6 col-md-6 col-sm-12">
-						<div class="veshm-list-wraps">
-							<div class="veshm-type"><span>For rent</span></div>
-
-							<div class="veshm-list-thumb">
-								<button type="button" class="compare-btn"><i class="fa-solid fa-repeat"></i>Compare</button>
-								<div class="veshm-list-img-slide">
-									<div class="veshm-list-click">
-										<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
-										<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
-										<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
-									</div>
-								</div>
-							</div>
-							<div class="veshm-list-block">
-								<div class="veshm-list-head">
-									<div class="veshm-list-head-caption">
-										<div class="rlhc-price">
-											<h4 class="rlhc-price-name theme-cl">$8,540<span class="monthly">/Months</span></h4>
-										</div>
-										<div class="listing-short-detail-flex">
-											<h5 class="rlhc-title-name verified"><a href="single-property-1.html" class="prt-link-detail">Great Apex Realty Group</a></h5>
-											<div class="rlhc-prt-location"><img src="assets/img/pin.svg" width="16" class="me-1" alt="">210 Zirak Road, Canada</div>
-										</div>
-									</div>
-									<div class="veshm-list-head-flex">
-										<button class="btn btn-like" type="button"><i class="fa-solid fa-heart-circle-check"></i></button>
-									</div>
-								</div>
-
-								<div class="veshm-list-footer">
-									<div class="veshm-list-circls">
-										<ul>
-											<li><span class="bed-inf"><i class="fa-solid fa-bed"></i></span>3 Bed</li>
-											<li><span class="bath-inf"><i class="fa-solid fa-bath"></i></span>1 Ba</li>
-											<li><span class="area-inf"><i class="fa-solid fa-vector-square"></i></span>2150 Sft</li>
-										</ul>
-									</div>
-								</div>
-							</div>
-
-						</div>
-					</div>
-					<!-- End Single Property -->
-					<!-- Single Property -->
-					<div class="col-xl-4 col-lg-6 col-md-6 col-sm-12">
-						<div class="veshm-list-wraps">
-							<div class="veshm-type fr-sale"><span>For Sale</span></div>
-
-							<div class="veshm-list-thumb">
-								<button type="button" class="compare-btn"><i class="fa-solid fa-repeat"></i>Compare</button>
-								<div class="veshm-list-img-slide">
-									<div class="veshm-list-click">
-										<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
-										<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
-										<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
-									</div>
-								</div>
-							</div>
-							<div class="veshm-list-block">
-								<div class="veshm-tags featured"><span><i class="fa-solid fa-star"></i>Featured</span></div>
-								<div class="veshm-list-head">
-									<div class="veshm-list-head-caption">
-										<div class="rlhc-price">
-											<h4 class="rlhc-price-name theme-cl">$50,752</h4>
-										</div>
-										<div class="listing-short-detail-flex">
-											<h5 class="rlhc-title-name verified"><a href="single-property-1.html" class="prt-link-detail">Hearthstone Real Property</a></h5>
-											<div class="rlhc-prt-location"><img src="assets/img/pin.svg" width="16" class="me-1" alt="">210 Zirak Road, Canada</div>
-										</div>
-									</div>
-									<div class="veshm-list-head-flex">
-										<button class="btn btn-like" type="button"><i class="fa-solid fa-heart-circle-check"></i></button>
-									</div>
-								</div>
-
-								<div class="veshm-list-footer">
-									<div class="veshm-list-circls">
-										<ul>
-											<li><span class="bed-inf"><i class="fa-solid fa-bed"></i></span>4 Bed</li>
-											<li><span class="bath-inf"><i class="fa-solid fa-bath"></i></span>2 Ba</li>
-											<li><span class="area-inf"><i class="fa-solid fa-vector-square"></i></span>2500 Sft</li>
-										</ul>
-									</div>
-								</div>
-							</div>
-
-						</div>
-					</div>
-					<!-- End Single Property -->
-					<!-- Single Property -->
-					<div class="col-xl-4 col-lg-6 col-md-6 col-sm-12">
-						<div class="veshm-list-wraps">
-							<div class="veshm-type"><span>For rent</span></div>
-
-							<div class="veshm-list-thumb">
-								<button type="button" class="compare-btn"><i class="fa-solid fa-repeat"></i>Compare</button>
-								<div class="veshm-list-img-slide">
-									<div class="veshm-list-click">
-										<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
-										<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
-										<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
-									</div>
-								</div>
-							</div>
-							<div class="veshm-list-block">
-								<div class="veshm-list-head">
-									<div class="veshm-list-head-caption">
-										<div class="rlhc-price">
-											<h4 class="rlhc-price-name theme-cl">$10,890<span class="monthly">/Months</span></h4>
-										</div>
-										<div class="listing-short-detail-flex">
-											<h5 class="rlhc-title-name verified"><a href="single-property-1.html" class="prt-link-detail">The Select Brick Builders</a></h5>
-											<div class="rlhc-prt-location"><img src="assets/img/pin.svg" width="16" class="me-1" alt="">210 Zirak Road, Canada</div>
-										</div>
-									</div>
-									<div class="veshm-list-head-flex">
-										<button class="btn btn-like" type="button"><i class="fa-solid fa-heart-circle-check"></i></button>
-									</div>
-								</div>
-
-								<div class="veshm-list-footer">
-									<div class="veshm-list-circls">
-										<ul>
-											<li><span class="bed-inf"><i class="fa-solid fa-bed"></i></span>3 Bed</li>
-											<li><span class="bath-inf"><i class="fa-solid fa-bath"></i></span>1 Ba</li>
-											<li><span class="area-inf"><i class="fa-solid fa-vector-square"></i></span>2000 Sft</li>
-										</ul>
-									</div>
-								</div>
-							</div>
-
-						</div>
-					</div>
-					<!-- End Single Property -->
-					<!-- Single Property -->
-					<div class="col-xl-4 col-lg-6 col-md-6 col-sm-12">
-						<div class="veshm-list-wraps">
-							<div class="veshm-type"><span>For rent</span></div>
-
-							<div class="veshm-list-thumb">
-								<button type="button" class="compare-btn"><i class="fa-solid fa-repeat"></i>Compare</button>
-								<div class="veshm-list-img-slide">
-									<div class="veshm-list-click">
-										<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
-										<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
-										<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
-									</div>
-								</div>
-							</div>
-							<div class="veshm-list-block">
-								<div class="veshm-list-head">
-									<div class="veshm-list-head-caption">
-										<div class="rlhc-price">
-											<h4 class="rlhc-price-name theme-cl">$7,999<span class="monthly">/Months</span></h4>
-										</div>
-										<div class="listing-short-detail-flex">
-											<h5 class="rlhc-title-name verified"><a href="single-property-1.html" class="prt-link-detail">Dream Big Real Estate Group</a></h5>
-											<div class="rlhc-prt-location"><img src="assets/img/pin.svg" width="16" class="me-1" alt="">210 Zirak Road, Canada</div>
-										</div>
-									</div>
-									<div class="veshm-list-head-flex">
-										<button class="btn btn-like" type="button"><i class="fa-solid fa-heart-circle-check"></i></button>
-									</div>
-								</div>
-
-								<div class="veshm-list-footer">
-									<div class="veshm-list-circls">
-										<ul>
-											<li><span class="bed-inf"><i class="fa-solid fa-bed"></i></span>4 Bed</li>
-											<li><span class="bath-inf"><i class="fa-solid fa-bath"></i></span>3 Ba</li>
-											<li><span class="area-inf"><i class="fa-solid fa-vector-square"></i></span>2300 Sft</li>
-										</ul>
-									</div>
-								</div>
-							</div>
-
-						</div>
-					</div>
-					<!-- End Single Property -->
-					<!-- Single Property -->
-					<div class="col-xl-4 col-lg-6 col-md-6 col-sm-12">
-						<div class="veshm-list-wraps">
-							<div class="veshm-type fr-sale"><span>For Sale</span></div>
-
-							<div class="veshm-list-thumb">
-								<button type="button" class="compare-btn"><i class="fa-solid fa-repeat"></i>Compare</button>
-								<div class="veshm-list-img-slide">
-									<div class="veshm-list-click">
-										<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
-										<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
-										<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
-									</div>
-								</div>
-							</div>
-							<div class="veshm-list-block">
-								<div class="veshm-tags featured"><span><i class="fa-solid fa-star"></i>Featured</span></div>
-								<div class="veshm-list-head">
-									<div class="veshm-list-head-caption">
-										<div class="rlhc-price">
-											<h4 class="rlhc-price-name theme-cl">$80,750</h4>
-										</div>
-										<div class="listing-short-detail-flex">
-											<h5 class="rlhc-title-name verified"><a href="single-property-1.html" class="prt-link-detail">Allen Tate Real Company</a></h5>
-											<div class="rlhc-prt-location"><img src="assets/img/pin.svg" width="16" class="me-1" alt="">210 Zirak Road, Canada</div>
-										</div>
-									</div>
-									<div class="veshm-list-head-flex">
-										<button class="btn btn-like" type="button"><i class="fa-solid fa-heart-circle-check"></i></button>
-									</div>
-								</div>
-
-								<div class="veshm-list-footer">
-									<div class="veshm-list-circls">
-										<ul>
-											<li><span class="bed-inf"><i class="fa-solid fa-bed"></i></span>5 Bed</li>
-											<li><span class="bath-inf"><i class="fa-solid fa-bath"></i></span>3 Ba</li>
-											<li><span class="area-inf"><i class="fa-solid fa-vector-square"></i></span>2800 Sft</li>
-										</ul>
-									</div>
-								</div>
-							</div>
-
-						</div>
-					</div>
-					<!-- End Single Property -->
-					<!-- Single Property -->
-					<div class="col-xl-4 col-lg-6 col-md-6 col-sm-12">
-						<div class="veshm-list-wraps">
-							<div class="veshm-type"><span>For rent</span></div>
-
-							<div class="veshm-list-thumb">
-								<button type="button" class="compare-btn"><i class="fa-solid fa-repeat"></i>Compare</button>
-								<div class="veshm-list-img-slide">
-									<div class="veshm-list-click">
-										<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
-										<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
-										<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
-									</div>
-								</div>
-							</div>
-							<div class="veshm-list-block">
-								<div class="veshm-list-head">
-									<div class="veshm-list-head-caption">
-										<div class="rlhc-price">
-											<h4 class="rlhc-price-name theme-cl">$9,540<span class="monthly">/Months</span></h4>
-										</div>
-										<div class="listing-short-detail-flex">
-											<h5 class="rlhc-title-name verified"><a href="single-property-1.html" class="prt-link-detail">Arroyo Blue Real Property</a></h5>
-											<div class="rlhc-prt-location"><img src="assets/img/pin.svg" width="16" class="me-1" alt="">210 Zirak Road, Canada</div>
-										</div>
-									</div>
-									<div class="veshm-list-head-flex">
-										<button class="btn btn-like" type="button"><i class="fa-solid fa-heart-circle-check"></i></button>
-									</div>
-								</div>
-
-								<div class="veshm-list-footer">
-									<div class="veshm-list-circls">
-										<ul>
-											<li><span class="bed-inf"><i class="fa-solid fa-bed"></i></span>3 Bed</li>
-											<li><span class="bath-inf"><i class="fa-solid fa-bath"></i></span>3 Ba</li>
-											<li><span class="area-inf"><i class="fa-solid fa-vector-square"></i></span>2100 Sft</li>
-										</ul>
-									</div>
-								</div>
-							</div>
-
-						</div>
-					</div>
-					<!-- End Single Property -->
-					<!-- Single Property -->
-					<div class="col-xl-4 col-lg-6 col-md-6 col-sm-12">
-						<div class="veshm-list-wraps">
-							<div class="veshm-type"><span>For rent</span></div>
-
-							<div class="veshm-list-thumb">
-								<button type="button" class="compare-btn"><i class="fa-solid fa-repeat"></i>Compare</button>
-								<div class="veshm-list-img-slide">
-									<div class="veshm-list-click">
-										<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
-										<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
-										<div><a href="single-property-1.html"><img src="https://via.placeholder.com/1280x880" class="img-fluid mx-auto" alt=""></a></div>
-									</div>
-								</div>
-							</div>
-							<div class="veshm-list-block">
-								<div class="veshm-tags trending"><span><i class="fa-solid fa-meteor"></i>Trending</span></div>
-								<div class="veshm-list-head">
-									<div class="veshm-list-head-caption">
-										<div class="rlhc-price">
-											<h4 class="rlhc-price-name theme-cl">$8,570<span class="monthly">/Months</span></h4>
-										</div>
-										<div class="listing-short-detail-flex">
-											<h5 class="rlhc-title-name verified"><a href="single-property-1.html" class="prt-link-detail">Catbird Realty Advisors</a></h5>
-											<div class="rlhc-prt-location"><img src="assets/img/pin.svg" width="16" class="me-1" alt="">210 Zirak Road, Canada</div>
-										</div>
-									</div>
-									<div class="veshm-list-head-flex">
-										<button class="btn btn-like" type="button"><i class="fa-solid fa-heart-circle-check"></i></button>
-									</div>
-								</div>
-
-								<div class="veshm-list-footer">
-									<div class="veshm-list-circls">
-										<ul>
-											<li><span class="bed-inf"><i class="fa-solid fa-bed"></i></span>4 Bed</li>
-											<li><span class="bath-inf"><i class="fa-solid fa-bath"></i></span>3 Ba</li>
-											<li><span class="area-inf"><i class="fa-solid fa-vector-square"></i></span>3000 Sft</li>
-										</ul>
-									</div>
-								</div>
-							</div>
-
-						</div>
-					</div>
-					<!-- End Single Property -->
+						}
+					}
+					
 				</div>
 
 			</div>

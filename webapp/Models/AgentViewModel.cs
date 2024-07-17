@@ -24,10 +24,14 @@
 
 		public string XLink { get; set; }
 
+		public string GoogleLink { get; set; }
+
 		public int PropertyCount { get; set; }
 
 		public List<PropertyViewModel> Properties { get; set; }
 
 		public string Location { get; set; }
+
+		public string ProfilePicture { get; set; }
 	}
 }

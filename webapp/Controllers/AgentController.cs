@@ -60,19 +60,21 @@ namespace webapp.Controllers
 				.Take(pageSize)
 				.Select(u => new AgentViewModel
 				{
-					Id = u.Id,
+					//Id = u.Id,
                     UserName = u.UserName,
 					Name = u.FullName,
-					Email = u.Email,
+					//Email = u.Email,
 					PhoneNumber = u.PhoneNumber,
 					About = u.About,
 					City = u.City,
 					State = u.State,
-					FacebookLink = u.FacebookLink,
-					XLink = u.XLink,
-					LinkedInLink = u.LinkedInLink,
+					//FacebookLink = u.FacebookLink,
+					//XLink = u.XLink,
+					//LinkedInLink = u.LinkedInLink,
+					//GoogleLink = u.GoogleLink,
 					PropertyCount = _context.Properties.Count(p => p.AgentId == u.Id),
-					Location = filters.Location
+					Location = filters.Location,
+					ProfilePicture = u.ProfilePicture,
 				})
 				.ToListAsync();
 
@@ -164,7 +166,9 @@ namespace webapp.Controllers
 				FacebookLink = agent.FacebookLink,
 				XLink = agent.XLink,
 				LinkedInLink = agent.LinkedInLink,
-				Properties = properties
+				GoogleLink = agent.GoogleLink,
+				Properties = properties,
+				ProfilePicture = agent.ProfilePicture,
 				//PropertyCount = _context.Properties.Count(p => p.AgentId == agent.Id)
 			};
 
@@ -773,7 +777,13 @@ namespace webapp.Controllers
 				return RedirectToAction(nameof(AgentPropertyList), new { username = currentUser.UserName });
 			}
 
-			property.ListingStatus = "Sold";
+            if (property.ListingStatus == "Blocked")
+            {
+                TempData["Message"] = "Error: Property cannot be modified.";
+                return RedirectToAction(nameof(AgentPropertyList), new { username = currentUser.UserName });
+            }
+
+            property.ListingStatus = "Sold";
 			_context.Properties.Update(property);
 			await _context.SaveChangesAsync();
 
@@ -810,6 +820,12 @@ namespace webapp.Controllers
                 TempData["Message"] = "Error: Property not found.";
 				return RedirectToAction(nameof(AgentPropertyList), new { username = currentUser.UserName });
 			}
+
+            if (property.ListingStatus == "Blocked")
+            {
+                TempData["Message"] = "Error: Property cannot be modified.";
+                return RedirectToAction(nameof(AgentPropertyList), new { username = currentUser.UserName });
+            }
 
             _context.Properties.Remove(property);
             await _context.SaveChangesAsync();

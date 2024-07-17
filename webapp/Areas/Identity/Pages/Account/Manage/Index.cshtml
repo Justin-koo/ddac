@@ -3,7 +3,7 @@
 @{
     ViewData["Title"] = "Profile";
     ViewData["ActivePage"] = ManageNavPages.Index;
-    var userRole = ViewData["UserRole"] as string;
+    var isUserRole = User.IsInRole("User");
 }
 
 <div class="dashboard-body">
@@ -33,7 +33,7 @@
                         <input asp-for="Input.PhoneNumber" class="form-control" />
                         <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
                     </div>
-                    @if (userRole == "Agent")
+                    @if (!isUserRole)
                     {
                         <div class="form-group col-md-6">
                             <label asp-for="Input.Address" class="form-label"></label>
@@ -126,7 +126,7 @@
                         </div>
                     </div>
 
-                    @if (userRole == "Agent")
+                    @if (!isUserRole)
                     {
                         <h3>Social Media</h3>
                         <div class="form-group col-md-6">
@@ -190,10 +190,11 @@
             const pond = FilePond.create(inputElement, {
                 storeAsFile: true,
                 name: "profilepic",
-                imageResizeTargetWidth: 100,
-                imageResizeTargetHeight: 100,
-                imageResizeMode: "contain",
+                imageResizeTargetWidth: 650,
+                imageResizeTargetHeight: 650,
+                imageResizeMode: "force",
                 imageCropAspectRatio: 1,
+                imageTransformOutputQuality: 90,
                 // allowMultiple: true,
                 maxFileSize: "5MB",
                 acceptedFileTypes: ['image/*'],
