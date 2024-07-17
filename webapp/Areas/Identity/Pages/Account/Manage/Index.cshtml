@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Profile";
     ViewData["ActivePage"] = ManageNavPages.Index;
+    var isUserRole = User.IsInRole("User");
 }
 
 <div class="dashboard-body">
@@ -32,75 +33,78 @@
                         <input asp-for="Input.PhoneNumber" class="form-control" />
                         <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
                     </div>
-                    <div class="form-group col-md-6">
-                        <label asp-for="Input.Address" class="form-label"></label>
-                        <input asp-for="Input.Address" class="form-control" />
-                        <span asp-validation-for="Input.Address" class="text-danger"></span>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label asp-for="Input.City" class="form-label"></label>
-                        <input asp-for="Input.City" class="form-control" />
-                        <span asp-validation-for="Input.City" class="text-danger"></span>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label asp-for="Input.State" class="form-label"></label>
-                        <input asp-for="Input.State" class="form-control" />
-                        <span asp-validation-for="Input.State" class="text-danger"></span>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label asp-for="Input.Country" class="form-label"></label>
-                        <input asp-for="Input.Country" class="form-control" />
-                        <span asp-validation-for="Input.Country" class="text-danger"></span>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label asp-for="Input.Zip" class="form-label"></label>
-                        <input asp-for="Input.Zip" class="form-control" />
-                        <span asp-validation-for="Input.Zip" class="text-danger"></span>
-                    </div>
+                    @if (!isUserRole)
+                    {
+                        <div class="form-group col-md-6">
+                            <label asp-for="Input.Address" class="form-label"></label>
+                            <input asp-for="Input.Address" class="form-control" />
+                            <span asp-validation-for="Input.Address" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="Input.City" class="form-label"></label>
+                            <input asp-for="Input.City" class="form-control" />
+                            <span asp-validation-for="Input.City" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="Input.State" class="form-label"></label>
+                            <input asp-for="Input.State" class="form-control" />
+                            <span asp-validation-for="Input.State" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="Input.Country" class="form-label"></label>
+                            <input asp-for="Input.Country" class="form-control" />
+                            <span asp-validation-for="Input.Country" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="Input.Zip" class="form-label"></label>
+                            <input asp-for="Input.Zip" class="form-control" />
+                            <span asp-validation-for="Input.Zip" class="text-danger"></span>
+                        </div>
 
-                    <!-- Agent SPECIALTIES option -->
-                    <div class="form-group col-md-6">
-                        <label asp-for="Input.Specialties" class="form-label"></label>
-                        <select asp-for="Input.Specialties" class="form-control" multiple="multiple">
-                            <option value="Buyer's Agent">Buyer's Agent</option>
-                            <option value="Listing Agent">Listing Agent</option>
-                            <option value="Relocation">Relocation</option>
-                            <option value="Foreclosure">Foreclosure</option>
-                            <option value="Short-Sale">Short-Sale</option>
-                            <option value="Consulting">Consulting</option>
-                        </select>
-                        <span asp-validation-for="Input.Specialties" class="text-danger"></span>
-                    </div>
+                        <!-- Agent SPECIALTIES option -->
+                        <div class="form-group col-md-6">
+                            <label asp-for="Input.Specialties" class="form-label"></label>
+                            <select asp-for="Input.Specialties" class="form-control" multiple="multiple">
+                                <option value="Buyer's Agent">Buyer's Agent</option>
+                                <option value="Listing Agent">Listing Agent</option>
+                                <option value="Relocation">Relocation</option>
+                                <option value="Foreclosure">Foreclosure</option>
+                                <option value="Short-Sale">Short-Sale</option>
+                                <option value="Consulting">Consulting</option>
+                            </select>
+                            <span asp-validation-for="Input.Specialties" class="text-danger"></span>
+                        </div>
 
-                    <!-- Agent languages option -->
-                    <div class="form-group col-md-6">
-                        <label asp-for="Input.Languages" class="form-label"></label>
-                        <select asp-for="Input.Languages" class="form-control" multiple="multiple">
-                            <option value="English">English</option>
-                            <option value="Mandarin">Mandarin</option>
-                            <option value="Cantonese">Cantonese</option>
-                            <option value="Arabic">Arabic</option>
-                            <option value="French">French</option>
-                            <option value="German">German</option>
-                            <option value="Greek">Greek</option>
-                            <option value="Italian">Italian</option>
-                            <option value="Japanese">Japanese</option>
-                            <option value="Korean">Korean</option>
-                            <option value="Polish">Polish</option>
-                            <option value="Russian">Russian</option>
-                            <option value="Spanish">Spanish</option>
-                            <option value="Thai">Thai</option>
-                            <option value="Vietnamese">Vietnamese</option>
-                        </select>
-                        <span asp-validation-for="Input.Languages" class="text-danger"></span>
-                    </div>
+                        <!-- Agent languages option -->
+                        <div class="form-group col-md-6">
+                            <label asp-for="Input.Languages" class="form-label"></label>
+                            <select asp-for="Input.Languages" class="form-control" multiple="multiple">
+                                <option value="English">English</option>
+                                <option value="Mandarin">Mandarin</option>
+                                <option value="Cantonese">Cantonese</option>
+                                <option value="Arabic">Arabic</option>
+                                <option value="French">French</option>
+                                <option value="German">German</option>
+                                <option value="Greek">Greek</option>
+                                <option value="Italian">Italian</option>
+                                <option value="Japanese">Japanese</option>
+                                <option value="Korean">Korean</option>
+                                <option value="Polish">Polish</option>
+                                <option value="Russian">Russian</option>
+                                <option value="Spanish">Spanish</option>
+                                <option value="Thai">Thai</option>
+                                <option value="Vietnamese">Vietnamese</option>
+                            </select>
+                            <span asp-validation-for="Input.Languages" class="text-danger"></span>
+                        </div>
 
-                    <div class="form-group col-md-12">
-                        <label asp-for="Input.About" class="form-label"></label>
-                        <textarea asp-for="Input.About" class="form-control"></textarea>
-                        <span asp-validation-for="Input.About" class="text-danger"></span>
-                    </div>
-
+                        <div class="form-group col-md-12">
+                            <label asp-for="Input.About" class="form-label"></label>
+                            <textarea asp-for="Input.About" class="form-control"></textarea>
+                            <span asp-validation-for="Input.About" class="text-danger"></span>
+                        </div>
+                    }
+                    
                     <!-- Agent Picture -->
                     <div class="frm_submit_block">
                         <h3>Profile Picture</h3>
@@ -122,27 +126,32 @@
                         </div>
                     </div>
 
-                    <h3>Social Media</h3>
-                    <div class="form-group col-md-6">
-                        <label asp-for="Input.FacebookLink" class="form-label"></label>
-                        <input asp-for="Input.FacebookLink" class="form-control" />
-                        <span asp-validation-for="Input.FacebookLink" class="text-danger"></span>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label asp-for="Input.XLink" class="form-label"></label>
-                        <input asp-for="Input.XLink" class="form-control" />
-                        <span asp-validation-for="Input.XLink" class="text-danger"></span>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label asp-for="Input.LinkedInLink" class="form-label"></label>
-                        <input asp-for="Input.LinkedInLink" class="form-control" />
-                        <span asp-validation-for="Input.LinkedInLink" class="text-danger"></span>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label asp-for="Input.GoogleLink" class="form-label"></label>
-                        <input asp-for="Input.GoogleLink" class="form-control" />
-                        <span asp-validation-for="Input.GoogleLink" class="text-danger"></span>
-                    </div>
+                    @if (!isUserRole)
+                    {
+                        <h3>Social Media</h3>
+                        <div class="form-group col-md-6">
+                            <label asp-for="Input.FacebookLink" class="form-label"></label>
+                            <input asp-for="Input.FacebookLink" class="form-control" />
+                            <span asp-validation-for="Input.FacebookLink" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="Input.XLink" class="form-label"></label>
+                            <input asp-for="Input.XLink" class="form-control" />
+                            <span asp-validation-for="Input.XLink" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="Input.LinkedInLink" class="form-label"></label>
+                            <input asp-for="Input.LinkedInLink" class="form-control" />
+                            <span asp-validation-for="Input.LinkedInLink" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="Input.GoogleLink" class="form-label"></label>
+                            <input asp-for="Input.GoogleLink" class="form-control" />
+                            <span asp-validation-for="Input.GoogleLink" class="text-danger"></span>
+                        </div>
+                    }
+
+                    
                     <div class="form-group col-lg-12 col-md-12 mt-4">
                         <button id="update-profile-button" type="submit" class="btn btn-theme btn-lg">Save Changes</button>
                     </div>
@@ -181,10 +190,11 @@
             const pond = FilePond.create(inputElement, {
                 storeAsFile: true,
                 name: "profilepic",
-                imageResizeTargetWidth: 100,
-                imageResizeTargetHeight: 100,
-                imageResizeMode: "contain",
+                imageResizeTargetWidth: 650,
+                imageResizeTargetHeight: 650,
+                imageResizeMode: "force",
                 imageCropAspectRatio: 1,
+                imageTransformOutputQuality: 90,
                 // allowMultiple: true,
                 maxFileSize: "5MB",
                 acceptedFileTypes: ['image/*'],

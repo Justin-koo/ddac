@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Configuration;
+using System.Data;
 using System.Linq;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
@@ -14,6 +15,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using webapp.Areas.Identity.Data;
+using webapp.Helpers;
 
 namespace webapp.Areas.Identity.Pages.Account.Manage
 {
@@ -47,6 +49,8 @@ namespace webapp.Areas.Identity.Pages.Account.Manage
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
 
+            [Required(ErrorMessage = "You must enter the username before submitting your form!")]
+            [Display(Name = "Username")]
             public string UserName { get; set; }
 
             [Required(ErrorMessage = "You must enter the full name before submitting your form!")]
@@ -55,33 +59,39 @@ namespace webapp.Areas.Identity.Pages.Account.Manage
             [Display(Name = "Full Name")]
             public string FullName { get; set; }
 
-            [Required(ErrorMessage = "You must enter the Country before submitting your form!")]
+            //[Required(ErrorMessage = "You must enter the country before submitting your form!")]
+            [RequiredForRole("Agent", ErrorMessage = "Country is required for agents.")]
             [StringLength(256, ErrorMessage = "You must enter the value between 2 - 256 chars", MinimumLength = 2)]
             [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "The country must only contain alphabetic characters and spaces.")]
             [Display(Name = "Country")]
             public string Country { get; set; }
 
-            [Required(ErrorMessage = "You must enter the address before submitting your form!")]
+            //[Required(ErrorMessage = "You must enter the address before submitting your form!")]
+            [RequiredForRole("Agent", ErrorMessage = "Address is required for agents.")]
             [StringLength(256, ErrorMessage = "You must enter the value between 6 - 256 chars", MinimumLength = 6)]
             [Display(Name = "Address")]
             public string Address { get; set; }
 
-            [Required(ErrorMessage = "You must enter the state before submitting your form!")]
+            //[Required(ErrorMessage = "You must enter the state before submitting your form!")]
+            [RequiredForRole("Agent", ErrorMessage = "State is required for agents.")]
             [StringLength(256, ErrorMessage = "You must enter the value between 2 - 256 chars", MinimumLength = 2)]
             [Display(Name = "State")]
             public string State { get; set; }
 
-            [Required(ErrorMessage = "You must enter the city before submitting your form!")]
+            //[Required(ErrorMessage = "You must enter the city before submitting your form!")]
+            [RequiredForRole("Agent", ErrorMessage = "City is required for agents.")]
             [StringLength(256, ErrorMessage = "You must enter the value between 2 - 256 chars", MinimumLength = 2)]
             [Display(Name = "City")]
             public string City { get; set; }
 
-            [Required(ErrorMessage = "You must enter the zip before submitting your form!")]
+            //[Required(ErrorMessage = "You must enter the zip before submitting your form!")]
+            [RequiredForRole("Agent", ErrorMessage = "Zip is required for agents.")]
             [Range(5, 99999, ErrorMessage = "The ZIP code must be a valid 5-digit number.")]
             [Display(Name = "Zip")]
             public int? Zip { get; set; }
 
-            [Required(ErrorMessage = "You must enter the about before submitting your form!")]
+            //[Required(ErrorMessage = "You must enter the about before submitting your form!")]
+            [RequiredForRole("Agent", ErrorMessage = "About is required for agents.")]
             [StringLength(1000, ErrorMessage = "You must enter the value between 6 - 1000 chars", MinimumLength = 6)]
             [Display(Name = "About")]
             public string About { get; set; }
@@ -176,10 +186,17 @@ namespace webapp.Areas.Identity.Pages.Account.Manage
                 }
             }
 
-            if (Input.UserName != user.UserName)
-            {
-                user.UserName = Input.UserName;
-            }
+			if (Input.UserName != user.UserName)
+			{
+				var existingUser = await _userManager.FindByNameAsync(Input.UserName);
+				if (existingUser != null)
+				{
+					ModelState.AddModelError("Input.UserName", "Username already exists.");
+					await LoadAsync(user);
+					return Page();
+				}
+				user.UserName = Input.UserName;
+			}
 
             if (Input.FullName != user.FullName)
             {

@@ -4819,8 +4819,8 @@ span.prefix-title {
     justify-content: space-between;
 }
 .like_share_list li {
-    flex: 0 0 33.333333%;
-    width: 33.333333%;
+    /*flex: 0 0 33.333333%;*/
+    width: 100%;
     list-style: none;
     display: block;
 	padding:0 0.5rem
@@ -5679,7 +5679,7 @@ span.verify-icon {
     font-size: 9px;
     font-weight: 800;
     top: 20%;
-    right: -6px;
+    right: -2px;
     z-index: 1;
     color: #ffffff;
     background: #0eb677;
