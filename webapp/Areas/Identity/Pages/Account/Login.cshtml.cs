@@ -121,6 +121,12 @@ namespace webapp.Areas.Identity.Pages.Account
 					var result = await _signInManager.PasswordSignInAsync(user.UserName, Input.Password, Input.RememberMe, lockoutOnFailure: false);
 					if (result.Succeeded)
 					{
+						if (await _userManager.IsInRoleAsync(user, "Admin"))
+						{
+							// Redirect to the Admin controller action
+							returnUrl = Url.Action("Index", "Admin");
+						}
+
 						_logger.LogInformation("User logged in.");
 						return LocalRedirect(returnUrl);
 					}

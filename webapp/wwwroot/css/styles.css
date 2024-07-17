@@ -2591,6 +2591,7 @@ nav a {
     background: #fff;
     position: relative;
     padding: 15px 0;
+    z-index: 11;
 }
 
 .header-top {
@@ -2873,9 +2874,9 @@ nav a {
     position: relative;
     padding: 3px 10px;
 }
-.nav-menu.nav-menu-social>li:last-child .btn-group.account-drop{
+/*.nav-menu.nav-menu-social>li:last-child .btn-group.account-drop{
 	padding-right:0;
-}
+}*/
 .account-drop .btn.btn-order-by-filt {
     padding:0px;
 	height:40px;
@@ -8387,9 +8388,9 @@ footer.skin-dark-footer .footer-widget .ftp-info {
 
 
 @media (max-width: 992px) {	
-	.nav-menu.nav-menu-social {
+	/*.nav-menu.nav-menu-social {
 		display: none;
-	}
+	}*/
 	.nav-header {
 		display: flex;
 		align-items: center;
