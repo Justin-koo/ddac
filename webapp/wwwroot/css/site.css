@@ -235,3 +235,13 @@
 .form-select{
     background-image: none !important;
 }
+
+.mobile_nav .nav-menu-social{
+    display: block;
+}
+
+@media (max-width: 993px) {
+    .nav-menu-social {
+        display: none;
+    }
+}
