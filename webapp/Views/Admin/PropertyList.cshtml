@@ -1,105 +1,169 @@
-﻿@model IEnumerable<webapp.Models.Admin.UserViewModel>
+﻿@model IEnumerable<webapp.Models.Admin.PropertyViewModel>
 
 @{
-	Layout = "~/Views/Shared/_AdminLayout.cshtml";
-	ViewData["Title"] = "User List";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Property List";
 }
 
 <div class="row align-items-center p-3 mt-3">
-	<div class="col-auto">
-		<h2>@ViewData["Title"]</h2>
-	</div>
-	<div class="ms-auto col-auto">
-		<div class="_prt_filt_add_new">
-			<a asp-controller="Admin" asp-action="CreateUser" class="prt_submit_link"><i class="fas fa-plus-circle"></i><span>Add User</span></a>
-		</div>
-	</div>
+    <div class="col-auto">
+        <h2>@ViewData["Title"]</h2>
+    </div>
 </div>
 
 @if (TempData["Message"] != null)
 {
-	var statusMessageClass = TempData["Message"]?.ToString()?.StartsWith("Error") == true ? "danger" : "success";
-	<div class="alert alert-@statusMessageClass alert-dismissible" role="alert">
-		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-		@TempData["Message"]
-	</div>
+    var statusMessageClass = TempData["Message"]?.ToString()?.StartsWith("Error") == true ? "danger" : "success";
+    <div class="alert alert-@statusMessageClass alert-dismissible" role="alert">
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        @TempData["Message"]
+    </div>
 }
-
-<div class="card p-3 mt-3 border-0 shadow">
-	<div class="dashboard_property shadow-none bg-transparent">
-		<div class="table-responsive">
-			<table class="table" id="userTable" width="100%">
+<div class="card p-3 mt-3 border-0 shadow-sm">
+    <div class="dashboard_property shadow-none bg-transparent">
+        <div class="table-responsive">
+			<table class="table" id="propertyTable" width="100%">
 				<thead class="thead-dark">
 					<tr>
-						<th scope="col">User Name</th>
-						<th scope="col">Email</th>
-						<th scope="col">Full Name</th>
-						<th scope="col">Roles</th>
-						<th scope="col">Actions</th>
+						<th scope="col">Property</th>
+						<th scope="col" class="m2_hide">Listed By</th>
+						<th scope="col" class="m2_hide">Posted On</th>
+						<th scope="col">Status</th>
+						<th scope="col">Action</th>
 					</tr>
 				</thead>
 				<tbody>
-					@foreach (var user in Model)
+					@foreach (var property in Model)
 					{
 						<tr>
-							<td>@user.UserName</td>
-							<td>@user.Email</td>
-							<td>@user.FullName</td>
+							<td>
+								<div class="dash_prt_wrap">
+									<div class="dash_prt_thumb">
+										@if (property.GalleryPath.Any())
+										{
+											<img src="~/uploads/property/@property.GalleryFolder/@property.GalleryPath.First()" class="img-fluid" alt=" ">
+										}
+										else
+										{
+											<img src="https://via.placeholder.com/1280x880" class="img-fluid" alt="">
+										}
+									</div>
+									<div class="dash_prt_caption">
+										<h5>@property.Title</h5>
+										<div class="prt_dashb_lot">@property.AddressLine</div>
+										<div class="prt_dash_rate"><span>@property.Price.ToString("C")</span></div>
+									</div>
+								</div>
+							</td>
+							<td class="m2_hide">
+								<a href="" class="text-primary text-decoration-underline">@property.ListedBy</a>
+							</td>
+							<td class="m2_hide">
+								<div class="_leads_posted"><h5>@property.ListingDate.ToString("dd MMM yy - HH:mm")</h5></div>
+							</td>
 							<td>
 								<div class="_leads_status">
-									@if (user.SelectedRole == "Agent")
+									@if (property.ListingStatus == "Active")
 									{
-										<span class="text-success border border-success-subtle bg-success-subtle">@user.SelectedRole</span>
+										<span class="text-success border border-success-subtle bg-success-subtle">@property.ListingStatus</span>
 									}
-									else if (user.SelectedRole == "User")
+									else if (property.ListingStatus == "Unlisted")
 									{
-										<span class="text-secondary border border-tertiary bg-secondary-subtle">@user.SelectedRole</span>
+										<span class="text-secondary border border-tertiary bg-secondary-subtle">@property.ListingStatus</span>
 									}
-									else if (user.SelectedRole == "Admin")
+									else if (property.ListingStatus == "Sold")
 									{
-										<span class="text-primary border border-primary-subtle bg-primary-subtle">@user.SelectedRole</span>
+										<span class="text-primary border border-primary-subtle bg-primary-subtle">@property.ListingStatus</span>
+									}
+									else if (property.ListingStatus == "Blocked")
+									{
+										<span class="text-danger border border-danger-subtle bg-danger-subtle">@property.ListingStatus</span>
 									}
 								</div>
 							</td>
 							<td>
 								<div class="_leads_action d-md-flex">
-									<a asp-action="EditUser" asp-route-username="@user.UserName" class="_leads_item" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-										<i class="fas fa-edit"></i>
-									</a>
-									<form method="post" asp-action="DeleteUser" asp-route-username="@user.UserName">
-										@Html.AntiForgeryToken()
-										<a role="button" class="_leads_item delete-user-button"><i class="fas fa-trash"></i></a>
-									</form>
+									@if (property.ListingStatus != "Blocked")
+									{
+										<form asp-action="BlockProperty" asp-controller="Admin" asp-route-id="@property.Id" method="post" class="block-property-form" style="display:inline;">
+											@Html.AntiForgeryToken()
+											<a role="button" class="block-property-button text-danger _leads_item @(property.ListingStatus == "Sold" ? "disabled bg-body-secondary" : "")">
+												<i class="fa-solid fa-ban"></i>
+											</a>
+										</form>
+									}
+									else if (property.ListingStatus == "Blocked")
+									{
+										<form asp-action="UnblockProperty" asp-controller="Admin" asp-route-id="@property.Id" method="post" class="unblock-property-form" style="display:inline;">
+											@Html.AntiForgeryToken()
+											<a role="button" class="unblock-property-button text-success _leads_item">
+												<i class="fa-regular fa-circle-check"></i>
+											</a>
+										</form>
+									}
+
 								</div>
 							</td>
 						</tr>
 					}
 				</tbody>
 			</table>
-		</div>
-	</div>
 
+        </<div
+    </div>
 </div>
 
+
 @section Scripts {
-	<script>
-		$('#userTable').DataTable({
-			columnDefs: [
-				{
-					orderable: false,
-					searchable: false,
-					targets: -1,
-				},
-				{
-					orderSequence: ['asc', 'desc'],
-					targets: "_all"
+    <script>
+		function handleAction(button, title, text) {
+			Swal.fire({
+				title: title,
+				text: text,
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonColor: '#017efa',
+				cancelButtonColor: '#d33',
+				confirmButtonText: 'Yes'
+			}).then((result) => {
+				if (result.isConfirmed) {
+					button.closest('form').submit();
 				}
-			],
-			initComplete: function (settings, json) {
-				$("#userTable").wrap("<div style='overflow:auto; width:100%;position:relative;'></div>");
-				$('.dt-length').addClass("d-flex align-items-center")
-				$('.dt-length').find(".form-select").addClass("me-2")
-			},
+			});
+		}
+
+		$(document).on('click', '.block-property-button', function () {
+			const title = "Block this property?"
+			const text = "This property will be taken down!"
+			handleAction($(this), title, text);
 		});
-	</script>
+
+		$(document).on('click', '.unblock-property-button', function () {
+			const title = "Unblock this property?"
+			const text = "This property will become active again!"
+			handleAction($(this), title, text);
+		});
+
+        $(document).ready(function () {
+			$('#propertyTable').DataTable({
+				order: [[2, 'desc']],
+				columnDefs: [
+					{
+						orderable: false,
+						searchable: false,
+						targets: -1,
+					},
+					{
+						orderSequence: ['asc', 'desc'],
+						targets: "_all"
+					}
+				],
+				initComplete: function (settings, json) {
+					$("#userTable").wrap("<div style='overflow:auto; width:100%;position:relative;'></div>");
+					$('.dt-length').addClass("d-flex align-items-center")
+					$('.dt-length').find(".form-select").addClass("me-2")
+				},
+			});
+        });
+    </script>
 }

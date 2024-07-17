@@ -2,9 +2,12 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis.Elfie.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using webapp.Areas.Identity.Data;
+using webapp.Data;
+using webapp.Helpers;
 using webapp.Models.Admin;
 
 namespace webapp.Controllers
@@ -12,14 +15,15 @@ namespace webapp.Controllers
 	[Authorize(Roles = "Admin")]
 	public class AdminController : Controller
 	{
-
-        private readonly UserManager<webappUser> _userManager;
+		private readonly webappContext _context;
+		private readonly UserManager<webappUser> _userManager;
 		private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public AdminController(UserManager<webappUser> userManager, RoleManager<IdentityRole> roleManager, IWebHostEnvironment webHostEnvironment)
+        public AdminController(webappContext context, UserManager<webappUser> userManager, RoleManager<IdentityRole> roleManager, IWebHostEnvironment webHostEnvironment)
         {
-            _userManager = userManager;
+			_context = context;
+			_userManager = userManager;
 			_roleManager = roleManager;
             _webHostEnvironment = webHostEnvironment;
         }
@@ -56,8 +60,28 @@ namespace webapp.Controllers
 		[HttpGet]
 		public async Task<IActionResult> PropertyList()
 		{
-			return View();
+			var properties = await _context.Properties
+				.Include(p => p.Address) // Include related data if needed
+				.ToListAsync();
+
+			var users = await _userManager.Users.ToListAsync();
+
+			var propertyList = properties.Select(property => new PropertyViewModel
+			{
+				Id = property.Id,
+				Title = property.Title,
+				AddressLine = property.Address.AddressLine,
+				Price = property.Price,
+				ListingDate = property.ListingDate,
+				ListingStatus = property.ListingStatus,
+				GalleryPath = property.GalleryPath?.Split(';').ToList() ?? new List<string>(),
+				GalleryFolder = property.Id.ToString().ToSHA256String(), // Assuming this method exists for generating folder name
+				ListedBy = users.FirstOrDefault(u => u.Id == property.AgentId)?.UserName
+			}).ToList();
+
+			return View(propertyList);
 		}
+
 
 		[HttpGet]
         public async Task<IActionResult> CreateUser()
@@ -202,6 +226,56 @@ namespace webapp.Controllers
 
 			TempData["Message"] = "User deleted successfully!";
 			return RedirectToAction(nameof(UserList));
+		}
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> BlockProperty(int id)
+		{
+			var property = await _context.Properties.FindAsync(id);
+			if (property == null)
+			{
+				TempData["Message"] = "Error: Property not found.";
+				return RedirectToAction(nameof(PropertyList));
+			}
+
+			if (property.ListingStatus == "Sold")
+			{
+				TempData["Message"] = "Error: Property cannot be blocked.";
+				return RedirectToAction(nameof(PropertyList));
+			}
+
+			property.ListingStatus = "Blocked";
+			_context.Properties.Update(property);
+			await _context.SaveChangesAsync();
+
+			TempData["Message"] = "Property blocked successfully!";
+			return RedirectToAction(nameof(PropertyList));
+		}
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> UnblockProperty(int id)
+		{
+			var property = await _context.Properties.FindAsync(id);
+			if (property == null)
+			{
+				TempData["Message"] = "Error: Property not found.";
+				return RedirectToAction(nameof(PropertyList));
+			}
+
+			if (property.ListingStatus != "Blocked")
+			{
+				TempData["Message"] = "Error: Property is not blocked.";
+				return RedirectToAction(nameof(PropertyList));
+			}
+
+			property.ListingStatus = "Active";
+			_context.Properties.Update(property);
+			await _context.SaveChangesAsync();
+
+			TempData["Message"] = "Property unblocked successfully!";
+			return RedirectToAction(nameof(PropertyList));
 		}
 
 	}
