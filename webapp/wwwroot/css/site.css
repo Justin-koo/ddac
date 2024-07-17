@@ -166,7 +166,7 @@
 }
 
 .sidebar-wrapper .menu .sidebar-item.active .sidebar-link {
-    background-color: #435ebe
+    background-color: #017efa;
 }
 
 .sidebar-wrapper .menu .sidebar-item.active .sidebar-link span {
@@ -199,7 +199,7 @@
 }
 
 .sidebar-wrapper .menu .submenu .submenu-item.active > a {
-    color: #435ebe;
+    color: #017efa;;
     font-weight: 700
 }
 
