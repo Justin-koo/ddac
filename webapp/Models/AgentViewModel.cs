@@ -18,13 +18,13 @@
 
 		public string State { get; set; }
 
-		public string FacebookLink { get; set; }
+		public string? FacebookLink { get; set; }
 
-		public string LinkedInLink { get; set; }
+		public string? LinkedInLink { get; set; }
 
-		public string XLink { get; set; }
+		public string? XLink { get; set; }
 
-		public string GoogleLink { get; set; }
+		public string? GoogleLink { get; set; }
 
 		public int PropertyCount { get; set; }
 

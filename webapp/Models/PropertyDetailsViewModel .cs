@@ -14,5 +14,6 @@ namespace webapp.Models
 
         public AgentViewModel Agent { get; set; }
         public InquiryModel? InquiryModel { get; set; }
+        public ReportProperty? ReportProperty { get; set; }
 	}
 }

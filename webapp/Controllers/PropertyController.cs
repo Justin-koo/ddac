@@ -8,6 +8,7 @@ using webapp.Data;
 using webapp.Models;
 using webapp.Services;
 using System.Text.Json;
+using System.Composition;
 
 
 namespace webapp.Controllers
@@ -152,7 +153,7 @@ namespace webapp.Controllers
 			if (ModelState.IsValid)
 			{
 				string tourType = Model.InquiryModel.IsInPerson ? "In-Person Tour" : "Virtual Tour via Video Chat";
-				string subject = "Confirm your email";
+				string subject = "Inquiry/Tour Request";
 				string emailBody = $@"
                     <!DOCTYPE html>
                     <html lang='en'>
@@ -210,6 +211,39 @@ namespace webapp.Controllers
 			}
 			TempData["Message"] = "Error";
 			return BadRequest("Invalid request data."); // Return with validation errors
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> ReportListing(string selectedReasonRadio, string propertyIdRadio)
+		{
+			if (string.IsNullOrEmpty(selectedReasonRadio))
+			{
+				TempData["Report Message"] = "Error! Please select a reason for reporting.";
+				return RedirectToAction("PropertyDetails", new { id = propertyIdRadio });
+			}
+
+			var userId = _userManager.GetUserId(User);
+
+			if (userId == null)
+			{
+				TempData["Report Message"] = "Error! You must be logged in to report a property.";
+				return RedirectToAction("PropertyDetails", new { id = propertyIdRadio });
+			}
+
+			// Save to database
+			var report = new ReportProperty
+			{
+				UserId = userId,
+				PropertyId = propertyIdRadio,
+				Reason = selectedReasonRadio,
+				ReportDate = DateTime.Now
+			};
+
+			_context.ReportProperty.Add(report);
+			await _context.SaveChangesAsync();
+
+			TempData["Report Message"] = "Thank you for your report. We will investigate the issue promptly.";
+			return RedirectToAction("PropertyDetails", new { id = propertyIdRadio });
 		}
 	}
 }
