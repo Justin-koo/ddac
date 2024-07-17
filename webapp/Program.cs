@@ -11,6 +11,7 @@ var connectionString = builder.Configuration.GetConnectionString("webappContextC
 
 builder.Services.AddDbContext<webappContext>(options => options.UseSqlServer(connectionString));
 
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddDefaultIdentity<webappUser>(options => options.SignIn.RequireConfirmedAccount = true)
 	.AddRoles<IdentityRole>()
 	.AddEntityFrameworkStores<webappContext>();
