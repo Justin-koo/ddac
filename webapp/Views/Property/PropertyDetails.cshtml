@@ -1180,26 +1180,25 @@
 										</a>
 									</li>
 									<li>
-										<form id="savePropertyForm" method="post">
-											@Html.AntiForgeryToken()
-											<input type="hidden" name="propertyId" value="@Model.Property.Id" />
-											@* <button type="submit" class="btn btn-light-danger">
-												<i class="fa-solid fa-heart-circle-check me-2"></i>Save
-											</button> *@
-
-											@if (isSaved == true)
-											{
-												<button class="btn btn-light-danger" type="submit" disabled>
-													<i class="fa-solid fa-heart-circle-check me-2" style="color:gray!important"></i>Saved
-												</button>
-											}
-											else
-											{
-												<button class="btn btn-light-danger" type="submit">
-													<i class="fa-solid fa-heart-circle-check me-2"></i>Save
-												</button>
-											}
-										</form>
+										@if (isSaved == true)
+										{
+											<form asp-action="JsonUnsaveProperty" asp-controller="User" asp-route-id="@property.Id" method="post" class="unsave-property-form" style="display:inline;">
+												@Html.AntiForgeryToken()
+													<button class="btn btn-light-danger" type="submit" >
+														<i class="fa-solid fa-heart-circle-xmark me-2"></i>Unsave
+													</button>
+											</form>
+										}
+										else
+										{
+											<form id="savePropertyForm" method="post">
+												@Html.AntiForgeryToken()
+												<input type="hidden" name="propertyId" value="@Model.Property.Id" />
+													<button class="btn btn-light-danger" type="submit">
+														<i class="fa-solid fa-heart-circle-check me-2"></i>Save
+													</button>
+											</form>
+										}
 									</li>
 								</ul>
 							</div>
@@ -1689,6 +1688,52 @@
 							timer: 1500
 						}).then(() => {
 							location.reload();
+						});
+					}
+				});
+			});
+
+			$('.unsave-property-form').submit(function (event) {
+				event.preventDefault(); // Prevent the form from submitting via the browser.
+
+				var form = $(this);
+				var url = form.attr('action');
+				var method = form.attr('method');
+				var token = $('input[name="__RequestVerificationToken"]', form).val(); // Get the anti-forgery token
+
+				$.ajax({
+					url: url,
+					type: method,
+					data: form.serialize(),
+					success: function (response) {
+						if (response.success) {
+							Swal.fire({
+								icon: 'success',
+								title: 'Success',
+								text: response.message,
+								showConfirmButton: false,
+								timer: 1500
+							}).then(() => {
+								// form.find('button').attr('disabled', 'disabled');
+								location.reload();
+							});
+						} else {
+							Swal.fire({
+								icon: 'error',
+								title: 'Error',
+								text: response.message,
+								showConfirmButton: false,
+								timer: 1500
+							});
+						}
+					},
+					error: function () {
+						Swal.fire({
+							icon: 'error',
+							title: 'Error',
+							text: 'An error occurred while processing your request.',
+							showConfirmButton: false,
+							timer: 1500
 						});
 					}
 				});

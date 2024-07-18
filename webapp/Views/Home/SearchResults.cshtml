@@ -236,24 +236,25 @@
                                                 <div class="rlhc-prt-location"><img src="~/img/pin.svg" width="16" class="me-1" alt="">@property.City, @property.State</div>
                                             </div>
                                             <div class="veshm-list-head-flex">
-                                                @* 											<button class="btn btn-like active" type="button"><i class="fa-solid fa-heart-circle-check"></i></button>
-                                        *@
-                                                <form class="savePropertyForm" method="post" data-property-id="@property.Id">
-                                                    @Html.AntiForgeryToken()
-                                                    <input type="hidden" name="propertyId" value="@property.Id" />
                                                     @if (isSaved == true)
                                                     {
-                                                        <button class="btn btn-like" type="submit" disabled>
-                                                            <i class="fa-solid fa-heart-circle-check" style="color:gray!important"></i>
+                                                    <form asp-action="JsonUnsaveProperty" asp-controller="User" asp-route-id="@property.Id" method="post" class="unsave-property-form" style="display:inline;">
+                                                        @Html.AntiForgeryToken()
+
+                                                        <button class="btn btn-like text-danger" type="submit">
+                                                            <i class="fa-solid fa-heart-circle-xmark"></i>
                                                         </button>
+                                                    </form>
                                                     }
                                                     else
                                                     {
-                                                        <button class="btn btn-like" type="submit">
-                                                            <i class="fa-solid fa-heart-circle-check"></i>
-                                                        </button>
+                                                        <form class="savePropertyForm" method="post" data-property-id="@property.Id">
+                                                            <input type="hidden" name="propertyId" value="@property.Id" />
+                                                            <button class="btn btn-like" type="submit">
+                                                                <i class="fa-solid fa-heart-circle-check"></i>
+                                                            </button>
+                                                        </form>
                                                     }
-                                                </form>
                                             </div>
                                         </div>
                                         <div class="veshm-list-middle">
@@ -393,6 +394,52 @@
                             timer: 1500
                         }).then(() => {
                             location.reload();
+                        });
+                    }
+                });
+            });
+
+            $('.unsave-property-form').submit(function (event) {
+                event.preventDefault(); // Prevent the form from submitting via the browser.
+
+                var form = $(this);
+                var url = form.attr('action');
+                var method = form.attr('method');
+                var token = $('input[name="__RequestVerificationToken"]', form).val(); // Get the anti-forgery token
+
+                $.ajax({
+                    url: url,
+                    type: method,
+                    data: form.serialize(),
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: response.message,
+                                showConfirmButton: false,
+                                timer: 1500
+                            }).then(() => {
+                                // form.find('button').attr('disabled', 'disabled');
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: response.message,
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                        }
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'An error occurred while processing your request.',
+                            showConfirmButton: false,
+                            timer: 1500
                         });
                     }
                 });
