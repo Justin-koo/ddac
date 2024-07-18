@@ -144,10 +144,15 @@
 											}
 											else if (property.ListingStatus == "Blocked")
 											{
+												
 												<span class="text-danger border border-danger-subtle bg-danger-subtle">@property.ListingStatus</span>
 											}
+
 										</div>
-										@* <div class="_leads_view_title"><span>Till 12 Oct</span></div> *@
+										@if (property.ListingStatus == "Blocked")
+										{
+											<div class="_leads_view_title"><span class="text-danger">Contact Admin</span></div>
+										}
 									</td>
 									<td>
 										<div class="_leads_action d-md-flex">

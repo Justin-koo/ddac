@@ -85,8 +85,8 @@ namespace webapp.Controllers
                 var role = roles.FirstOrDefault();
                 userList.Add(new UserViewModel
 				{
-					//Id = user.Id,
-					UserName = user.UserName,
+                    Id = user.Id,
+                    UserName = user.UserName,
 					Email = user.Email,
 					FullName = user.FullName,
                     SelectedRole = role
@@ -237,10 +237,10 @@ namespace webapp.Controllers
 
         //[Route("/admin/{username}")]
         [HttpGet]
-        public async Task<IActionResult> EditUser(string username)
+        public async Task<IActionResult> EditUser(string id)
         {
-            var user = await _userManager.FindByNameAsync(username);
-            if (user == null)
+			var user = await _userManager.FindByIdAsync(id);
+			if (user == null)
             {
                 TempData["Message"] = "Error: User not found.";
                 return RedirectToAction(nameof(UserList));
@@ -251,6 +251,7 @@ namespace webapp.Controllers
 
             var model = new UserEditModel
             {
+                Id = user.Id,
                 UserName = user.UserName,
                 Email = user.Email,
                 FullName = user.FullName, // Assuming you have a FullName property
@@ -273,14 +274,14 @@ namespace webapp.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await _userManager.FindByNameAsync(model.UserName);
-                if (user == null)
+				var user = await _userManager.FindByIdAsync(model.Id);
+				if (user == null)
                 {
                     TempData["Message"] = "Error: User not found.";
                     return RedirectToAction(nameof(UserList));
                 }
 
-                // Update other fields
+                //Update other fields
                 user.Email = model.Email;
                 user.PhoneNumber = model.PhoneNumber;
                 user.UserName = model.UserName;
@@ -341,6 +342,7 @@ namespace webapp.Controllers
 				}
 
 				await _userManager.UpdateAsync(user);
+                TempData["Message"] = "User edited successfully!";
 
                 return RedirectToAction(nameof(UserList));
             }

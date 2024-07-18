@@ -4,6 +4,9 @@ namespace webapp.Models.Admin
 {
     public class UserEditModel
     {
+        [Required]
+        public string Id { get; set; }
+
         [Required(ErrorMessage = "You must enter the username before submitting your form!")]
         [Display(Name = "Username")]
         public string UserName { get; set; }

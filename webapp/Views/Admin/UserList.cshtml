@@ -63,7 +63,7 @@
 							</td>
 							<td>
 								<div class="_leads_action d-md-flex">
-									<a asp-controller="Admin" asp-action="EditUser" asp-route-username="@user.UserName" class="_leads_item" role="button" aria-expanded="false">
+									<a asp-controller="Admin" asp-action="EditUser" asp-route-id="@user.Id" class="_leads_item" role="button" aria-expanded="false">
 										<i class="fas fa-edit"></i>
 									</a>
 									<form method="post" asp-action="DeleteUser" asp-route-username="@user.UserName">
