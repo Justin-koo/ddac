@@ -1113,7 +1113,7 @@
 										</div>
 									}
 									<p class="mb-4">If you believe that this property listing violates our community guidelines or contains incorrect information, we encourage you to report it. Your feedback is essential in helping us maintain a trustworthy and reliable platform.</p>
-									<button type="button" class="btn btn-danger font--medium" data-toggle="modal" data-target="#exampleModal">
+									<button type="button" class="btn btn-danger font--medium" data-bs-toggle="modal" data-bs-target="#exampleModal">
 									  Report Listing
 									</button>
 								</div>
@@ -1123,38 +1123,42 @@
 							<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
 								<div class="modal-dialog modal-dialog-centered" role="document">
 									<div class="modal-content">
-										<div class="modal-header">
-											<h5 class="modal-title" id="exampleModalLongTitle">Report Listing</h5>
-										</div>
+										<span class="mod-close" data-bs-dismiss="modal" aria-hidden="true"><i class="fas fa-close"></i></span>
 										<div class="modal-body">
-											<form id="reportForm" method="post" action="/Property/ReportListing">
-												<div class="custom-control custom-radio">
-													<input type="radio" id="customRadio1" name="customRadio" class="custom-control-input" value="Incorrect Information">
-													<label class="custom-control-label" for="customRadio1">Incorrect Information</label>
+											<div class="text-center">
+												<h2 class="mb-0">Report this listing?</h2>
+												<h4 class="mb-0">Select a reason</h4>
+											</div>
+											<form id="reportForm" class="mt-3" method="post" action="/Property/ReportListing">
+												<div class="form-check">
+													<input type="radio" id="customRadio1" name="customRadio" class="form-check-input" value="Incorrect Information">
+													<label class="form-check-label" for="customRadio1">Incorrect Information</label>
 												</div>
-												<div class="custom-control custom-radio">
-													<input type="radio" id="customRadio2" name="customRadio" class="custom-control-input" value="Fake Listing">
-													<label class="custom-control-label" for="customRadio2">Fake Listing</label>
+												<div class="form-check">
+													<input type="radio" id="customRadio2" name="customRadio" class="form-check-input" value="Fake Listing">
+													<label class="form-check-label" for="customRadio2">Fake Listing</label>
 												</div>
-												<div class="custom-control custom-radio">
-													<input type="radio" id="customRadio3" name="customRadio" class="custom-control-input" value="Inappropriate Content">
-													<label class="custom-control-label" for="customRadio3">Inappropriate Content</label>
+												<div class="form-check">
+													<input type="radio" id="customRadio3" name="customRadio" class="form-check-input" value="Inappropriate Content">
+													<label class="form-check-label" for="customRadio3">Inappropriate Content</label>
 												</div>
-												<div class="custom-control custom-radio">
-													<input type="radio" id="customRadio4" name="customRadio" class="custom-control-input" value="Duplicate Listing">
-													<label class="custom-control-label" for="customRadio4">Duplicate Listing</label>
+												<div class="form-check">
+													<input type="radio" id="customRadio4" name="customRadio" class="form-check-input" value="Duplicate Listing">
+													<label class="form-check-label" for="customRadio4">Duplicate Listing</label>
 												</div>
-												<div class="custom-control custom-radio">
-													<input type="radio" id="customRadio5" name="customRadio" class="custom-control-input" value="Outdated Information">
-													<label class="custom-control-label" for="customRadio5">Outdated Information</label>
+												<div class="form-check">
+													<input type="radio" id="customRadio5" name="customRadio" class="form-check-input" value="Outdated Information">
+													<label class="form-check-label" for="customRadio5">Outdated Information</label>
 												</div>
 												<input asp-for="ReportProperty.Reason" type="hidden" id="selectedReasonRadio" name="selectedReasonRadio">
 												<input asp-for="ReportProperty.PropertyId" type="hidden" id="propertyIdRadio" name="propertyIdRadio" value="@Model.Property.Id">
+											
+												<button type="button" class="btn w-100 btn-danger mt-3">Report</button>
 											</form>
 										</div>
-										<div class="modal-footer">
+										@* <div class="modal-footer">
 											<button type="button" onclick="submitReportForm()" class="btn btn-danger col mx-3">Report</button>
-										</div>
+										</div> *@
 									</div>
 								</div>
 							</div>
@@ -1418,7 +1422,7 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/pickadate.js/3.6.4/compressed/picker.date.js"></script>
 
 	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+	@* <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> *@
 
 	<script>
 		console.log("script working?")
