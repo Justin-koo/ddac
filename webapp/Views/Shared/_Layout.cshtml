@@ -97,7 +97,7 @@
 
 						</ul>
 
-												<partial name="_LoginPartial" />
+						<partial name="_LoginPartial" />
 
 					</div>
 				</nav>
@@ -110,7 +110,7 @@
 		@RenderBody()
 
 
-		@if (isAdmin != null)
+		@if (ViewData["IsAdminPage"] == null || !(bool)ViewData["IsAdminPage"])
 		{
 		<section class="bg-cover call-action-container dark" style="background:#065eb5 url('@Url.Content("~/img/footer-bg-dark.png")') no-repeat;">
 			<div class="container">

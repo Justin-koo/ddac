@@ -61,10 +61,6 @@
 
                     <div class="dash_user_menues">
                         <ul>
-                            @if (!isUser)
-                            {
-                                <li class=""><a href="dashboard.html"><i class="fa fa-tachometer-alt"></i>Dashboard<span class="notti_coun style-1">4</span></a></li>
-                            }
                             <li class="@(NavigationHelper.IsPageActive(ViewContext, "/Account/Manage/Index") ? "active" : "")"><a asp-area="Identity" asp-page="/Account/Manage/Index"><i class="fa fa-user-tie"></i>My Profile</a></li>
                             <li class="@(NavigationHelper.IsControllerAndActionActive(ViewContext, "User", "savePropertyList") ? "active" : "")"><a asp-controller="User" asp-action="savePropertyList" asp-route-username="@user.UserName"><i class="fa fa-tasks"></i>Saved Property</a></li>
                             @if (!isUser)
