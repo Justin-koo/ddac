@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis.Elfie.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Mono.TextTemplating;
 using webapp.Areas.Identity.Data;
 using webapp.Data;
 using webapp.Helpers;
@@ -228,31 +229,115 @@ namespace webapp.Controllers
             return View(model);
         }
 
-		[HttpGet]
-		public async Task<IActionResult> EditUser(String username)
-		{
-			var user = await _userManager.FindByNameAsync(username);
-			if (user == null)
-			{
-				TempData["Message"] = "Error: User not found.";
-				return RedirectToAction(nameof(UserList));
-			}
+        //[Route("/admin/{username}")]
+        [HttpGet]
+        public async Task<IActionResult> EditUser(string username)
+        {
+            var user = await _userManager.FindByNameAsync(username);
+            if (user == null)
+            {
+                TempData["Message"] = "Error: User not found.";
+                return RedirectToAction(nameof(UserList));
+            }
 
-			var model = new UserViewModel
-			{
-    //            UserName = user.UserName,
-    //            Email = user.Email,
-    //            FullName = user.Email,
-    //            PhoneNumber = ,
-				//Country
+            var roles = await _userManager.GetRolesAsync(user);
+            string selectedRole = roles.FirstOrDefault();
 
-
+            var model = new UserEditModel
+            {
+                UserName = user.UserName,
+                Email = user.Email,
+                FullName = user.FullName, // Assuming you have a FullName property
+                PhoneNumber = user.PhoneNumber, // Make sure the user object has a PhoneNumber property
+                Country = user.Country, // Assuming there is a Country property
+                Address = user.Address, // Assuming there is an Address property
+                State = user.State, // Assuming there is a State property
+                City = user.City, // Assuming there is a City property
+                Zip = user.Zip, // Assuming there is a Zip property
+                About = user.About,
+                SelectedRole = selectedRole
             };
 
-			return View(model);
-		}
+            return View(model);
+        }
 
-		[HttpPost]
+        [HttpPost]
+        public async Task<IActionResult> EditUser(UserEditModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByNameAsync(model.UserName);
+                if (user == null)
+                {
+                    TempData["Message"] = "Error: User not found.";
+                    return RedirectToAction(nameof(UserList));
+                }
+
+                // Update other fields
+                user.Email = model.Email;
+                user.PhoneNumber = model.PhoneNumber;
+                user.UserName = model.UserName;
+                user.Email = model.Email;
+                user.FullName = model.FullName;
+
+                var currentRoles = await _userManager.GetRolesAsync(user);
+                var currentPrimaryRole = currentRoles.FirstOrDefault();
+
+                if (model.SelectedRole != currentPrimaryRole)
+                {
+                    if (!string.IsNullOrEmpty(currentPrimaryRole))
+                    {
+                        var removeResult = await _userManager.RemoveFromRoleAsync(user, currentPrimaryRole);
+                        if (!removeResult.Succeeded)
+                        {
+                            ModelState.AddModelError("", "Failed to remove old role.");
+                            return View(model);
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(model.SelectedRole))
+                    {
+                        var addResult = await _userManager.AddToRoleAsync(user, model.SelectedRole);
+                        if (!addResult.Succeeded)
+                        {
+                            ModelState.AddModelError("", "Failed to add the user to the new role.");
+                            return View(model);
+                        }
+                    }
+                }
+
+                if (model.SelectedRole == "Agent")
+                {
+                    user.Country = model.Country;
+                    user.Address = model.Address;
+                    user.State = model.State;
+                    user.City = model.City; // Assuming there is a City property
+                    user.Zip = model.Zip; // Assuming there is a Zip property
+                    user.About = model.About;
+                }
+
+                if (model.ChangePassword && !string.IsNullOrWhiteSpace(model.Password))
+                {
+                    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                    var result = await _userManager.ResetPasswordAsync(user, token, model.Password);
+                    if (!result.Succeeded)
+                    {
+                        ModelState.AddModelError("", "Failed to change password.");
+                        return View(model);
+                    }
+                }
+
+                await _userManager.UpdateAsync(user);
+
+                return RedirectToAction(nameof(UserList));
+            }
+
+            return View(model);
+        }
+
+
+
+        [HttpPost]
 		public async Task<IActionResult> DeleteUser(string username)
 		{
 			var user = await _userManager.FindByNameAsync(username);
