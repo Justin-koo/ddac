@@ -13,5 +13,6 @@ namespace webapp.Models
 	{
 		public List<PropertyViewModel> HomepagePropertyViewModel { get; set; }
 		public List<StateViewModel> States { get; set; }
+		public List<AgentViewModel> Agents { get; set; }
 	}
 }

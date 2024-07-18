@@ -17,6 +17,7 @@ using webapp.Areas.Identity.Pages.Account.Manage;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using System.Drawing.Printing;
 using Mono.TextTemplating;
+using static NuGet.Packaging.PackagingConstants;
 
 
 namespace webapp.Controllers
@@ -24,14 +25,17 @@ namespace webapp.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-                private readonly webappContext _context;
+        private readonly webappContext _context;
+        private readonly UserManager<webappUser> _userManager;
+
         private const int PageSize = 10; // Number of items per page
 
 
-        public HomeController(ILogger<HomeController> logger, webappContext context)
+        public HomeController(ILogger<HomeController> logger, webappContext context, UserManager<webappUser> userManager)
         {
             _logger = logger;
             _context = context;
+            _userManager = userManager;
         }
 
         // public IActionResult Index()
@@ -82,10 +86,37 @@ namespace webapp.Controllers
 		        })
 		        .ToList();
 
-			var viewModel = new HomepageViewModel
+            var usersInRole = await _userManager.GetUsersInRoleAsync("Agent");
+            var userIds = usersInRole.Select(u => u.Id).ToList();
+            var query = _userManager.Users.Where(u => userIds.Contains(u.Id)).AsQueryable();
+
+            var agents = await query
+                .Select(u => new AgentViewModel
+                {
+                    //Id = u.Id,
+                    UserName = u.UserName,
+                    Name = u.FullName,
+                    //Email = u.Email,
+                    PhoneNumber = u.PhoneNumber,
+                    About = u.About,
+                    City = u.City,
+                    State = u.State,
+                    //FacebookLink = u.FacebookLink,
+                    //XLink = u.XLink,
+                    //LinkedInLink = u.LinkedInLink,
+                    //GoogleLink = u.GoogleLink,
+                    PropertyCount = _context.Properties.Count(p => p.AgentId == u.Id),
+                    Location = u.City + ", " + u.State,
+                    ProfilePicture = u.ProfilePicture,
+                })
+				.Take(8)
+                .ToListAsync();
+
+            var viewModel = new HomepageViewModel
 			{
 				HomepagePropertyViewModel = propertyViewModels,
-				States = topStates
+				States = topStates,
+				Agents = agents,
 			};
 
 			ViewData["Title"] = "My Property";

@@ -18,12 +18,21 @@
         [Required(ErrorMessage = "The property type is required.")]
         public string PropertyType { get; set; }  // Houses, Apartment, Villas, etc.
 
+        //      [Required(ErrorMessage = "The price is required.")]
+        //      [DataType(DataType.Currency, ErrorMessage = "The price must be a valid currency.")]
+        //      public decimal Price { get; set; }
+
+        //      [Required(ErrorMessage = "The area is required.")]
+        //public int Area { get; set; }
+
         [Required(ErrorMessage = "The price is required.")]
         [DataType(DataType.Currency, ErrorMessage = "The price must be a valid currency.")]
+        [Range(0.01, double.MaxValue, ErrorMessage = "The price must be greater than zero.")]
         public decimal Price { get; set; }
 
         [Required(ErrorMessage = "The area is required.")]
-		public int Area { get; set; }
+        [Range(1, int.MaxValue, ErrorMessage = "The area must be greater than zero.")]
+        public int Area { get; set; }
 
         [Required(ErrorMessage = "The number of bedrooms is required.")]
         public int Bedrooms { get; set; }
