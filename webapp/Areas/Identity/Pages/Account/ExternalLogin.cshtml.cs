@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using webapp.Areas.Identity.Data;
+using webapp.Services;
 
 namespace webapp.Areas.Identity.Pages.Account
 {
@@ -30,12 +31,14 @@ namespace webapp.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<webappUser> _emailStore;
         private readonly IEmailSender _emailSender;
         private readonly ILogger<ExternalLoginModel> _logger;
+        private readonly SendEmailService _emailService;
 
         public ExternalLoginModel(
             SignInManager<webappUser> signInManager,
             UserManager<webappUser> userManager,
             IUserStore<webappUser> userStore,
             ILogger<ExternalLoginModel> logger,
+            SendEmailService emailService,
             IEmailSender emailSender)
         {
             _signInManager = signInManager;
@@ -44,6 +47,7 @@ namespace webapp.Areas.Identity.Pages.Account
             _emailStore = GetEmailStore();
             _logger = logger;
             _emailSender = emailSender;
+            _emailService = emailService;
         }
 
         /// <summary>
@@ -174,8 +178,79 @@ namespace webapp.Areas.Identity.Pages.Account
                             values: new { area = "Identity", userId = userId, code = code },
                             protocol: Request.Scheme);
 
-                        await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                            $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                            string subject = "Confirm your email";
+                            string htmlBody = $@"
+                                <!DOCTYPE html>
+                                <html>
+                                <head>
+                                    <style>
+                                        .email-container {{
+                                            font-family: Arial, sans-serif;
+                                            color: #333;
+                                            max-width: 600px;
+                                            margin: 0 auto;
+                                            padding: 20px;
+                                            border: 1px solid #ddd;
+                                            border-radius: 5px;
+                                        }}
+                                        .email-header {{
+                                            background-color: #f7f7f7;
+                                            padding: 10px 20px;
+                                            border-bottom: 1px solid #ddd;
+                                            text-align: center;
+                                        }}
+                                        .email-body {{
+                                            padding: 20px;
+                                        }}
+                                        .email-footer {{
+                                            background-color: #f7f7f7;
+                                            padding: 10px 20px;
+                                            border-top: 1px solid #ddd;
+                                            text-align: center;
+                                            font-size: 12px;
+                                            color: #777;
+                                        }}
+                                        .confirm-button {{
+                                            display: inline-block;
+                                            padding: 10px 20px;
+                                            margin: 20px 0;
+                                            font-size: 16px;
+                                            font-weight: bold; /* Added font weight */
+                                            color: white !important; /* Font color */
+                                            background-color: #28a745;
+                                            text-decoration: none;
+                                            border-radius: 5px;
+                                        }}
+                                        .confirm-button:hover {{
+                                            background-color: #218838;
+                                        }}
+                                    </style>
+                                </head>
+                                <body>
+                                    <div class='email-container'>
+                                        <div class='email-header'>
+                                            <h2>Confirm Your Email</h2>
+                                        </div>
+                                        <div class='email-body'>
+                                            <p>Hi,</p>
+                                            <p>Thank you for registering with us. To complete your registration, please confirm your email address by clicking the button below:</p>
+                                            <a href='{callbackUrl}' class='confirm-button'>
+                                                Confirm Email
+                                            </a>
+                                            <p>If you did not create an account, please ignore this email.</p>
+                                            <p>Best regards,<br>DDAC Property Team</p>
+                                        </div>
+                                        <div class='email-footer'>
+                                            <p>&copy; 2023 DDAC Property. All rights reserved.</p>
+                                        </div>
+                                    </div>
+                                </body>
+                                </html>";
+                        //await _emailService.SendAsync(user.Email, "Confirm your email", $"Please confirm your account by <a href='{callbackUrl}'>clicking here</a>.");
+                        await _emailService.SendAsync(user.Email, subject, htmlBody);
+
+                        //await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
+                        //    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
                         // If account confirmation is required, we need to show the link if we don't have a real email sender
                         if (_userManager.Options.SignIn.RequireConfirmedAccount)
