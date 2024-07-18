@@ -178,7 +178,7 @@ namespace webapp.Areas.Identity.Pages.Account
                                 margin: 20px 0;
                                 font-size: 16px;
                                 font-weight: bold; /* Added font weight */
-                                color: white; /* Font color */
+                                color: white !important; /* Font color */
                                 background-color: #28a745;
                                 text-decoration: none;
                                 border-radius: 5px;

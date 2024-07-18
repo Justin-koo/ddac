@@ -1058,7 +1058,13 @@
 												<canvas id="mortgageChart"></canvas>
 											</div>
 										</div>
-										
+@* 										<form id="savePropertyForm" method="post">
+											@Html.AntiForgeryToken()
+											<input type="hidden" name="propertyId" value="@Model.Property.Id" />
+											<button type="submit" class="btn btn-light-danger">
+												<i class="fa-solid fa-heart-circle-check me-2"></i>Save
+											</button>
+										</form> *@
 										<div class="row align-items-end">
 											<div class="col-xl-12 col-lg-12 col-12 mb-4">
 												<p class="m-0 p-0 font--medium small">Mortgage Fee is <strong>included</strong> in the monthly payment.</p>
@@ -1178,9 +1184,226 @@
 									</li>
 								</ul>
 							</div>
-							<!-- Other code remains the same -->
-						</div>
+							
+							<div class="pg-side-groups">
+								
+								<div class="pg-side-block border">
+									<div class="pg-side-block-head">
+										<ul class="nav nav-pills" id="pills-tab" role="tablist">
+											<li class="nav-item" role="presentation">
+												<button class="nav-link active" id="pills-request-tab" data-bs-toggle="pill" data-bs-target="#pills-request" type="button" role="tab" aria-controls="pills-request" aria-selected="true">Request Info</button>
+											</li>
+											<li class="nav-item" role="presentation">
+												<button class="nav-link" id="pills-schedule-tab" data-bs-toggle="pill" data-bs-target="#pills-schedule" type="button" role="tab" aria-controls="pills-schedule" aria-selected="false">Schedule A Tour</button>
+											</li>
+										</ul>
+									</div>
+									<div class="pg-side-block-body">
+										<div class="tab-content" id="pills-tabContent">
+											<div class="tab-pane fade show active" id="pills-request" role="tabpanel" aria-labelledby="pills-request-tab" tabindex="0">
+												<div class="pg-side-block-head b-0">
+													<div class="pg-side-left">
+											<div class="pg-side-thumb"><img src="@Url.Content(Model.Agent.ProfilePicture != null ? "~/uploads/user/" + Model.Agent.ProfilePicture : "~/uploads/user/default-user.png")" class="img-fluid circle" alt="Agent Profile Picture"></div>
+													</div>
+													<div class="pg-side-right">
+														<div class="pg-side-right-caption">
+															<h4>@Model.Agent.UserName</h4>
+															<span><i class="fa-solid fa-location-dot me-2"></i>@Model.Agent.Location</span>
+														</div>
+													</div>
+												</div>
+												<div class="pg-side-block-info pt-0 pb-4">
+													@if (TempData["Message"] != null)
+													{
+														var statusMessageClass = TempData["Message"]?.ToString()?.StartsWith("Error") == true ? "danger" : "success";
+														<div class="alert alert-@statusMessageClass alert-dismissible" role="alert">
+															<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+															@TempData["Message"]
+														</div>
+													}
+													<form asp-controller="Property" asp-action="ScheduleTour" method="post">
+														<div class="form-group">
+															<label for="Name">Name*</label>
+															<input asp-for="InquiryModel.Name" type="text" class="form-control" placeholder="Your Name" />
+															<span class="text-danger" asp-validation-for="InquiryModel.Name"></span>
+														</div>
+														<div class="form-group">
+															<label for="Email">Email*</label>
+															<input asp-for="InquiryModel.Email" type="email" class="form-control" placeholder="Your Email" />
+															<span class="text-danger" asp-validation-for="InquiryModel.Email"></span>
+														</div>
+														<div class="form-group">
+															<label for="Phone">Phone No.*</label>
+															<input asp-for="InquiryModel.Phone" type="tel" class="form-control" placeholder="Your Phone" />
+															<span class="text-danger" asp-validation-for="InquiryModel.Phone"></span>
+														</div>
+														<div class="form-group">
+															<label for="Description">Description</label>
+															<textarea asp-for="InquiryModel.Description" class="form-control">I'm interested in this property.</textarea>
+															<span class="text-danger" asp-validation-for="InquiryModel.Description"></span>
+														</div>
+														<input asp-for="InquiryModel.Type" type="hidden" value="Info" />
+@* 														<input asp-for="InquiryModel.PropertyId" type="hidden" value="@Model.Property.Id" />
+														<input asp-for="InquiryModel.PropertyTitle" type="hidden" value="@Model.Property.Title" />
+														<input asp-for="InquiryModel.PropertyAddress" type="hidden"
+														   value="@property.AddressLine
+															,
+															@property.City
+															,
+															@property.State
+															,
+															@property.ZipCode" 
+														/> *@
+														<input asp-for="InquiryModel.PropertyLink" type="hidden" value="@Context.Request.GetDisplayUrl()" />
 
+
+														@* This is to fking reinput the missing value when submit form to the sohai idiot model *@
+															<input asp-for="Property.Id" type="hidden" value="@Model.Property.Id" />
+															<input asp-for="Property.Title" type="hidden" value="@Model.Property.Title" />
+															<input asp-for="Property.AddressLine" type="hidden" value="@Model.Property.AddressLine" />
+															<input asp-for="Property.City" type="hidden" value="@Model.Property.City" />
+															<input asp-for="Property.State" type="hidden" value="@Model.Property.State" />
+															<input asp-for="Property.ZipCode" type="hidden" value="@Model.Property.ZipCode" />
+															<input asp-for="Property.PropertyType" type="hidden" value="@Model.Property.PropertyType" />
+															<input asp-for="Property.Status" type="hidden" value="@Model.Property.Status" />
+															<input asp-for="Property.Description" type="hidden" value="@Model.Property.Description" />
+
+															<input asp-for="Agent.Id" type="hidden" value="@Model.Agent.Id" />
+															<input asp-for="Agent.UserName" type="hidden" value="@Model.Agent.UserName" />
+															<input asp-for="Agent.Email" type="hidden" value="@Model.Agent.Email" />
+															<input asp-for="Agent.City" type="hidden" value="@Model.Agent.City" />
+															<input asp-for="Agent.Name" type="hidden" value="@Model.Agent.Name" />
+															<input asp-for="Agent.About" type="hidden" value="@Model.Agent.About" />
+															<input asp-for="Agent.State" type="hidden" value="@Model.Agent.State" />
+															<input asp-for="Agent.XLink" type="hidden" value="@Model.Agent.XLink" />
+															<input asp-for="Agent.Location" type="hidden" value="@Model.Agent.Location" />
+															<input asp-for="Agent.GoogleLink" type="hidden" value="@Model.Agent.GoogleLink" />
+															<input asp-for="Agent.Properties" type="hidden" value="@Model.Agent.Properties" />
+															<input asp-for="Agent.PhoneNumber" type="hidden" value="@Model.Agent.PhoneNumber" />
+															<input asp-for="Agent.FacebookLink" type="hidden" value="@Model.Agent.FacebookLink" />
+															<input asp-for="Agent.LinkedInLink" type="hidden" value="@Model.Agent.LinkedInLink" />
+															<input asp-for="Agent.ProfilePicture" type="hidden" value="@Model.Agent.ProfilePicture" />
+														@* stupid af, waste me so many time debug until i want to suicide *@
+
+
+														<button type="submit" class="btn btn-theme font--medium full-width">Send Message</button>
+													</form>
+												</div>
+											</div>
+											
+											<div class="tab-pane fade" id="pills-schedule" role="tabpanel" aria-labelledby="pills-schedule-tab" tabindex="0">
+												<div class="pg-side-block-info pt-0 pb-4">
+													@if (TempData["Message"] != null)
+													{
+														var statusMessageClass = TempData["Message"]?.ToString()?.StartsWith("Error") == true ? "danger" : "success";
+														<div class="alert alert-@statusMessageClass alert-dismissible" role="alert">
+															<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+															@TempData["Message"]
+														</div>
+													}
+													<form asp-controller="Property" asp-action="ScheduleTour" method="post">
+														<div class="sides-widget-body simple-form mt-2">
+															<div class="form-group">
+																<input asp-for="InquiryModel.Date" type="text" id="choosedate" class="form-control" placeholder="Choose Date">
+															</div>
+															<div class="form-group">
+																<select asp-for="InquiryModel.Time" class="form-control">
+																	<option value="1">07:00 AM</option>
+																	<option value="2">08:00 AM</option>
+																	<option value="3">09:00 AM</option>
+																	<option value="4">10:00 AM</option>
+																	<option value="5">11:00 AM</option>
+																	<option value="6">12:00 PM</option>
+																	<option value="7">01:00 PM</option>
+																	<option value="8">02:00 PM</option>
+																	<option value="9">03:00 PM</option>
+																	<option value="10">04:00 PM</option>
+																	<option value="11">05:00 PM</option>
+																</select>
+															</div>
+
+															@* <div class="form-group">
+																<div class="col-6">
+																	<button onclick="setTourType(true) type="radio" class="btn-check" name="meeting" id="person-meeting" autocomplete="off" checked>
+																	<label class="full-width btn btn-outline-success" for="person-meeting"><i class="fa-regular fa-user me-2"></i>In Person</label>
+																</div> 
+																<div class="col-6">
+																	<button onclick="setTourType(false) type="radio" class="btn-check" name="meeting" id="video-meeting" autocomplete="off">
+																	<label class="full-width btn btn-outline-success" for="video-meeting"><i class="fa-solid fa-video me-2"></i>Video Chat</label>
+																</div>
+																<input name="IsInPerson" asp-for="InquiryModel.IsInPerson" type="hidden" />
+															</div> *@
+														<div class="form-group row">
+															<div class="col-6">
+														<input type="radio" class="btn-check" name="meeting" id="person-meeting" autocomplete="off" checked onclick="setTourType(true)">
+																<label class="full-width btn btn-outline-success" for="person-meeting"><i class="fa-regular fa-user me-2"></i>In Person</label>
+															</div>
+															<div class="col-6">
+														<input type="radio" class="btn-check" name="meeting" id="video-meeting" autocomplete="off" onclick="setTourType(false)">
+																<label class="full-width btn btn-outline-success" for="video-meeting"><i class="fa-solid fa-video me-2"></i>Video Chat</label>
+															</div>
+															<input name="IsInPerson" asp-for="InquiryModel.IsInPerson" type="hidden" />
+														</div>
+														</div>
+														<div class="sides-widget-body simple-form">
+															<div class="form-group">
+																<label for="Name">Name*</label>
+																<input asp-for="InquiryModel.Name" type="text" class="form-control" placeholder="Your Name" />
+															</div>
+															<div class="form-group">
+																<label for="Email">Email*</label>
+																<input asp-for="InquiryModel.Email" type="email" class="form-control" placeholder="Your Email" />
+															</div>
+															<div class="form-group">
+																<label for="Phone">Phone No.*</label>
+																<input asp-for="InquiryModel.Phone" type="tel" class="form-control" placeholder="Your Phone" />
+															</div>
+															<div class="form-group">
+																<label for="Description">Description</label>
+																<textarea asp-for="InquiryModel.Description" class="form-control">I'm interested in this property.</textarea>
+															</div>
+															<input asp-for="InquiryModel.Type" type="hidden" value="Tour" />
+															<input asp-for="InquiryModel.PropertyLink" type="hidden" value="@Context.Request.GetDisplayUrl()" />
+
+
+															@* This is to fking reinput the missing value when submit form to the sohai idiot model *@
+																<input asp-for="Property.Id" type="hidden" value="@Model.Property.Id" />
+																<input asp-for="Property.Title" type="hidden" value="@Model.Property.Title" />
+																<input asp-for="Property.AddressLine" type="hidden" value="@Model.Property.AddressLine" />
+																<input asp-for="Property.City" type="hidden" value="@Model.Property.City" />
+																<input asp-for="Property.State" type="hidden" value="@Model.Property.State" />
+																<input asp-for="Property.ZipCode" type="hidden" value="@Model.Property.ZipCode" />
+																<input asp-for="Property.PropertyType" type="hidden" value="@Model.Property.PropertyType" />
+																<input asp-for="Property.Status" type="hidden" value="@Model.Property.Status" />
+																<input asp-for="Property.Description" type="hidden" value="@Model.Property.Description" />
+
+																<input asp-for="Agent.Id" type="hidden" value="@Model.Agent.Id" />
+																<input asp-for="Agent.UserName" type="hidden" value="@Model.Agent.UserName" />
+																<input asp-for="Agent.Email" type="hidden" value="@Model.Agent.Email" />
+																<input asp-for="Agent.City" type="hidden" value="@Model.Agent.City" />
+																<input asp-for="Agent.Name" type="hidden" value="@Model.Agent.Name" />
+																<input asp-for="Agent.About" type="hidden" value="@Model.Agent.About" />
+																<input asp-for="Agent.State" type="hidden" value="@Model.Agent.State" />
+																<input asp-for="Agent.XLink" type="hidden" value="@Model.Agent.XLink" />
+																<input asp-for="Agent.Location" type="hidden" value="@Model.Agent.Location" />
+																<input asp-for="Agent.GoogleLink" type="hidden" value="@Model.Agent.GoogleLink" />
+																<input asp-for="Agent.Properties" type="hidden" value="@Model.Agent.Properties" />
+																<input asp-for="Agent.PhoneNumber" type="hidden" value="@Model.Agent.PhoneNumber" />
+																<input asp-for="Agent.FacebookLink" type="hidden" value="@Model.Agent.FacebookLink" />
+																<input asp-for="Agent.LinkedInLink" type="hidden" value="@Model.Agent.LinkedInLink" />
+																<input asp-for="Agent.ProfilePicture" type="hidden" value="@Model.Agent.ProfilePicture" />
+															@* stupid af, waste me so many time debug until i want to suicide *@
+
+															<button type="submit" class="btn btn-theme font--medium full-width">Schedule A Tour</button>
+														</div>	
+													</form>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</section>

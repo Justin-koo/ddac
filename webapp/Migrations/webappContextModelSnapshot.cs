@@ -159,30 +159,6 @@ namespace webapp.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("PropertySave", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("PropertyId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PropertyId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("PropertySave");
-                });
-
             modelBuilder.Entity("webapp.Areas.Identity.Data.webappUser", b =>
                 {
                     b.Property<string>("Id")
@@ -342,7 +318,7 @@ namespace webapp.Migrations
 
                     b.HasIndex("AgentId");
 
-                    b.ToTable("Properties");
+                    b.ToTable("Properties", (string)null);
                 });
 
             modelBuilder.Entity("webapp.Models.PropertyAddress", b =>
@@ -377,7 +353,7 @@ namespace webapp.Migrations
                     b.HasIndex("PropertyId")
                         .IsUnique();
 
-                    b.ToTable("PropertyAddresses");
+                    b.ToTable("PropertyAddresses", (string)null);
                 });
 
             modelBuilder.Entity("webapp.Models.PropertyDetail", b =>
@@ -413,7 +389,7 @@ namespace webapp.Migrations
                     b.HasIndex("PropertyId")
                         .IsUnique();
 
-                    b.ToTable("PropertyDetails");
+                    b.ToTable("PropertyDetails", (string)null);
                 });
 
             modelBuilder.Entity("webapp.Models.PropertyFeatures", b =>
@@ -438,7 +414,7 @@ namespace webapp.Migrations
 
                     b.HasKey("FeatureID");
 
-                    b.ToTable("Features");
+                    b.ToTable("Features", (string)null);
 
                     b.HasData(
                         new
@@ -604,6 +580,28 @@ namespace webapp.Migrations
                         });
                 });
 
+            modelBuilder.Entity("webapp.Models.PropertySave", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("PropertyId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("PropertySave", (string)null);
+                });
+
             modelBuilder.Entity("webapp.Models.PropertyUpdate", b =>
                 {
                     b.Property<int>("Id")
@@ -627,7 +625,7 @@ namespace webapp.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PropertyUpdate");
+                    b.ToTable("PropertyUpdate", (string)null);
                 });
 
             modelBuilder.Entity("webapp.Models.ReportProperty", b =>
@@ -655,7 +653,7 @@ namespace webapp.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ReportProperty");
+                    b.ToTable("ReportProperty", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -709,25 +707,6 @@ namespace webapp.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PropertySave", b =>
-                {
-                    b.HasOne("webapp.Models.Property", "Property")
-                        .WithMany()
-                        .HasForeignKey("PropertyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("webapp.Areas.Identity.Data.webappUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Property");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("webapp.Models.Property", b =>
                 {
                     b.HasOne("webapp.Areas.Identity.Data.webappUser", "Agent")
@@ -759,6 +738,17 @@ namespace webapp.Migrations
                         .IsRequired();
 
                     b.Navigation("Property");
+                });
+
+            modelBuilder.Entity("webapp.Models.PropertySave", b =>
+                {
+                    b.HasOne("webapp.Areas.Identity.Data.webappUser", "user")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("user");
                 });
 
             modelBuilder.Entity("webapp.Models.Property", b =>
