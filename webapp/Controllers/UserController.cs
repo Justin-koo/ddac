@@ -8,6 +8,7 @@ using webapp.Data;
 using webapp.Helpers;
 using webapp.Models;
 using Microsoft.CodeAnalysis.Elfie.Extensions;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 
 namespace webapp.Controllers
 {
@@ -27,7 +28,37 @@ namespace webapp.Controllers
 
         }
 
-        [Authorize]
+		//[HttpGet]
+		//public async Task<IActionResult> LoadAsync(webappUser user)
+		//{
+		//	var email = await _userManager.GetEmailAsync(user);
+		//	var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
+
+		//	//Email = email;
+
+		//	var Input = new AgentViewModel
+		//	{
+		//		PhoneNumber = phoneNumber,
+		//		UserName = user.UserName,
+		//		//FullName = user.FullName,
+		//		//Country = user.Country,
+		//		//Address = user.Address,
+		//		State = user.State,
+		//		City = user.City,
+		//		//Zip = user.Zip,
+		//		About = user.About,
+		//		FacebookLink = user.FacebookLink,
+		//		XLink = user.XLink,
+		//		LinkedInLink = user.LinkedInLink,
+		//		GoogleLink = user.GoogleLink,
+		//		ProfilePicture = user.ProfilePicture,
+		//		//Specialties = user.Specialties?.Split(',').ToList() ?? new List<string>(),
+		//		//Languages = user.Languages?.Split(',').ToList() ?? new List<string>(),
+		//	};
+		//	return View(Input);
+		//}
+
+		[Authorize]
         [HttpPost]
         [Route("account/upload-profile-pic")]
         public async Task<IActionResult> UploadUserPic(List<IFormFile> files)

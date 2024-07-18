@@ -49,11 +49,14 @@ namespace webapp.Areas.Identity.Pages.Account.Manage
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
 
-            [Required(ErrorMessage = "You must enter the username before submitting your form!")]
-            [Display(Name = "Username")]
-            public string UserName { get; set; }
+			[Required(ErrorMessage = "You must enter the username before submitting your form!")]
+			[StringLength(256, ErrorMessage = "You must enter the value between 6 - 256 chars", MinimumLength = 6)]
+			// Regular expression to allow letters, numbers, dots, underscores, and hyphens, but no spaces
+			[RegularExpression(@"^[a-zA-Z0-9._-]+$", ErrorMessage = "The username must only contain alphanumeric characters, dots, underscores, and hyphens.")]
+			[Display(Name = "Username")]
+			public string UserName { get; set; }
 
-            [Required(ErrorMessage = "You must enter the full name before submitting your form!")]
+			[Required(ErrorMessage = "You must enter the full name before submitting your form!")]
             [StringLength(256, ErrorMessage = "You must enter the value between 6 - 256 chars", MinimumLength = 6)]
             [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "The full name must only contain alphabetic characters and spaces.")]
             [Display(Name = "Full Name")]

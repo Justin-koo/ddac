@@ -134,7 +134,8 @@
 					{
 						if (property.ListingStatus == "Active")
 						{
-						<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+							var isSaved = property.SavedPropertyIds.Contains(property.Id);
+							<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
 							<div class="veshm-list-prty">
 								<div class="veshm-list-prty-figure">
 									<div class="veshm-list-img-slide">
@@ -180,9 +181,18 @@
 											<form class="savePropertyForm" method="post" data-property-id="@property.Id">
 												@Html.AntiForgeryToken()
 												<input type="hidden" name="propertyId" value="@property.Id" />
-												<button class="btn btn-like" type="submit">
-													<i class="fa-solid fa-heart-circle-check"></i>
-												</button>
+													@if (isSaved == true)
+													{
+														<button class="btn btn-like" type="submit" disabled>
+															<i class="fa-solid fa-heart-circle-check" style="color:gray!important"></i>
+														</button>
+													}
+													else
+													{
+														<button class="btn btn-like" type="submit">
+															<i class="fa-solid fa-heart-circle-check"></i>
+														</button>
+													}
 											</form>
 										</div>
 									</div>

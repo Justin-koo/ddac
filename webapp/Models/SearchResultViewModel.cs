@@ -28,6 +28,7 @@ namespace webapp.Models
         public List<string> statusList { get; set; } = new List<string>();
         public int ActivePropertiesCount { get; set; }
 
+        public List<int> SavedPropertyIds { get; set; }
 
         public List<PropertyFeatures> Features { get; set; } = new List<PropertyFeatures>();
         public decimal MinPrice { get; set; }

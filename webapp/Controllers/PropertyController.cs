@@ -44,6 +44,18 @@ namespace webapp.Controllers
 				return NotFound();
 			}
 
+			var savedPropertyIds = new List<int>();
+			var users = await _userManager.GetUserAsync(User);
+
+
+			if (users != null)
+			{
+				savedPropertyIds = await _context.PropertySave
+					.Where(ps => ps.UserId == users.Id)
+					.Select(ps => ps.PropertyId)
+					.ToListAsync();
+			}
+
 			var propertyViewModel = new PropertyViewModel
 			{
 				Id = property.Id,
@@ -65,7 +77,9 @@ namespace webapp.Controllers
 				BuildingAge = property.Detail.BuildingAge,
 				Garage = property.Detail.Garage,
 				Rooms = property.Detail.Rooms,
-				ListingStatus = property.ListingStatus
+				ListingStatus = property.ListingStatus,
+				SavedPropertyIds = savedPropertyIds,
+
 			};
 
 			var propertyUpdates = await _context.PropertyUpdate

@@ -33,5 +33,9 @@
 		public string Location { get; set; }
 
 		public string? ProfilePicture { get; set; }
+
+		public List<int> SavedPropertyIds { get; set; }
+
+
 	}
 }

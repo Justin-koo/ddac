@@ -79,5 +79,8 @@
 		public int Id { get; set; }
 
         public string? EncryptedId { get; set; }
-    }
+
+		public List<int> SavedPropertyIds { get; set; }
+
+	}
 }

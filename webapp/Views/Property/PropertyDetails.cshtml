@@ -34,6 +34,8 @@
 	var property_js = Newtonsoft.Json.JsonConvert.SerializeObject(property);
 	decimal? previousPrice = null; // Nullable to handle the first iteration where there is no previous price
 	var update_lenght = 0;
+
+	var isSaved = Model.Property.SavedPropertyIds.Contains(property.Id);
 }
 
 <!-- ============================ Hero Banner  Start================================== -->
@@ -1181,9 +1183,22 @@
 										<form id="savePropertyForm" method="post">
 											@Html.AntiForgeryToken()
 											<input type="hidden" name="propertyId" value="@Model.Property.Id" />
-											<button type="submit" class="btn btn-light-danger">
+											@* <button type="submit" class="btn btn-light-danger">
 												<i class="fa-solid fa-heart-circle-check me-2"></i>Save
-											</button>
+											</button> *@
+
+											@if (isSaved == true)
+											{
+												<button class="btn btn-light-danger" type="submit" disabled>
+													<i class="fa-solid fa-heart-circle-check me-2" style="color:gray!important"></i>Saved
+												</button>
+											}
+											else
+											{
+												<button class="btn btn-light-danger" type="submit">
+													<i class="fa-solid fa-heart-circle-check me-2"></i>Save
+												</button>
+											}
 										</form>
 									</li>
 								</ul>

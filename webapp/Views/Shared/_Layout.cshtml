@@ -178,11 +178,11 @@
 							<div class="footer-widget">
 								<h4 class="widget-title">The Highlights</h4>
 								<ul class="footer-menu">
-									<li><a href="JavaScript:Void(0);">Apartment</a></li>
-									<li><a href="JavaScript:Void(0);">Houses</a></li>
-									<li><a href="JavaScript:Void(0);">Restaurant</a></li>
-									<li><a href="JavaScript:Void(0);">Nightlife</a></li>
-									<li><a href="JavaScript:Void(0);">Villas</a></li>
+										<li><a asp-controller="Home" asp-action="SearchResults" asp-route-types="Apartment">Apartment</a></li>
+										<li><a asp-controller="Home" asp-action="SearchResults" asp-route-types="Houses">Houses</a></li>
+										<li><a asp-controller="Home" asp-action="SearchResults" asp-route-types="Restaurant">Restaurant</a></li>
+										<li><a asp-controller="Home" asp-action="SearchResults" asp-route-types="Nightlife">Nightlife</a></li>
+										<li><a asp-controller="Home" asp-action="SearchResults" asp-route-types="SaVillasle">Villas</a></li>
 								</ul>
 							</div>
 						</div>
@@ -192,7 +192,7 @@
 								<h4 class="widget-title">My Account</h4>
 								<ul class="footer-menu">
 									<li><a asp-area="Identity" asp-page="/Account/Manage/Index">My Profile</a></li>
-									<li><a asp-controller="User" asp-action="SavePropertyList">Favorites</a></li>
+										<li><a asp-controller="User" asp-action="savePropertyList" asp-route-username="@user.UserName">Favorites</a></li>
 								</ul>
 							</div>
 						</div>

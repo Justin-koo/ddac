@@ -132,6 +132,18 @@ namespace webapp.Controllers
 				return RedirectToAction("AgentList");
 			}
 
+			var savedPropertyIds = new List<int>();
+			var users = await _userManager.GetUserAsync(User);
+
+
+			if (users != null)
+			{
+				savedPropertyIds = await _context.PropertySave
+					.Where(ps => ps.UserId == users.Id)
+					.Select(ps => ps.PropertyId)
+					.ToListAsync();
+			}
+
 			var properties = await _context.Properties
 			.Where(p => p.AgentId == agent.Id)
 			.Select(p => new PropertyViewModel
@@ -151,6 +163,8 @@ namespace webapp.Controllers
 				BuildingAge = p.Detail.BuildingAge,
 				GalleryFolder = p.Id.ToString().ToSHA256String(),
                 ListingStatus = p.ListingStatus,
+				SavedPropertyIds = savedPropertyIds,
+
 			})
 			.ToListAsync();
 
@@ -179,7 +193,8 @@ namespace webapp.Controllers
         [HttpGet]
 		public async Task<IActionResult> PropertyDetails(int id)
         {
-			var property = await _context.Properties
+
+            var property = await _context.Properties
 			    .Include(p => p.Address)
 			    .Include(p => p.Detail)
 			    .FirstOrDefaultAsync(p => p.Id == id);
@@ -237,6 +252,7 @@ namespace webapp.Controllers
                 //PropertyCount = _context.Properties.Count(p => p.AgentId == u.Id),
                 Location = user.City + ", " + user.State,
                 ProfilePicture = user.ProfilePicture,
+
             };
 
 
@@ -246,7 +262,7 @@ namespace webapp.Controllers
 				Features = await _context.Features.ToListAsync(),
                 SelectedFeatures = [.. property.Detail.OtherFeatures.Split(";")],
                 PropertyUpdates = propertyUpdates,
-		    };
+			};
 
 			ViewData["Title"] = property.Title;
 			return View(viewModel);
@@ -432,7 +448,19 @@ namespace webapp.Controllers
                 return RedirectToAction(nameof(AgentPropertyList), new { username = currentUser.UserName });
             }
 
-            var user = await _userManager.Users.SingleOrDefaultAsync(u => u.UserName == username);
+			var savedPropertyIds = new List<int>();
+			var users = await _userManager.GetUserAsync(User);
+
+
+			if (users != null)
+			{
+				savedPropertyIds = await _context.PropertySave
+					.Where(ps => ps.UserId == users.Id)
+					.Select(ps => ps.PropertyId)
+					.ToListAsync();
+			}
+
+			var user = await _userManager.Users.SingleOrDefaultAsync(u => u.UserName == username);
 
             var properties = await _context.Properties
                 .Include(p => p.Address)
@@ -465,7 +493,9 @@ namespace webapp.Controllers
                 //Features = p.Detail.OtherFeatures?.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList() ?? new List<string>(),
                 GalleryFolder = p.Id.ToString().ToSHA256String(),
                 ListingStatus = p.ListingStatus,
-            }).ToList();
+				SavedPropertyIds = savedPropertyIds,
+
+			}).ToList();
 
             ViewData["Title"] = "My Property";
 			ViewData["User"] = user;
