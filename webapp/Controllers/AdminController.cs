@@ -317,18 +317,24 @@ namespace webapp.Controllers
                     user.About = model.About;
                 }
 
-                if (model.ChangePassword && !string.IsNullOrWhiteSpace(model.Password))
-                {
-                    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-                    var result = await _userManager.ChangePasswordAsync(user, token, model.Password);
-                    if (!result.Succeeded)
-                    {
-                        ModelState.AddModelError("", "Failed to change password.");
-                        return View(model);
-                    }
-                }
+				if (model.ChangePassword && !string.IsNullOrWhiteSpace(model.Password))
+				{
+					// Generate a password reset token
+					var token = await _userManager.GeneratePasswordResetTokenAsync(user);
 
-                await _userManager.UpdateAsync(user);
+					// Reset the password using the token
+					var resetPassResult = await _userManager.ResetPasswordAsync(user, token, model.Password);
+					if (!resetPassResult.Succeeded)
+					{
+						foreach (var error in resetPassResult.Errors)
+						{
+							ModelState.AddModelError("", error.Description);
+						}
+						return View(model);
+					}
+				}
+
+				await _userManager.UpdateAsync(user);
 
                 return RedirectToAction(nameof(UserList));
             }
