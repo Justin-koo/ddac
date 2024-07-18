@@ -50,6 +50,13 @@
 					</ul>
 				</li>
 
+				<li class="sidebar-item @(NavigationHelper.IsControllerAndActionActive(ViewContext, "Admin", "PropertyReport") ? "active" : "")">
+					<a asp-controller="Admin" asp-action="PropertyReport" class='sidebar-link'>
+						<i class="fa-solid fa-triangle-exclamation"></i>
+						<span>Property Report</span>
+					</a>
+				</li>
+
 				<li class="sidebar-item @(NavigationHelper.IsControllerAndActionActive(ViewContext, "Admin", "ChangePassword") ? "active" : "")">
 					<a asp-controller="Admin" asp-action="ChangePassword" class='sidebar-link'>
 						<i class="fa-solid fa-lock"></i>

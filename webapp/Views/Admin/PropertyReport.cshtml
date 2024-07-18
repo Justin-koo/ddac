@@ -1,0 +1,71 @@
+﻿@model IEnumerable<webapp.Models.Admin.ReportPropertyViewModel>
+
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Property Reports";
+}
+
+<div class="row align-items-center p-3 mt-3">
+    <div class="col-auto">
+        <h2>@ViewData["Title"]</h2>
+    </div>
+    <div class="ms-auto col-auto">
+        <div class="_prt_filt_add_new">
+            <a asp-controller="Admin" asp-action="CreateUser" class="prt_submit_link"><i class="fas fa-plus-circle"></i><span>Add User</span></a>
+        </div>
+    </div>
+</div>
+
+<div class="card p-3 mt-3 border-0 shadow-sm">
+	<div class="dashboard_property shadow-none bg-transparent">
+		<div class="table-responsive">
+			<table class="table" id="reportTable" width="100%">
+				<thead class="thead-dark">
+					<tr>
+						<th scope="col">Reason</th>
+						<th scope="col">Report Date</th>
+						<th scope="col">Property ID</th>
+						<th scope="col">Created By</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var report in Model)
+					{
+						<tr>
+							<td>@report.Reason</td>
+							<td>@report.ReportDate.ToString("dd MMM yyyy HH:mm")</td>
+                            <td>@report.PropertyId</td>
+                            <td>@report.UserId</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+</div>
+
+@section Scripts {
+	<script>
+		var table = $('#reportTable').DataTable({
+			order: [[1, 'desc']],
+			columnDefs: [
+				{
+					orderable: false,
+					searchable: false,
+					targets: -1,
+				},
+				{
+					orderSequence: ['asc', 'desc'],
+					targets: "_all"
+				}
+			],
+			initComplete: function (settings, json) {
+				$("#reportTable").wrap("<div style='overflow:auto; width:100%;position:relative;'></div>");
+				$('.dt-length').addClass("d-flex align-items-center")
+				$('.dt-length').find(".form-select").addClass("me-2")
+				$('.dt-length, .dt-info').closest(".row").addClass("mx-1")
+			},
+		});
+	</script>
+}

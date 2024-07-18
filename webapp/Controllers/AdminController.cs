@@ -205,8 +205,9 @@ namespace webapp.Controllers
                 State = model.State,
                 City = model.City,
                 Zip = model.Zip,
-                About = model.About
-            };
+                About = model.About,
+				EmailConfirmed = true
+			};
 
             var result = await _userManager.CreateAsync(user, model.Password);
 
@@ -443,6 +444,24 @@ namespace webapp.Controllers
 
             return View(model);
         }
+            
+		[HttpGet]
+		public async Task<IActionResult> PropertyReport()
+		{
+			var reports = await _context.ReportProperty.ToListAsync();
 
-    }
+			var reportViewModels = reports.Select(report => new ReportPropertyViewModel
+			{
+				// Assuming ReportPropertyViewModel has the same fields as ReportProperty for simplicity
+				Reason = report.Reason,
+				ReportDate = report.ReportDate,
+				PropertyId = report.PropertyId,
+				UserId = report.UserId
+				// Add other fields if there are any additional in the ViewModel
+			}).ToList();
+
+			return View(reportViewModels);
+		}
+
+	}
 }
