@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Composition;
 using System.Reflection.Emit;
 using webapp.Areas.Identity.Data;
 using webapp.Models;
@@ -19,6 +20,7 @@ public class webappContext : IdentityDbContext<webappUser>
     public DbSet<PropertyDetail> PropertyDetails { get; set; }
     public DbSet<PropertyFeatures> Features { get; set; }
 	public DbSet<PropertyUpdate> PropertyUpdate { get; set; }
+	public DbSet<ReportProperty> ReportProperty { get; set; }
 
 	protected override void OnModelCreating(ModelBuilder builder)
     {

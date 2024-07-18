@@ -5,7 +5,7 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace webapp.Models
 {
-    public class PropertyDetailsViewModel
+    public class PropertySubmitViewModel
     {
         public PropertyViewModel Property { get; set; }
         public List<PropertyFeatures>? Features { get; set; } = new List<PropertyFeatures>();

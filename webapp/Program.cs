@@ -7,6 +7,12 @@ using webapp.Helpers;
 using webapp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddAuthentication().AddGoogle(googleOptions =>
+{
+    googleOptions.ClientId = "447416333378-64fobuh34m3fjov20j229163uipua7sv.apps.googleusercontent.com";
+    googleOptions.ClientSecret = "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";
+});
+
 var connectionString = builder.Configuration.GetConnectionString("webappContextConnection") ?? throw new InvalidOperationException("Connection string 'webappContextConnection' not found.");
 
 builder.Services.AddDbContext<webappContext>(options => options.UseSqlServer(connectionString));

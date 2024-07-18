@@ -24,7 +24,7 @@
 			<div class="col-lg-9 col-md-11 col-sm-12">
 				<div class="inner-banner-text text-center">
 					<h1 class="text-light">Discover A Beautiful<br>Place With Us</h1>
-					<p class="text-light">Would you explore nature paradise in the world, let't find the best property in California withus.</p>
+					<p class="text-light">Would you explore nature paradise in the world, let't find the best property in Malaysia with us.</p>
 				</div>
 				<div class="search-from-clasic mt-5">
 					<div class="hero-search-content">
@@ -152,8 +152,8 @@
 		<div class="row justify-content-center">
 			<div class="col-lg-8 col-md-10 text-center">
 				<div class="sec-heading center mb-4">
-					<h2>Recent Property in UK</h2>
-					<p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores</p>
+					<h2>Recent Property in Malaysia</h2>
+					<p>Explore the latest property listings in Malaysia, tailored to your needs and preferences. Find your perfect home today.</p>
 				</div>
 			</div>
 		</div>
@@ -165,16 +165,27 @@
 					{<!-- Single Property -->
 					<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
 						<div class="veshm-list-wraps">
-							<div class="veshm-type"><span>For @property.Status</span></div>
+							@if(property.Status == "Rent")
+							{
+								<div class="veshm-type">
+									<span>For @property.Status</span>
+								</div>
+							}
+							else if (property.Status == "Sale")
+							{
+								<div class="veshm-type fr-sale">
+									<span>For @property.Status</span>
+								</div>
+							}
 
 							<div class="veshm-list-thumb">
-								<button type="button" class="compare-btn"><i class="fa-solid fa-repeat"></i>Compare</button>
+@* 								<button type="button" class="compare-btn"><i class="fa-solid fa-repeat"></i>Compare</button> *@
 								<div class="veshm-list-img-slide">
 									<div class="veshm-list-click">
 										@if (property.GalleryPath.All(string.IsNullOrWhiteSpace))
 										{
 											<div>
-												<a asp-controller="Agent" asp-action="PropertyDetails" asp-route-id="@property.Id">
+												<a asp-controller="Property" asp-action="PropertyDetails" asp-route-id="@property.Id">
 													<img src="uploads/property/default/default_property.jpeg" class="slick-img mx-auto" alt="">
 												</a>
 											</div>
@@ -182,7 +193,7 @@
 										@foreach (var img in property.GalleryPath) {
 
 											<div>
-												<a asp-controller="Agent" asp-action="PropertyDetails" asp-route-id="@property.Id">
+												<a asp-controller="Property" asp-action="PropertyDetails" asp-route-id="@property.Id">
 													<img src="/uploads/property/@(property.GalleryFolder)/@img" class="slick-img mx-auto" alt="">
 												</a>
 											</div>
@@ -191,7 +202,7 @@
 								</div>
 							</div>
 							<div class="veshm-list-block">
-								<div class="veshm-tags trending"><span><i class="fa-solid fa-meteor"></i>Trending</span></div>
+								<div class="veshm-tags trending"><span><i class="fa-solid fa-meteor"></i>Recent</span></div>
 								<div class="veshm-list-head">
 									<div class="veshm-list-head-caption">
 										<div class="rlhc-price">
@@ -241,7 +252,7 @@
 			<div class="col-lg-8 col-md-10 text-center">
 				<div class="sec-heading center light">
 					<h2>We Provide Better Services For You</h2>
-					<p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores qui blanditiis praesentium.</p>
+					<p>Enhancing Your Real Estate Experience with Superior Services</p>
 				</div>
 			</div>
 		</div>
@@ -255,7 +266,7 @@
 					</div>
 					<div class="veshm-servs-box-caption">
 						<h4>Buy properties</h4>
-						<p>Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae qui blanditiis praesentium.</p>
+						<p>Explore a wide selection of properties at great prices. Whether you're looking for your dream home or a lucrative investment, find it here.</p>
 					</div>
 				</div>
 			</div>
@@ -267,7 +278,7 @@
 					</div>
 					<div class="veshm-servs-box-caption">
 						<h4>Sell Your House</h4>
-						<p>Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae qui blanditiis praesentium.</p>
+						<p>Get the best deal when selling your home. Our expert agents are dedicated to making the selling process smooth and profitable for you.</p>
 					</div>
 				</div>
 			</div>
@@ -279,7 +290,7 @@
 					</div>
 					<div class="veshm-servs-box-caption">
 						<h4>Find Mortgage</h4>
-						<p>Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae qui blanditiis praesentium.</p>
+						<p>Secure the best mortgage deals with ease. Our specialists are here to help you find flexible and affordable financing options.</p>
 					</div>
 				</div>
 			</div>
@@ -291,7 +302,7 @@
 					</div>
 					<div class="veshm-servs-box-caption">
 						<h4>High Quality</h4>
-						<p>Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae qui blanditiis praesentium.</p>
+						<p>Quality is at the heart of everything we do. We ensure that all our properties meet the highest standards to guarantee your satisfaction.</p>
 					</div>
 				</div>
 			</div>
@@ -303,7 +314,7 @@
 					</div>
 					<div class="veshm-servs-box-caption">
 						<h4>Friendly Price</h4>
-						<p>Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae qui blanditiis praesentium.</p>
+						<p>Affordability meets quality. Enjoy competitive pricing without compromising on the quality of your new home.</p>
 					</div>
 				</div>
 			</div>
@@ -315,7 +326,7 @@
 					</div>
 					<div class="veshm-servs-box-caption">
 						<h4>Easy Communication</h4>
-						<p>Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae qui blanditiis praesentium.</p>
+						<p>Experience hassle-free communication. Our team is committed to being responsive and transparent throughout your real estate journey.</p>
 					</div>
 				</div>
 			</div>
@@ -332,98 +343,34 @@
 		<div class="row justify-content-center">
 			<div class="col-lg-8 col-md-10 text-center">
 				<div class="sec-heading center">
-					<h2>Select Your City</h2>
-					<p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores</p>
+					<h2>Select Your State</h2>
+					<p>Choose Your State to Begin Your Real Estate Journey</p>
 				</div>
 			</div>
 		</div>
 
 		<div class="row g-xl-3 g-lg-3">
 
-			<div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12">
-				<div class="veshm-location-prt">
-					<div class="veshm-location-lists">32 Lists</div>
-					<a href="search-property.html" class="veshm-location-figure">
-						<img src="https://via.placeholder.com/650x850" class="img-fluid" alt="">
-					</a>
-					<div class="veshm-location-content">
-						<h4>California, USA</h4>
-						<div class="vesh-aget-rates">
-							<i class="fa-solid fa-star"></i>
-							<i class="fa-solid fa-star"></i>
-							<i class="fa-solid fa-star"></i>
-							<i class="fa-solid fa-star"></i>
-							<i class="fa-solid fa-star"></i>
-							<span class="resy-98">322 Reviews</span>
+			@foreach (var state in Model.States)
+			{
+				<div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12">
+					<div class="veshm-location-prt">
+						<div class="veshm-location-lists">@state.PropertyCount Lists</div>
+						<a href="search-property.html" class="veshm-location-figure">
+							<img src="~/uploads/state/kuala-lumpur.jfif" style="height: 425px; width: 325px; object-fit: cover" class="img-fluid" alt="">
+						</a>
+						<div class="veshm-location-content">
+							<h4>@state.State</h4>
+							<span class="resy-98">Malaysia</span>
 						</div>
 					</div>
 				</div>
-			</div>
-
-			<div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12">
-				<div class="veshm-location-prt">
-					<div class="veshm-location-lists">22 Lists</div>
-					<a href="search-property.html" class="veshm-location-figure">
-						<img src="https://via.placeholder.com/650x850" class="img-fluid" alt="">
-					</a>
-					<div class="veshm-location-content">
-						<h4>Denver City, USA</h4>
-						<div class="vesh-aget-rates">
-							<i class="fa-solid fa-star"></i>
-							<i class="fa-solid fa-star"></i>
-							<i class="fa-solid fa-star"></i>
-							<i class="fa-solid fa-star"></i>
-							<i class="fa-solid fa-star"></i>
-							<span class="resy-98">410 Reviews</span>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12">
-				<div class="veshm-location-prt">
-					<div class="veshm-location-lists">52 Lists</div>
-					<a href="search-property.html" class="veshm-location-figure">
-						<img src="https://via.placeholder.com/650x850" class="img-fluid" alt="">
-					</a>
-					<div class="veshm-location-content">
-						<h4>Washington, USA</h4>
-						<div class="vesh-aget-rates">
-							<i class="fa-solid fa-star"></i>
-							<i class="fa-solid fa-star"></i>
-							<i class="fa-solid fa-star"></i>
-							<i class="fa-solid fa-star"></i>
-							<i class="fa-solid fa-star"></i>
-							<span class="resy-98">340 Reviews</span>
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12">
-				<div class="veshm-location-prt">
-					<div class="veshm-location-lists">42 Lists</div>
-					<a href="search-property.html" class="veshm-location-figure">
-						<img src="https://via.placeholder.com/650x850" class="img-fluid" alt="">
-					</a>
-					<div class="veshm-location-content">
-						<h4>Liverpool, UK</h4>
-						<div class="vesh-aget-rates">
-							<i class="fa-solid fa-star"></i>
-							<i class="fa-solid fa-star"></i>
-							<i class="fa-solid fa-star"></i>
-							<i class="fa-solid fa-star"></i>
-							<i class="fa-solid fa-star"></i>
-							<span class="resy-98">512 Reviews</span>
-						</div>
-					</div>
-				</div>
-			</div>
-
+			}
 		</div>
 
 		<div class="row">
 			<div class="col-lg-12 col-md-12 col-sm-12 text-center">
-				<a href="JavaScript:Void(0);" class="btn btn-outline-gray">Explore More Cities<i class="fa-regular fa-circle-right ms-2"></i></a>
+				<a href="JavaScript:Void(0);" class="btn btn-outline-gray">Explore More States<i class="fa-regular fa-circle-right ms-2"></i></a>
 			</div>
 		</div>
 
@@ -439,7 +386,7 @@
 			<div class="col-xl-4 col-lg-4 col-md-12">
 				<div class="sec-heading">
 					<h2 class="mb-3">Browse Agents</h2>
-					<p class="text-paragraph">At vero eos et accusamus et iusto odio more dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti.</p>
+					<p class="text-paragraph">Meet our trusted real estate agents. Discover professionals with the expertise and local knowledge to help you make the best property decisions.</p>
 				</div>
 			</div>
 
@@ -671,7 +618,7 @@
 			<div class="col-lg-7 col-md-10 text-center">
 				<div class="sec-heading center">
 					<h2>Good Reviews By Customers</h2>
-					<p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores</p>
+					<p>Read what our satisfied customers have to say. Our reviews showcase the dedication and excellent service provided by our agents.</p>
 				</div>
 			</div>
 		</div>

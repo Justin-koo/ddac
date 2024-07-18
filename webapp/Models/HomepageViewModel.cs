@@ -4,9 +4,14 @@ using System.ComponentModel.DataAnnotations;
 
 namespace webapp.Models
 {
-    public class HomepageViewModel
-    {
-        public List<PropertyViewModel> HomepagePropertyViewModel { get; set; }
-        // public List<Property> SimilarProperties { get; set; }
-    }
+	public class StateViewModel
+	{
+		public string State { get; set; }
+		public int PropertyCount { get; set; }
+	}
+	public class HomepageViewModel
+	{
+		public List<PropertyViewModel> HomepagePropertyViewModel { get; set; }
+		public List<StateViewModel> States { get; set; }
+	}
 }

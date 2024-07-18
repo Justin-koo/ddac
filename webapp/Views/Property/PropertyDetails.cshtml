@@ -1,11 +1,16 @@
-﻿@model PropertyDetailsViewModel
-
-@using System;
+﻿@using System;
 @using System.Security.Cryptography;
 @using System.Text;
+@using System.Text.Json;
+@using Microsoft.AspNetCore.Http.Extensions
+@using webapp.Models
+
+@model PropertyDetailsViewModel
 
 @{
 	ViewData["Title"] = "PropertyDetails";
+
+	var agent = Model.Agent;
 
 	var property = Model.Property;
 	var propertyIdString = property.Id.ToString(); // Ensure this is a string
@@ -28,6 +33,7 @@
 
 	var property_js = Newtonsoft.Json.JsonConvert.SerializeObject(property);
 	decimal? previousPrice = null; // Nullable to handle the first iteration where there is no previous price
+	var update_lenght = 0;
 }
 
 <!-- ============================ Hero Banner  Start================================== -->
@@ -36,6 +42,8 @@
 		height: 400px;
 	}
 </style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pickadate.js/3.6.4/compressed/themes/classic.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pickadate.js/3.6.4/compressed/themes/classic.date.css">
 
 <div class="featured_slick_gallery gray m-0">
 	<div class="featured_slick_gallery-slide">
@@ -127,7 +135,10 @@
 											<div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-6"><div class="ilio-icon-wrap"><div class="ilio-icon"><i class="fa-solid fa-bed"></i></div><div class="ilio-text">@property.Bedrooms Bedrooms</div></div></div>
 											<div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-6"><div class="ilio-icon-wrap"><div class="ilio-icon"><i class="fa-solid fa-bath"></i></div><div class="ilio-text">@property.Bathrooms Bathrooms</div></div></div>
 											<div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-6"><div class="ilio-icon-wrap"><div class="ilio-icon"><i class="fa-solid fa-layer-group"></i></div><div class="ilio-text">@property.Area sq ft</div></div></div>
-								<div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-6"><div class="ilio-icon-wrap"><div class="ilio-icon"><i class="fa-solid fa-building-wheat"></i></div><div class="ilio-text">@(!string.IsNullOrEmpty(property.BuildingAge) ? property.BuildingAge : "Building Age Not Provided")</div></div></div>
+											@if (!string.IsNullOrEmpty(property.BuildingAge))
+											{
+												<div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-6"><div class="ilio-icon-wrap"><div class="ilio-icon"><i class="fa-solid fa-building-wheat"></i></div><div class="ilio-text">@property.BuildingAge</div></div></div>
+											}
 											<div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-6"><div class="ilio-icon-wrap"><div class="ilio-icon"><i class="fa-solid fa-location-dot"></i></div><div class="ilio-text">@property.City</div></div></div>
 											<div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-6"><div class="ilio-icon-wrap"><div class="ilio-icon"><i class="fa-solid fa-building"></i></div><div class="ilio-text">@property.PropertyType</div></div></div>
 										</div>
@@ -166,25 +177,36 @@
 								</div>
 								<div id="featuresinfo" class="panel-collapse collapse" aria-labelledby="featuresinfo">
 									<div class="vesh-detail-bloc-body">
-										@foreach (var category in Model.Features
-												.Where(f => Model.SelectedFeatures.Contains(f.FeatureID.ToString()))
-												.GroupBy(f => f.Category)
-												.ToList())
+										@if (!string.IsNullOrWhiteSpace(string.Join(";", Model.SelectedFeatures)))
 										{
-											<div class="lvs-detail mb-4">
-												<div class="row">
-													<div class="col-xl-12 col-lg-12 col-md-12"><h6>@category.Key</h6></div>
+											@foreach (var category in Model.Features
+													.Where(f => Model.SelectedFeatures.Contains(f.FeatureID.ToString()))
+													.GroupBy(f => f.Category)
+													.ToList())
+											{
+												<div class="lvs-detail mb-4">
+													<div class="row">
+														<div class="col-xl-12 col-lg-12 col-md-12"><h6>@category.Key</h6></div>
+													</div>
+													<div class="row gy-3">
+														@foreach (var feature in category)
+														{
+															<div class="col-xl-4 col-lg-4 col-md-4 col-12">
+																<div class="lvs-caption"><i class="fa-solid @feature.IconClass"></i>@feature.FeatureName</div>
+															</div>
+														}
+													</div>
 												</div>
-												<div class="row gy-3">
-													@foreach (var feature in category)
-													{
-														<div class="col-xl-4 col-lg-4 col-md-4 col-12">
-															<div class="lvs-caption"><i class="fa-solid @feature.IconClass"></i>@feature.FeatureName</div>
-														</div>
-													}
-												</div>
+											}
+										}
+										else
+										{
+											Console.WriteLine("No Feature");
+											<div class="col-xl-4 col-lg-4 col-md-4 col-12">
+												<div class="lvs-caption">No features is selected for this property.</div>
 											</div>
 										}
+										
 										@* <div class="lvs-detail mb-4">
 											<div class="row">
 												<div class="col-xl-12 col-lg-12 col-md-12"><h6>Interior Details</h6></div>
@@ -334,25 +356,29 @@
 														</thead>
 														<tbody>
 															@{
-																var update_lenght = Model.PropertyUpdates.Count();
+																var salesUpdates = Model.PropertyUpdates.Where(u => u.Status == "Sale").OrderByDescending(u => u.UpdateDate).ToList();
+
+																update_lenght = salesUpdates.Count();
 																for (int i = 0;i < update_lenght; i++)
 																{
-																	Console.WriteLine(Model.PropertyUpdates.Count());
-																	Console.WriteLine("Index:  " + i);
-																	Console.WriteLine("Index + 1:  " + (i + 1));
-																	var update = Model.PropertyUpdates.OrderByDescending(u => u.UpdateDate).ToList()[i];
-																	decimal previous_price = 0;
-																	if (i + 1 < Model.PropertyUpdates.Count())
+																	var update = salesUpdates[i];
+																	decimal previous_price_sale = 0;
+																	if (i + 1 < update_lenght)
 																	{
-																		Console.WriteLine("Inside");
-																		previous_price = Model.PropertyUpdates.OrderByDescending(u => u.UpdateDate).ToList()[(i + 1)].Price;										
+																		previous_price_sale = salesUpdates[(1 + i)].Price;
 																	}
+																	var priceChange = update.Price - previous_price_sale;
+																	var cssClass = priceChange > 0 ? "text-success" // price increased
+																						: priceChange < 0 ? "text-danger" // price decreased
+																						: "text-body";                   // no change
 																	<tr>
 																		<td>@update.UpdateDate.ToString("dd MMM yyyy")</td>
 																		<td>@update.Status</td>
 																		<td>@String.Format("{0:C}", update.Price)</td>
-																		<td>@(previous_price != 0 ? String.Format("{0:C}",update.Price - previous_price) : "N/A")</td>
-																		<td>@Math.Round(update.Price / decimal.Parse(property.Area), 2).ToString("C") / Sqft</td>
+																		<td class="@cssClass">
+																			@((update.Price - previous_price_sale) != 0 ? String.Format("{0:C}", update.Price - previous_price_sale) : "N/A")
+																		</td>
+																		<td>@Math.Round(update.Price / property.Area, 2).ToString("C") / Sqft</td>
 																	</tr>
 																}
 															}
@@ -401,6 +427,9 @@
 															<tr>
 																<td colspan="5"><span class="font--medium text-success">Source: My State MLS</span></td>
 															</tr> *@
+															<tr>
+																<td colspan="5"><span class="font--medium text-success">Source: DDAC Property Database</span></td>
+															</tr>
 														</tbody>
 													</table>
 												</div>
@@ -411,15 +440,39 @@
 													<table class="table">
 														<thead>
 															<tr>
-																<th scope="col">Year</th>
-																<th scope="col">Tax Paid</th>
-																<th scope="col">Tax Assessment</th>
-																<th scope="col">Land</th>
-																<th scope="col">Improvement</th>
+																<th scope="col">Date</th>
+																<th scope="col">Event</th>
+																<th scope="col">Price</th>
+																<th scope="col">Change</th>
+																<th scope="col">Sq Ft Price</th>
 															</tr>
 														</thead>
 														<tbody>
-															<tr>
+															@{
+																var rentUpdates = Model.PropertyUpdates.Where(u => u.Status == "Rent").OrderByDescending(u => u.UpdateDate).ToList();
+																update_lenght = rentUpdates.Count();
+																for (int i = 0; i < update_lenght; i++)
+																{
+																	var update = rentUpdates[i];
+																	decimal previous_price_rent = 0; // invalid number to indicate no changes
+																	if (i + 1 < update_lenght)
+																	{
+																		previous_price_rent = rentUpdates[(i + 1)].Price;
+																	}
+																	var priceChange = update.Price - previous_price_rent;
+																	var cssClass = priceChange > 0 ? "text-success" // price increased
+																						: priceChange < 0 ? "text-danger" // price decreased
+																						: "text-body";                   // no change
+																	<tr>
+																		<td>@update.UpdateDate.ToString("dd MMM yyyy")</td>
+																		<td>@update.Status</td>
+																		<td>@String.Format("{0:C}", update.Price)</td>
+																		<td class="@cssClass">@((update.Price - previous_price_rent) != 0 ? String.Format("{0:C}", update.Price - previous_price_rent) : "N/A")</td>
+																		<td>@Math.Round(update.Price / property.Area, 2).ToString("C") / Sqft</td>
+																	</tr>
+																}
+															}
+															@* <tr>
 																<td>2017</td>
 																<td>$1700</td>
 																<td>$40700</td>
@@ -460,9 +513,9 @@
 																<td>$58000</td>
 																<td>$86,800</td>
 																<td>$0</td>
-															</tr>
+															</tr> *@
 															<tr>
-																<td colspan="5"><span class="font--medium text-success">Source: My State MLS</span></td>
+																<td colspan="5"><span class="font--medium text-success">Source: DDAC Property Database</span></td>
 															</tr>
 														</tbody>
 													</table>
@@ -608,12 +661,12 @@
 								</div>
 							</div> *@
 							
-							<!-- Nearby School -->
+							<!-- Google Map -->
 							<div class="vesh-detail-bloc style_2">
 								<div class="vesh-detail-bloc_header">
-									<a data-bs-toggle="collapse" data-parent="#schoolsinfo" data-bs-target="#schoolsinfo" aria-controls="schoolsinfo" href="javascript:void(0);" aria-expanded="false"><h4 class="property_block_title">Map</h4></a>
+									<a data-bs-toggle="collapse" data-parent="#schoolsinfo" data-bs-target="#schoolsinfo" aria-controls="schoolsinfo" href="javascript:void(0);" aria-expanded="true"><h4 class="property_block_title">Map</h4></a>
 								</div>
-								<div id="schoolsinfo" class="panel-collapse collapse" aria-labelledby="schoolsinfo">
+								<div id="schoolsinfo" class="panel-collapse collapse show" aria-labelledby="schoolsinfo">
 									<div id="map"></div>
 									<script>
 										var property_js = @Html.Raw(property_js);
@@ -763,7 +816,7 @@
 								</div> *@
 							</div>
 							
-							<!-- Contact More Agents -->
+							@* <!-- Contact More Agents -->
 							<div class="vesh-detail-bloc style_2">
 								<div class="vesh-detail-bloc_header">
 									<a data-bs-toggle="collapse" data-parent="#ctagent" data-bs-target="#ctagent" aria-controls="ctagent" href="javascript:void(0);" aria-expanded="false"><h4 class="property_block_title">Contact Other Agents</h4></a>
@@ -883,7 +936,7 @@
 										</div>
 									</div>
 								</div>
-							</div>
+							</div> *@
 							
 							@* <!-- Property Graph Detail -->
 							<div class="vesh-detail-bloc style_2">
@@ -1008,7 +1061,7 @@
 										
 										<div class="row align-items-end">
 											<div class="col-xl-12 col-lg-12 col-12 mb-4">
-												<p class="m-0 p-0 font--medium small">Borrowing <strong>$250,6800</strong> and repaying over 25 yers with a <strong>10 yesr fixed rates</strong>.</p>
+												<p class="m-0 p-0 font--medium small">Mortgage Fee is <strong>included</strong> in the monthly payment.</p>
 											</div>
 										</div>
 										
@@ -1038,389 +1091,67 @@
 									</div>
 								</div>
 							</div>
-							
-							
-							<!-- Nearby Other Places -->
+
+							@* Report property *@
 							<div class="vesh-detail-bloc style_2">
 								<div class="vesh-detail-bloc_header">
-									<a data-bs-toggle="collapse" data-parent="#otherplaces" data-bs-target="#otherplaces" aria-controls="otherplaces" href="javascript:void(0);" aria-expanded="false" class="clps"><h4 class="property_block_title">Nearby Others Places</h4></a>
+									<h4 class="property_block_title no-arrow">Issue With This Property Listing?</h4>
 								</div>
-								<div id="otherplaces" class="panel-collapse collapse" aria-labelledby="otherplaces">
-									<div class="vesh-detail-bloc-body">
-									
-										<ul class="nav nav-pills mb-3 small spacing lights" id="pills-list" role="tablist">
-											<li class="nav-item" role="presentation">
-												<button class="nav-link active" id="pills-highlights-tab" data-bs-toggle="pill" data-bs-target="#pills-highlights" type="button" role="tab" aria-controls="pills-highlights" aria-selected="true">Highlights</button>
-											</li>
-											<li class="nav-item" role="presentation">
-												<button class="nav-link" id="pills-grocery-tab" data-bs-toggle="pill" data-bs-target="#pills-grocery" type="button" role="tab" aria-controls="pills-grocery" aria-selected="false">Grocery</button>
-											</li>
-											<li class="nav-item" role="presentation">
-												<button class="nav-link" id="pills-food-tab" data-bs-toggle="pill" data-bs-target="#pills-food" type="button" role="tab" aria-controls="pills-food" aria-selected="false">Food & drink</button>
-											</li>
-											<li class="nav-item" role="presentation">
-												<button class="nav-link" id="pills-park-tab" data-bs-toggle="pill" data-bs-target="#pills-park" type="button" role="tab" aria-controls="pills-park" aria-selected="false">Parks</button>
-											</li>
-											<li class="nav-item" role="presentation">
-												<button class="nav-link" id="pills-fuel-tab" data-bs-toggle="pill" data-bs-target="#pills-fuel" type="button" role="tab" aria-controls="pills-fuel" aria-selected="false">Fuel Pump</button>
-											</li>
-											<li class="nav-item" role="presentation">
-												<button class="nav-link" id="pills-hospital-tab" data-bs-toggle="pill" data-bs-target="#pills-hospital" type="button" role="tab" aria-controls="pills-hospital" aria-selected="false">Hospitals</button>
-											</li>
-											<li class="nav-item" role="presentation">
-												<button class="nav-link" id="pills-services-tab" data-bs-toggle="pill" data-bs-target="#pills-services" type="button" role="tab" aria-controls="pills-services" aria-selected="false">Services</button>
-											</li>
-											<li class="nav-item" role="presentation">
-												<button class="nav-link" id="pills-shopping-tab" data-bs-toggle="pill" data-bs-target="#pills-shopping" type="button" role="tab" aria-controls="pills-shopping" aria-selected="false">Shoppings</button>
-											</li>
-										</ul>
-										
-										<div class="tab-content" id="pills-listContent">
-											<div class="tab-pane fade show active" id="pills-highlights" role="tabpanel" aria-labelledby="pills-highlights-tab" tabindex="0">
-												<div class="row g-4">
-													<div class="col-xl-6 col-lg-6 col-md-6 col-12">
-														<div class="othr-place-list">
-															<div class="othr-place-list-icon"><i class="fa-solid fa-martini-glass"></i></div>
-															<div class="othr-place-list-caption">
-																<div class="othr-place-list-title"><h5>Green Wood Fast Food</h5></div>
-																<div class="othr-place-list-subtitle"><span>3.47 Miles</span></div>
-															</div>
-														</div>
-													</div>
-													<div class="col-xl-6 col-lg-6 col-md-6 col-12">
-														<div class="othr-place-list">
-															<div class="othr-place-list-icon"><i class="fa-solid fa-basket-shopping"></i></div>
-															<div class="othr-place-list-caption">
-																<div class="othr-place-list-title"><h5>Zigar Smart Bazaar</h5></div>
-																<div class="othr-place-list-subtitle"><span>1.50 Miles</span></div>
-															</div>
-														</div>
-													</div>
-													<div class="col-xl-6 col-lg-6 col-md-6 col-12">
-														<div class="othr-place-list">
-															<div class="othr-place-list-icon"><i class="fa-solid fa-cart-shopping"></i></div>
-															<div class="othr-place-list-caption">
-																<div class="othr-place-list-title"><h5>Relience Smart Bazar</h5></div>
-																<div class="othr-place-list-subtitle"><span>2.47 Miles</span></div>
-															</div>
-														</div>
-													</div>
-													<div class="col-xl-6 col-lg-6 col-md-6 col-12">
-														<div class="othr-place-list">
-															<div class="othr-place-list-icon"><i class="fa-solid fa-bowl-food"></i></div>
-															<div class="othr-place-list-caption">
-																<div class="othr-place-list-title"><h5>Smart Pizza Hub</h5></div>
-																<div class="othr-place-list-subtitle"><span>3.47 Miles</span></div>
-															</div>
-														</div>
-													</div>
-													<div class="col-xl-6 col-lg-6 col-md-6 col-12">
-														<div class="othr-place-list">
-															<div class="othr-place-list-icon"><i class="fa-solid fa-square-parking"></i></div>
-															<div class="othr-place-list-caption">
-																<div class="othr-place-list-title"><h5>Gandhi Park Smarak</h5></div>
-																<div class="othr-place-list-subtitle"><span>3.47 Miles</span></div>
-															</div>
-														</div>
-													</div>
-													<div class="col-xl-6 col-lg-6 col-md-6 col-12">
-														<div class="othr-place-list">
-															<div class="othr-place-list-icon"><i class="fa-solid fa-suitcase-medical"></i></div>
-															<div class="othr-place-list-caption">
-																<div class="othr-place-list-title"><h5>D. P. Rao Hospital</h5></div>
-																<div class="othr-place-list-subtitle"><span>2.47 Miles</span></div>
-															</div>
-														</div>
-													</div>
-												</div>
-											</div>
-											
-											<div class="tab-pane fade" id="pills-grocery" role="tabpanel" aria-labelledby="pills-grocery-tab" tabindex="0">
-												<div class="row g-4">
-													<div class="col-xl-6 col-lg-6 col-md-6 col-12">
-														<div class="othr-place-list">
-															<div class="othr-place-list-icon"><i class="fa-solid fa-cart-shopping"></i></div>
-															<div class="othr-place-list-caption">
-																<div class="othr-place-list-title"><h5>Vijay Smart Bazar</h5></div>
-																<div class="othr-place-list-subtitle"><span>7.70 Miles</span></div>
-															</div>
-														</div>
-													</div>
-													<div class="col-xl-6 col-lg-6 col-md-6 col-12">
-														<div class="othr-place-list">
-															<div class="othr-place-list-icon"><i class="fa-solid fa-cart-shopping"></i></div>
-															<div class="othr-place-list-caption">
-																<div class="othr-place-list-title"><h5>Relience Smart Bazar</h5></div>
-																<div class="othr-place-list-subtitle"><span>2.47 Miles</span></div>
-															</div>
-														</div>
-													</div>
-													<div class="col-xl-6 col-lg-6 col-md-6 col-12">
-														<div class="othr-place-list">
-															<div class="othr-place-list-icon"><i class="fa-solid fa-cart-shopping"></i></div>
-															<div class="othr-place-list-caption">
-																<div class="othr-place-list-title"><h5>Qube Smart Mall</h5></div>
-																<div class="othr-place-list-subtitle"><span>3.10 Miles</span></div>
-															</div>
-														</div>
-													</div>
-													<div class="col-xl-6 col-lg-6 col-md-6 col-12">
-														<div class="othr-place-list">
-															<div class="othr-place-list-icon"><i class="fa-solid fa-cart-shopping"></i></div>
-															<div class="othr-place-list-caption">
-																<div class="othr-place-list-title"><h5>Raja International Mall</h5></div>
-																<div class="othr-place-list-subtitle"><span>2.10 Miles</span></div>
-															</div>
-														</div>
-													</div>
-												</div>
-											</div>
-											
-											<div class="tab-pane fade" id="pills-food" role="tabpanel" aria-labelledby="pills-food-tab" tabindex="0">
-												<div class="row g-4">
-													<div class="col-xl-6 col-lg-6 col-md-6 col-12">
-														<div class="othr-place-list">
-															<div class="othr-place-list-icon"><i class="fa-solid fa-bowl-food"></i></div>
-															<div class="othr-place-list-caption">
-																<div class="othr-place-list-title"><h5>Smart Pizza Hub</h5></div>
-																<div class="othr-place-list-subtitle"><span>3.47 Miles</span></div>
-															</div>
-														</div>
-													</div>
-													<div class="col-xl-6 col-lg-6 col-md-6 col-12">
-														<div class="othr-place-list">
-															<div class="othr-place-list-icon"><i class="fa-solid fa-bowl-food"></i></div>
-															<div class="othr-place-list-caption">
-																<div class="othr-place-list-title"><h5>Goli Burger Hutt</h5></div>
-																<div class="othr-place-list-subtitle"><span>3.00 Miles</span></div>
-															</div>
-														</div>
-													</div>
-													<div class="col-xl-6 col-lg-6 col-md-6 col-12">
-														<div class="othr-place-list">
-															<div class="othr-place-list-icon"><i class="fa-solid fa-bowl-food"></i></div>
-															<div class="othr-place-list-caption">
-																<div class="othr-place-list-title"><h5>Shukoon Fast Foods</h5></div>
-																<div class="othr-place-list-subtitle"><span>4.20 Miles</span></div>
-															</div>
-														</div>
-													</div>
-													<div class="col-xl-6 col-lg-6 col-md-6 col-12">
-														<div class="othr-place-list">
-															<div class="othr-place-list-icon"><i class="fa-solid fa-bowl-food"></i></div>
-															<div class="othr-place-list-caption">
-																<div class="othr-place-list-title"><h5>Ritika Fast Serve</h5></div>
-																<div class="othr-place-list-subtitle"><span>3.47 Miles</span></div>
-															</div>
-														</div>
-													</div>
-												</div>
-											</div>
-											
-											<div class="tab-pane fade" id="pills-park" role="tabpanel" aria-labelledby="pills-park-tab" tabindex="0">
-												<div class="row g-4">
-													<div class="col-xl-6 col-lg-6 col-md-6 col-12">
-														<div class="othr-place-list">
-															<div class="othr-place-list-icon"><i class="fa-solid fa-square-parking"></i></div>
-															<div class="othr-place-list-caption">
-																<div class="othr-place-list-title"><h5>Gandhi Park Smarak</h5></div>
-																<div class="othr-place-list-subtitle"><span>3.47 Miles</span></div>
-															</div>
-														</div>
-													</div>
-													<div class="col-xl-6 col-lg-6 col-md-6 col-12">
-														<div class="othr-place-list">
-															<div class="othr-place-list-icon"><i class="fa-solid fa-square-parking"></i></div>
-															<div class="othr-place-list-caption">
-																<div class="othr-place-list-title"><h5>Kritika International Park</h5></div>
-																<div class="othr-place-list-subtitle"><span>2.20 Miles</span></div>
-															</div>
-														</div>
-													</div>
-													<div class="col-xl-6 col-lg-6 col-md-6 col-12">
-														<div class="othr-place-list">
-															<div class="othr-place-list-icon"><i class="fa-solid fa-square-parking"></i></div>
-															<div class="othr-place-list-caption">
-																<div class="othr-place-list-title"><h5>Gyan Gayatri Park</h5></div>
-																<div class="othr-place-list-subtitle"><span>4.50 Miles</span></div>
-															</div>
-														</div>
-													</div>
-													<div class="col-xl-6 col-lg-6 col-md-6 col-12">
-														<div class="othr-place-list">
-															<div class="othr-place-list-icon"><i class="fa-solid fa-square-parking"></i></div>
-															<div class="othr-place-list-caption">
-																<div class="othr-place-list-title"><h5>Huze Chidiya Ghar</h5></div>
-																<div class="othr-place-list-subtitle"><span>1.47 Miles</span></div>
-															</div>
-														</div>
-													</div>
-												</div>
-											</div>
-											
-											<div class="tab-pane fade" id="pills-fuel" role="tabpanel" aria-labelledby="pills-fuel-tab" tabindex="0">
-												<div class="row g-4">
-													<div class="col-xl-6 col-lg-6 col-md-6 col-12">
-														<div class="othr-place-list">
-															<div class="othr-place-list-icon"><i class="fa-solid fa-gas-pump"></i></div>
-															<div class="othr-place-list-caption">
-																<div class="othr-place-list-title"><h5>Indian Musterd Oil</h5></div>
-																<div class="othr-place-list-subtitle"><span>4.40 Miles</span></div>
-															</div>
-														</div>
-													</div>
-													<div class="col-xl-6 col-lg-6 col-md-6 col-12">
-														<div class="othr-place-list">
-															<div class="othr-place-list-icon"><i class="fa-solid fa-gas-pump"></i></div>
-															<div class="othr-place-list-caption">
-																<div class="othr-place-list-title"><h5>Hindustan Petrolium</h5></div>
-																<div class="othr-place-list-subtitle"><span>2.47 Miles</span></div>
-															</div>
-														</div>
-													</div>
-													<div class="col-xl-6 col-lg-6 col-md-6 col-12">
-														<div class="othr-place-list">
-															<div class="othr-place-list-icon"><i class="fa-solid fa-gas-pump"></i></div>
-															<div class="othr-place-list-caption">
-																<div class="othr-place-list-title"><h5>Hamara Petrol Pumb</h5></div>
-																<div class="othr-place-list-subtitle"><span>5.00 Miles</span></div>
-															</div>
-														</div>
-													</div>
-												</div>
-											</div>
-											
-											<div class="tab-pane fade" id="pills-hospital" role="tabpanel" aria-labelledby="pills-hospital-tab" tabindex="0">
-												<div class="row g-4">
-													<div class="col-xl-6 col-lg-6 col-md-6 col-12">
-														<div class="othr-place-list">
-															<div class="othr-place-list-icon"><i class="fa-solid fa-suitcase-medical"></i></div>
-															<div class="othr-place-list-caption">
-																<div class="othr-place-list-title"><h5>Shanti Om Hospital</h5></div>
-																<div class="othr-place-list-subtitle"><span>1.17 Miles</span></div>
-															</div>
-														</div>
-													</div>
-													<div class="col-xl-6 col-lg-6 col-md-6 col-12">
-														<div class="othr-place-list">
-															<div class="othr-place-list-icon"><i class="fa-solid fa-suitcase-medical"></i></div>
-															<div class="othr-place-list-caption">
-																<div class="othr-place-list-title"><h5>D. P. Rao Hospital</h5></div>
-																<div class="othr-place-list-subtitle"><span>2.47 Miles</span></div>
-															</div>
-														</div>
-													</div>
-													<div class="col-xl-6 col-lg-6 col-md-6 col-12">
-														<div class="othr-place-list">
-															<div class="othr-place-list-icon"><i class="fa-solid fa-suitcase-medical"></i></div>
-															<div class="othr-place-list-caption">
-																<div class="othr-place-list-title"><h5>R. D. Verman Hospital</h5></div>
-																<div class="othr-place-list-subtitle"><span>2.30 Miles</span></div>
-															</div>
-														</div>
-													</div>
-												</div>
-											</div>
-											
-											<div class="tab-pane fade" id="pills-services" role="tabpanel" aria-labelledby="pills-services-tab" tabindex="0">
-												<div class="row g-4">
-													<div class="col-xl-6 col-lg-6 col-md-6 col-12">
-														<div class="othr-place-list">
-															<div class="othr-place-list-icon"><i class="fa-solid fa-scissors"></i></div>
-															<div class="othr-place-list-caption">
-																<div class="othr-place-list-title"><h5>High hair Cutting Salon</h5></div>
-																<div class="othr-place-list-subtitle"><span>2.10 Miles</span></div>
-															</div>
-														</div>
-													</div>
-												</div>
-											</div>
-											
-											<div class="tab-pane fade" id="pills-shopping" role="tabpanel" aria-labelledby="pills-shopping-tab" tabindex="0">
-												<div class="row g-4">
-													<div class="col-xl-6 col-lg-6 col-md-6 col-12">
-														<div class="othr-place-list">
-															<div class="othr-place-list-icon"><i class="fa-solid fa-basket-shopping"></i></div>
-															<div class="othr-place-list-caption">
-																<div class="othr-place-list-title"><h5>Green Hubble Mall</h5></div>
-																<div class="othr-place-list-subtitle"><span>2.50 Miles</span></div>
-															</div>
-														</div>
-													</div>
-													<div class="col-xl-6 col-lg-6 col-md-6 col-12">
-														<div class="othr-place-list">
-															<div class="othr-place-list-icon"><i class="fa-solid fa-basket-shopping"></i></div>
-															<div class="othr-place-list-caption">
-																<div class="othr-place-list-title"><h5>Zigar Smart Bazaar</h5></div>
-																<div class="othr-place-list-subtitle"><span>1.50 Miles</span></div>
-															</div>
-														</div>
-													</div>
-												</div>
-											</div>
+								<div class="mb-3">
+									@if (TempData["Report Message"] != null)
+									{
+										var statusMessageClass = TempData["report Message"]?.ToString()?.StartsWith("Error") == true ? "danger" : "success";
+										<div class="alert alert-@statusMessageClass alert-dismissible" role="alert">
+											<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+											@TempData["Report Message"]
 										</div>
+									}
+									<p class="mb-4">If you believe that this property listing violates our community guidelines or contains incorrect information, we encourage you to report it. Your feedback is essential in helping us maintain a trustworthy and reliable platform.</p>
+									<button type="button" class="btn btn-danger font--medium" data-toggle="modal" data-target="#exampleModal">
+									  Report Listing
+									</button>
+								</div>
+							</div>
 
+							@* Report Modal *@
+							<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+								<div class="modal-dialog modal-dialog-centered" role="document">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h5 class="modal-title" id="exampleModalLongTitle">Report Listing</h5>
+										</div>
+										<div class="modal-body">
+											<form id="reportForm" method="post" action="/Property/ReportListing">
+												<div class="custom-control custom-radio">
+													<input type="radio" id="customRadio1" name="customRadio" class="custom-control-input" value="Incorrect Information">
+													<label class="custom-control-label" for="customRadio1">Incorrect Information</label>
+												</div>
+												<div class="custom-control custom-radio">
+													<input type="radio" id="customRadio2" name="customRadio" class="custom-control-input" value="Fake Listing">
+													<label class="custom-control-label" for="customRadio2">Fake Listing</label>
+												</div>
+												<div class="custom-control custom-radio">
+													<input type="radio" id="customRadio3" name="customRadio" class="custom-control-input" value="Inappropriate Content">
+													<label class="custom-control-label" for="customRadio3">Inappropriate Content</label>
+												</div>
+												<div class="custom-control custom-radio">
+													<input type="radio" id="customRadio4" name="customRadio" class="custom-control-input" value="Duplicate Listing">
+													<label class="custom-control-label" for="customRadio4">Duplicate Listing</label>
+												</div>
+												<div class="custom-control custom-radio">
+													<input type="radio" id="customRadio5" name="customRadio" class="custom-control-input" value="Outdated Information">
+													<label class="custom-control-label" for="customRadio5">Outdated Information</label>
+												</div>
+												<input asp-for="ReportProperty.Reason" type="hidden" id="selectedReasonRadio" name="selectedReasonRadio">
+												<input asp-for="ReportProperty.PropertyId" type="hidden" id="propertyIdRadio" name="propertyIdRadio" value="@Model.Property.Id">
+											</form>
+										</div>
+										<div class="modal-footer">
+											<button type="button" onclick="submitReportForm()" class="btn btn-danger col mx-3">Report</button>
+										</div>
 									</div>
 								</div>
 							</div>
-							
-							@* <!-- Submit Reviews -->
-							<div class="vesh-detail-bloc style_2">
-								<div class="vesh-detail-bloc_header">
-									<h4 class="property_block_title no-arrow">Submit Review</h4>
-								</div>
-								<div class="panels">
-									<div class="vesh-detail-bloc-body">
-										<form class="simple-form">
-											<div class="row">
-												<div class="col-lg-6 col-md-6 col-sm-12">
-													<div class="form-group">
-														<label>Name</label>
-														<input type="text" class="form-control" placeholder="Your Name">
-													</div>
-												</div>
-												
-												<div class="col-lg-6 col-md-6 col-sm-12">
-													<div class="form-group">
-														<label>Email</label>
-														<input type="email" class="form-control" placeholder="Your eMail">
-													</div>
-												</div>
-												
-												<div class="col-lg-6 col-md-6 col-sm-12">
-													<div class="form-group">
-														<label>Phone No.</label>	
-														<input type="text" class="form-control" placeholder="Your Contact">
-													</div>
-												</div>
-												<div class="col-lg-6 col-md-6 col-sm-12">
-													<div class="form-group">
-														<label>Ratting</label>
-														<select class="form-control">
-															<option value="1">1 : Very Poor</option>
-															<option value="2">2 : Poor</option>
-															<option value="2">3 : Good</option>
-															<option value="2">4 : Very Good</option>
-															<option value="2">5 : Superb</option>
-														</select>
-													</div>
-												</div>
-												<div class="col-lg-12 col-md-12 col-sm-12">
-													<div class="form-group">
-														<label>Your Message</label>
-														<textarea class="form-control ht-80" placeholder="Messages"></textarea>
-													</div>
-												</div>
-												<div class="col-lg-12 col-md-12 col-sm-12">
-													<div class="form-group">
-														<button class="btn btn-theme" type="submit">Submit Review</button>
-													</div>
-												</div>
-											</div>
-										</form>
-									</div>
-								</div>
-							</div> *@
 							
 						</div>
 						<!-- property main detail -->
@@ -1457,99 +1188,196 @@
 											<div class="tab-pane fade show active" id="pills-request" role="tabpanel" aria-labelledby="pills-request-tab" tabindex="0">
 												<div class="pg-side-block-head b-0">
 													<div class="pg-side-left">
-														<div class="pg-side-thumb"><img src="https://via.placeholder.com/650x650" class="img-fluid circle" alt=""></div>
+											<div class="pg-side-thumb"><img src="@Url.Content(Model.Agent.ProfilePicture != null ? "~/uploads/user/" + Model.Agent.ProfilePicture : "~/uploads/user/default-user.png")" class="img-fluid circle" alt="Agent Profile Picture"></div>
 													</div>
 													<div class="pg-side-right">
 														<div class="pg-side-right-caption">
-															<h4>Ht. Mickle Hussy</h4>
-															<span><i class="fa-solid fa-location-dot me-2"></i>Liverpool, UK</span>
+															<h4>@Model.Agent.UserName</h4>
+															<span><i class="fa-solid fa-location-dot me-2"></i>@Model.Agent.Location</span>
 														</div>
 													</div>
 												</div>
 												<div class="pg-side-block-info pt-0 pb-4">
-													<div class="sides-widget-body simple-form">
+													@if (TempData["Message"] != null)
+													{
+														var statusMessageClass = TempData["Message"]?.ToString()?.StartsWith("Error") == true ? "danger" : "success";
+														<div class="alert alert-@statusMessageClass alert-dismissible" role="alert">
+															<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+															@TempData["Message"]
+														</div>
+													}
+													<form asp-controller="Property" asp-action="ScheduleTour" method="post">
 														<div class="form-group">
-															<label class="font--bold">Name*</label>
-															<input type="text" class="form-control" placeholder="Your Name">
+															<label for="Name">Name*</label>
+															<input asp-for="InquiryModel.Name" type="text" class="form-control" placeholder="Your Name" />
+															<span class="text-danger" asp-validation-for="InquiryModel.Name"></span>
 														</div>
 														<div class="form-group">
-															<label>Email*</label>
-															<input type="text" class="form-control" placeholder="Your Email">
+															<label for="Email">Email*</label>
+															<input asp-for="InquiryModel.Email" type="email" class="form-control" placeholder="Your Email" />
+															<span class="text-danger" asp-validation-for="InquiryModel.Email"></span>
 														</div>
 														<div class="form-group">
-															<label>Phone No.*</label>
-															<input type="text" class="form-control" placeholder="Your Phone">
+															<label for="Phone">Phone No.*</label>
+															<input asp-for="InquiryModel.Phone" type="tel" class="form-control" placeholder="Your Phone" />
+															<span class="text-danger" asp-validation-for="InquiryModel.Phone"></span>
 														</div>
 														<div class="form-group">
-															<label>Description</label>
-															<textarea class="form-control">I'm interested in this property.</textarea>
+															<label for="Description">Description</label>
+															<textarea asp-for="InquiryModel.Description" class="form-control">I'm interested in this property.</textarea>
+															<span class="text-danger" asp-validation-for="InquiryModel.Description"></span>
 														</div>
-														<button class="btn btn-theme font--medium full-width">Send Message</button>
-													</div>	
+														<input asp-for="InquiryModel.Type" type="hidden" value="Info" />
+@* 														<input asp-for="InquiryModel.PropertyId" type="hidden" value="@Model.Property.Id" />
+														<input asp-for="InquiryModel.PropertyTitle" type="hidden" value="@Model.Property.Title" />
+														<input asp-for="InquiryModel.PropertyAddress" type="hidden"
+														   value="@property.AddressLine
+															,
+															@property.City
+															,
+															@property.State
+															,
+															@property.ZipCode" 
+														/> *@
+														<input asp-for="InquiryModel.PropertyLink" type="hidden" value="@Context.Request.GetDisplayUrl()" />
+
+
+														@* This is to fking reinput the missing value when submit form to the sohai idiot model *@
+															<input asp-for="Property.Id" type="hidden" value="@Model.Property.Id" />
+															<input asp-for="Property.Title" type="hidden" value="@Model.Property.Title" />
+															<input asp-for="Property.AddressLine" type="hidden" value="@Model.Property.AddressLine" />
+															<input asp-for="Property.City" type="hidden" value="@Model.Property.City" />
+															<input asp-for="Property.State" type="hidden" value="@Model.Property.State" />
+															<input asp-for="Property.ZipCode" type="hidden" value="@Model.Property.ZipCode" />
+															<input asp-for="Property.PropertyType" type="hidden" value="@Model.Property.PropertyType" />
+															<input asp-for="Property.Status" type="hidden" value="@Model.Property.Status" />
+															<input asp-for="Property.Description" type="hidden" value="@Model.Property.Description" />
+
+															<input asp-for="Agent.Id" type="hidden" value="@Model.Agent.Id" />
+															<input asp-for="Agent.UserName" type="hidden" value="@Model.Agent.UserName" />
+															<input asp-for="Agent.Email" type="hidden" value="@Model.Agent.Email" />
+															<input asp-for="Agent.City" type="hidden" value="@Model.Agent.City" />
+															<input asp-for="Agent.Name" type="hidden" value="@Model.Agent.Name" />
+															<input asp-for="Agent.About" type="hidden" value="@Model.Agent.About" />
+															<input asp-for="Agent.State" type="hidden" value="@Model.Agent.State" />
+															<input asp-for="Agent.XLink" type="hidden" value="@Model.Agent.XLink" />
+															<input asp-for="Agent.Location" type="hidden" value="@Model.Agent.Location" />
+															<input asp-for="Agent.GoogleLink" type="hidden" value="@Model.Agent.GoogleLink" />
+															<input asp-for="Agent.Properties" type="hidden" value="@Model.Agent.Properties" />
+															<input asp-for="Agent.PhoneNumber" type="hidden" value="@Model.Agent.PhoneNumber" />
+															<input asp-for="Agent.FacebookLink" type="hidden" value="@Model.Agent.FacebookLink" />
+															<input asp-for="Agent.LinkedInLink" type="hidden" value="@Model.Agent.LinkedInLink" />
+															<input asp-for="Agent.ProfilePicture" type="hidden" value="@Model.Agent.ProfilePicture" />
+														@* stupid af, waste me so many time debug until i want to suicide *@
+
+
+														<button type="submit" class="btn btn-theme font--medium full-width">Send Message</button>
+													</form>
 												</div>
 											</div>
 											
 											<div class="tab-pane fade" id="pills-schedule" role="tabpanel" aria-labelledby="pills-schedule-tab" tabindex="0">
 												<div class="pg-side-block-info pt-0 pb-4">
-													<div class="sides-widget-body simple-form mt-2">
-														<div class="form-group">
-															<input type="text" id="choosedate" data-dd-opt-custom-class="datedrp" class="form-control" placeholder="Choose Date" >
+													@if (TempData["Message"] != null)
+													{
+														var statusMessageClass = TempData["Message"]?.ToString()?.StartsWith("Error") == true ? "danger" : "success";
+														<div class="alert alert-@statusMessageClass alert-dismissible" role="alert">
+															<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+															@TempData["Message"]
 														</div>
-														<div class="form-group">
-															<select class="form-control">
-																<option value="1">07:00 AM</option>
-																<option value="2">08:00 AM</option>
-																<option value="3">09:00 AM</option>
-																<option value="4">10:00 AM</option>
-																<option value="5">11:00 AM</option>
-																<option value="6">12:00 PM</option>
-																<option value="7">01:00 PM</option>
-																<option value="8">02:00 PM</option>
-																<option value="9">03:00 PM</option>
-																<option value="10">04:00 PM</option>
-																<option value="11">05:00 PM</option>
-															</select>
-														</div>
+													}
+													<form asp-controller="Property" asp-action="ScheduleTour" method="post">
+														<div class="sides-widget-body simple-form mt-2">
+															<div class="form-group">
+																<input asp-for="InquiryModel.Date" type="text" id="choosedate" class="form-control" placeholder="Choose Date">
+															</div>
+															<div class="form-group">
+																<select asp-for="InquiryModel.Time" class="form-control">
+																	<option value="1">07:00 AM</option>
+																	<option value="2">08:00 AM</option>
+																	<option value="3">09:00 AM</option>
+																	<option value="4">10:00 AM</option>
+																	<option value="5">11:00 AM</option>
+																	<option value="6">12:00 PM</option>
+																	<option value="7">01:00 PM</option>
+																	<option value="8">02:00 PM</option>
+																	<option value="9">03:00 PM</option>
+																	<option value="10">04:00 PM</option>
+																	<option value="11">05:00 PM</option>
+																</select>
+															</div>
 
-														<div class="form-group row">
-															<div class="col-6">
-																<input type="radio" class="btn-check" name="meeting" id="person-meeting" autocomplete="off" checked>
-																<label class="full-width btn btn-outline-success" for="person-meeting"><i class="fa-regular fa-user me-2"></i>In Person</label>
+															<div class="form-group row">
+																<div class="col-6">
+																	<button onclick="setTourType(true) type="radio" class="btn-check" name="meeting" id="person-meeting" autocomplete="off" checked>
+																	<label class="full-width btn btn-outline-success" for="person-meeting"><i class="fa-regular fa-user me-2"></i>In Person</label>
+																</div> 
+																<div class="col-6">
+																	<button onclick="setTourType(false) type="radio" class="btn-check" name="meeting" id="video-meeting" autocomplete="off">
+																	<label class="full-width btn btn-outline-success" for="video-meeting"><i class="fa-solid fa-video me-2"></i>Video Chat</label>
+																</div>
+																<input name="IsInPerson" asp-for="InquiryModel.IsInPerson" type="hidden" />
 															</div>
-															<div class="col-6">
-																<input type="radio" class="btn-check" name="meeting" id="video-meeting" autocomplete="off">
-																<label class="full-width btn btn-outline-success" for="video-meeting"><i class="fa-solid fa-video me-2"></i>Video Chat</label>
+														</div>
+														<div class="sides-widget-body simple-form">
+															<div class="form-group">
+																<label for="Name">Name*</label>
+																<input asp-for="InquiryModel.Name" type="text" class="form-control" placeholder="Your Name" />
 															</div>
-														</div>
-													</div>
-													<div class="sides-widget-body simple-form">
-														<div class="form-group">
-															<label class="font--bold">Name*</label>
-															<input type="text" class="form-control" placeholder="Your Name">
-														</div>
-														<div class="form-group">
-															<label>Email*</label>
-															<input type="text" class="form-control" placeholder="Your Email">
-														</div>
-														<div class="form-group">
-															<label>Phone No.*</label>
-															<input type="text" class="form-control" placeholder="Your Phone">
-														</div>
-														<div class="form-group">
-															<label>Description</label>
-															<textarea class="form-control">I'm interested in this property.</textarea>
-														</div>
-														<button class="btn btn-theme font--medium full-width">Send Message</button>
-													</div>												
+															<div class="form-group">
+																<label for="Email">Email*</label>
+																<input asp-for="InquiryModel.Email" type="email" class="form-control" placeholder="Your Email" />
+															</div>
+															<div class="form-group">
+																<label for="Phone">Phone No.*</label>
+																<input asp-for="InquiryModel.Phone" type="tel" class="form-control" placeholder="Your Phone" />
+															</div>
+															<div class="form-group">
+																<label for="Description">Description</label>
+																<textarea asp-for="InquiryModel.Description" class="form-control">I'm interested in this property.</textarea>
+															</div>
+															<input asp-for="InquiryModel.Type" type="hidden" value="Tour" />
+															<input asp-for="InquiryModel.PropertyLink" type="hidden" value="@Context.Request.GetDisplayUrl()" />
+
+
+															@* This is to fking reinput the missing value when submit form to the sohai idiot model *@
+																<input asp-for="Property.Id" type="hidden" value="@Model.Property.Id" />
+																<input asp-for="Property.Title" type="hidden" value="@Model.Property.Title" />
+																<input asp-for="Property.AddressLine" type="hidden" value="@Model.Property.AddressLine" />
+																<input asp-for="Property.City" type="hidden" value="@Model.Property.City" />
+																<input asp-for="Property.State" type="hidden" value="@Model.Property.State" />
+																<input asp-for="Property.ZipCode" type="hidden" value="@Model.Property.ZipCode" />
+																<input asp-for="Property.PropertyType" type="hidden" value="@Model.Property.PropertyType" />
+																<input asp-for="Property.Status" type="hidden" value="@Model.Property.Status" />
+																<input asp-for="Property.Description" type="hidden" value="@Model.Property.Description" />
+
+																<input asp-for="Agent.Id" type="hidden" value="@Model.Agent.Id" />
+																<input asp-for="Agent.UserName" type="hidden" value="@Model.Agent.UserName" />
+																<input asp-for="Agent.Email" type="hidden" value="@Model.Agent.Email" />
+																<input asp-for="Agent.City" type="hidden" value="@Model.Agent.City" />
+																<input asp-for="Agent.Name" type="hidden" value="@Model.Agent.Name" />
+																<input asp-for="Agent.About" type="hidden" value="@Model.Agent.About" />
+																<input asp-for="Agent.State" type="hidden" value="@Model.Agent.State" />
+																<input asp-for="Agent.XLink" type="hidden" value="@Model.Agent.XLink" />
+																<input asp-for="Agent.Location" type="hidden" value="@Model.Agent.Location" />
+																<input asp-for="Agent.GoogleLink" type="hidden" value="@Model.Agent.GoogleLink" />
+																<input asp-for="Agent.Properties" type="hidden" value="@Model.Agent.Properties" />
+																<input asp-for="Agent.PhoneNumber" type="hidden" value="@Model.Agent.PhoneNumber" />
+																<input asp-for="Agent.FacebookLink" type="hidden" value="@Model.Agent.FacebookLink" />
+																<input asp-for="Agent.LinkedInLink" type="hidden" value="@Model.Agent.LinkedInLink" />
+																<input asp-for="Agent.ProfilePicture" type="hidden" value="@Model.Agent.ProfilePicture" />
+															@* stupid af, waste me so many time debug until i want to suicide *@
+
+															<button type="submit" class="btn btn-theme font--medium full-width">Schedule A Tour</button>
+														</div>	
+													</form>
 												</div>
 											</div>
 										</div>
 									</div>
 								</div>
-							
 							</div>
 						</div>
-						
 					</div>
 				</div>
 			</section>
@@ -1557,10 +1385,27 @@
 
 @section Scripts{
 	<partial name="_ValidationScriptsPartial" />
+	<!-- Include CSS for Pickadate.js -->
+
+	<!-- Include JavaScript for Pickadate.js -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/pickadate.js/3.6.4/compressed/picker.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/pickadate.js/3.6.4/compressed/picker.date.js"></script>
+
 	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 	<script>
 		console.log("script working?")
 		$(document).ready(function () {
+			$('#choosedate').pickadate({
+				format: 'yyyy-mm-dd', // Change this to your preferred format
+				selectMonths: false,
+				selectYears: false,
+				today: 'Today',
+				clear: 'Clear selection',
+				close: ''
+			});
+
 			var ctx = document.getElementById('mortgageChart').getContext('2d');
 			var mortgageChart = new Chart(ctx, {
 				type: 'pie',
@@ -1720,5 +1565,17 @@
 				}, 3000);
 			});
 		});
+
+		function setTourType(isInPerson) {
+			document.querySelector('input[name="IsInPerson"]').value = isInPerson;
+		}
+
+		function submitReportForm() {
+			const selectedRadio = document.querySelector('input[name="customRadio"]:checked');
+			if (selectedRadio) {
+				document.getElementById('selectedReasonRadio').value = selectedRadio.value;
+			}
+			document.getElementById('reportForm').submit();
+		}
 	</script>
 }

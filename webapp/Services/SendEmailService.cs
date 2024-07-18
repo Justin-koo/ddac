@@ -16,13 +16,17 @@ namespace webapp.Services
 			_smtpSettings = smtpSettings.Value;
 		}
 
-		public async Task SendAsync(string recipientEmail, string subject, string htmlMessage)
+		public async Task SendAsync(string recipientEmail, string subject, string htmlMessage, string ccEmail = null)
 		{
 			var email = new MimeMessage();
 			email.From.Add(new MailboxAddress(_smtpSettings.SenderName, _smtpSettings.SenderEmail));
 			email.To.Add(MailboxAddress.Parse(recipientEmail));
 			email.Subject = subject;
 			email.Body = new TextPart(TextFormat.Html) { Text = htmlMessage };
+			if (!string.IsNullOrWhiteSpace(ccEmail))
+			{
+				email.Cc.Add(MailboxAddress.Parse(ccEmail));
+			}
 
 			using var smtp = new SmtpClient();
 			await smtp.ConnectAsync(_smtpSettings.Server, _smtpSettings.Port, SecureSocketOptions.StartTls);

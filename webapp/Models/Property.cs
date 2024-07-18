@@ -25,7 +25,7 @@ namespace webapp.Models
         public decimal Price { get; set; }
 
         [Required]
-        public string Area { get; set; }
+        public int Area { get; set; }
 
         [Required]
         public int Bedrooms { get; set; }
@@ -47,5 +47,15 @@ namespace webapp.Models
 
         [Required]
         public string ListingStatus { get; set; }
-    }
+
+		public Property DeepCopy()
+		{
+			return new Property
+			{
+				Id = this.Id, // Value type, copied directly
+				Status = new string(this.Status), // Immutable, but explicitly creating a new instance for demonstration
+				Price = this.Price, // Value type, copied directly
+			};
+		}
+	}
 }
