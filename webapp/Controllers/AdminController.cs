@@ -29,7 +29,7 @@ namespace webapp.Controllers
             _signInManager = signInManager;
             _roleManager = roleManager;
             _webHostEnvironment = webHostEnvironment;
-        }
+		}
 
 		[HttpGet]
 		public async Task<IActionResult> Index()
@@ -68,6 +68,7 @@ namespace webapp.Controllers
 			ViewBag.RecentlySoldProperties = recentlySoldProperties;
 			ViewBag.RecentAgents = recentAgents;
 
+			ViewData["IsAdminPage"] = true;
 			return View();
 		}
 
@@ -92,7 +93,8 @@ namespace webapp.Controllers
 				});
 			}
 
-            return View(userList);
+			ViewData["IsAdminPage"] = true;
+			return View(userList);
         }
 
 		[HttpGet]
@@ -117,6 +119,7 @@ namespace webapp.Controllers
 				ListedBy = users.FirstOrDefault(u => u.Id == property.AgentId)?.UserName
 			}).ToList();
 
+			ViewData["IsAdminPage"] = true;
 			return View(propertyList);
 		}
 
@@ -124,7 +127,8 @@ namespace webapp.Controllers
 		[HttpGet]
         public async Task<IActionResult> CreateUser()
         {
-            return View();
+			ViewData["IsAdminPage"] = true;
+			return View();
         }
 
         [HttpPost]
@@ -227,7 +231,8 @@ namespace webapp.Controllers
                 ModelState.AddModelError(string.Empty, error.Description);
             }
 
-            return View(model);
+			ViewData["IsAdminPage"] = true;
+			return View(model);
         }
 
         //[Route("/admin/{username}")]
@@ -259,7 +264,8 @@ namespace webapp.Controllers
                 SelectedRole = selectedRole
             };
 
-            return View(model);
+			ViewData["IsAdminPage"] = true;
+			return View(model);
         }
 
         [HttpPost]
@@ -339,7 +345,8 @@ namespace webapp.Controllers
                 return RedirectToAction(nameof(UserList));
             }
 
-            return View(model);
+			ViewData["IsAdminPage"] = true;
+			return View(model);
         }
 
 
@@ -387,6 +394,7 @@ namespace webapp.Controllers
 			await _context.SaveChangesAsync();
 
 			TempData["Message"] = "Property blocked successfully!";
+			ViewData["IsAdminPage"] = true;
 			return RedirectToAction(nameof(PropertyList));
 		}
 
@@ -412,12 +420,14 @@ namespace webapp.Controllers
 			await _context.SaveChangesAsync();
 
 			TempData["Message"] = "Property unblocked successfully!";
+			ViewData["IsAdminPage"] = true;
 			return RedirectToAction(nameof(PropertyList));
 		}
 
 		[HttpGet]
 		public IActionResult ChangePassword()
 		{
+			ViewData["IsAdminPage"] = true;
 			return View();
 		}
 
@@ -448,7 +458,8 @@ namespace webapp.Controllers
                 ModelState.AddModelError(string.Empty, error.Description);
             }
 
-            return View(model);
+			ViewData["IsAdminPage"] = true;
+			return View(model);
         }
 
         //[HttpGet]

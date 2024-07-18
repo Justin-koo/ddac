@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using webapp.Data;
 
@@ -11,9 +12,11 @@ using webapp.Data;
 namespace webapp.Migrations
 {
     [DbContext(typeof(webappContext))]
-    partial class webappContextModelSnapshot : ModelSnapshot
+    [Migration("20240718043954_AddIdentityToPropertySaveId")]
+    partial class AddIdentityToPropertySaveId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -318,7 +321,7 @@ namespace webapp.Migrations
 
                     b.HasIndex("AgentId");
 
-                    b.ToTable("Properties", (string)null);
+                    b.ToTable("Properties");
                 });
 
             modelBuilder.Entity("webapp.Models.PropertyAddress", b =>
@@ -353,7 +356,7 @@ namespace webapp.Migrations
                     b.HasIndex("PropertyId")
                         .IsUnique();
 
-                    b.ToTable("PropertyAddresses", (string)null);
+                    b.ToTable("PropertyAddresses");
                 });
 
             modelBuilder.Entity("webapp.Models.PropertyDetail", b =>
@@ -389,7 +392,7 @@ namespace webapp.Migrations
                     b.HasIndex("PropertyId")
                         .IsUnique();
 
-                    b.ToTable("PropertyDetails", (string)null);
+                    b.ToTable("PropertyDetails");
                 });
 
             modelBuilder.Entity("webapp.Models.PropertyFeatures", b =>
@@ -414,7 +417,7 @@ namespace webapp.Migrations
 
                     b.HasKey("FeatureID");
 
-                    b.ToTable("Features", (string)null);
+                    b.ToTable("Features");
 
                     b.HasData(
                         new
@@ -599,7 +602,7 @@ namespace webapp.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("PropertySave", (string)null);
+                    b.ToTable("PropertySave");
                 });
 
             modelBuilder.Entity("webapp.Models.PropertyUpdate", b =>
@@ -625,7 +628,7 @@ namespace webapp.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PropertyUpdate", (string)null);
+                    b.ToTable("PropertyUpdate");
                 });
 
             modelBuilder.Entity("webapp.Models.ReportProperty", b =>
@@ -653,7 +656,7 @@ namespace webapp.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ReportProperty", (string)null);
+                    b.ToTable("ReportProperty");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

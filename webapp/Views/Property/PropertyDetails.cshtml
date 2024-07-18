@@ -1058,7 +1058,13 @@
 												<canvas id="mortgageChart"></canvas>
 											</div>
 										</div>
-										
+@* 										<form id="savePropertyForm" method="post">
+											@Html.AntiForgeryToken()
+											<input type="hidden" name="propertyId" value="@Model.Property.Id" />
+											<button type="submit" class="btn btn-light-danger">
+												<i class="fa-solid fa-heart-circle-check me-2"></i>Save
+											</button>
+										</form> *@
 										<div class="row align-items-end">
 											<div class="col-xl-12 col-lg-12 col-12 mb-4">
 												<p class="m-0 p-0 font--medium small">Mortgage Fee is <strong>included</strong> in the monthly payment.</p>
@@ -1159,14 +1165,23 @@
 						
 						<!-- Property Sidebar -->
 						<div class="col-lg-4 col-md-12 col-sm-12">
-							
 							<!-- Like And Share -->
 							<div class="vesh-detail-bloc border">
 								<ul class="like_share_list">
 									<li>
-										<a href="JavaScript:Void(0);" data-bs-toggle="tooltip" data-bs-title="Copy Link" data-bs-placement="bottom" id="copyLink" class="btn btn-light-success"><i class="fa-solid fa-share-from-square me-2"></i>Share</a>
+										<a href="JavaScript:Void(0);" data-bs-toggle="tooltip" data-bs-title="Copy Link" data-bs-placement="bottom" id="copyLink" class="btn btn-light-success">
+											<i class="fa-solid fa-share-from-square me-2"></i>Share
+										</a>
 									</li>
-									<li><a href="JavaScript:Void(0);" class="btn btn-light-danger" data-toggle="tooltip" data-original-title="Save"><i class="fa-solid fa-heart-circle-check me-2"></i>Save</a></li>
+									<li>
+										<form id="savePropertyForm" method="post">
+											@Html.AntiForgeryToken()
+											<input type="hidden" name="propertyId" value="@Model.Property.Id" />
+											<button type="submit" class="btn btn-light-danger">
+												<i class="fa-solid fa-heart-circle-check me-2"></i>Save
+											</button>
+										</form>
+									</li>
 								</ul>
 							</div>
 							
@@ -1588,5 +1603,51 @@
 			}
 			document.getElementById('reportForm').submit();
 		}
+
+		$(document).ready(function () {
+			$('#savePropertyForm').on('submit', function (e) {
+				e.preventDefault();
+
+				$.ajax({
+					url: '@Url.Action("SaveProperty", "User")',
+					type: 'POST',
+					data: $(this).serialize(),
+					success: function (response) {
+						if (response.success) {
+							Swal.fire({
+								icon: 'success',
+								title: 'Success',
+								text: response.message,
+								showConfirmButton: false,
+								timer: 1500
+							}).then(() => {
+								location.reload();
+							});
+						} else {
+							Swal.fire({
+								icon: 'error',
+								title: 'Error',
+								text: response.message,
+								showConfirmButton: false,
+								timer: 1500
+							}).then(() => {
+								location.reload();
+							});
+						}
+					},
+					error: function () {
+						Swal.fire({
+							icon: 'error',
+							title: 'Error',
+							text: 'An error occurred while processing your request.',
+							showConfirmButton: false,
+							timer: 1500
+						}).then(() => {
+							location.reload();
+						});
+					}
+				});
+			});
+		});
 	</script>
 }
