@@ -6,7 +6,7 @@
 }
 
 <div class="dashboard-body">
-    <div class="row">
+    @* <div class="row">
         <div class="col-lg-12 col-md-12">
             <div class="_prt_filt_dash">
                 <div class="_prt_filt_dash_flex">
@@ -23,7 +23,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> *@
 
     @if (TempData["Message"] != null)
     {
@@ -76,15 +76,21 @@
                                             <div class="dash_prt_thumb">
                                                 @if (property.GalleryPath.Any())
                                                 {
-                                                    <img src="~/uploads/property/@property.GalleryFolder/@property.GalleryPath.First()" class="img-fluid" alt=" ">
+                                                    <a asp-controller="Property" asp-action="PropertyDetails" asp-route-id="@property.Id">
+                                                        <img src="~/uploads/property/@property.GalleryFolder/@property.GalleryPath.First()" class="slick-img mx-auto" alt=" ">
+
+                                                    </a>
                                                 }
                                                 else
                                                 {
-                                                    <img src="https://via.placeholder.com/1280x880" class="img-fluid" alt="">
+                                                    @* <img src="https://via.placeholder.com/1280x880" class="img-fluid" alt=""> *@
+                                                    <a asp-controller="Property" asp-action="PropertyDetails" asp-route-id="@property.Id">
+                                                        <img src="uploads/property/default/default_property.jpeg" class="slick-img mx-auto" alt="">
+                                                    </a>
                                                 }
                                             </div>
                                             <div class="dash_prt_caption">
-                                                <h5>@property.Title</h5>
+                                                <a asp-controller="Property" asp-action="PropertyDetails" asp-route-id="@property.Id" class="prt-link-detail">@property.Title</a>
                                                 <div class="prt_dashb_lot">@property.AddressLine</div>
                                                 <div class="prt_dash_rate"><span>@property.Price.ToString("C")</span></div>
                                             </div>

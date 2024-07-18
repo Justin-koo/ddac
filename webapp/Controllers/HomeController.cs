@@ -16,6 +16,7 @@ using webapp.Models;
 using webapp.Areas.Identity.Pages.Account.Manage;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using System.Drawing.Printing;
+using Mono.TextTemplating;
 
 
 namespace webapp.Controllers
@@ -108,7 +109,7 @@ namespace webapp.Controllers
 		}
 
 		[HttpGet]
-		public async Task<IActionResult> SearchResults(string query, string city, string status, string types, int bedrooms, int bathrooms, int garage, string builtYear, List<int> features, decimal? minPrice, decimal? maxPrice, int page = 1)
+		public async Task<IActionResult> SearchResults(string query, string city, string state, string status, string types, int bedrooms, int bathrooms, int garage, string builtYear, List<int> features, decimal? minPrice, decimal? maxPrice, int page = 1)
 		{
 			var propertiesQuery = _context.Properties
 				.Include(p => p.Address)
@@ -134,7 +135,12 @@ namespace webapp.Controllers
 				propertiesQuery = propertiesQuery.Where(p => p.Address.City == city);
 			}
 
-			if (!string.IsNullOrEmpty(status))
+            if (!string.IsNullOrEmpty(state))
+            {
+                propertiesQuery = propertiesQuery.Where(p => p.Address.State == state);
+            }
+
+            if (!string.IsNullOrEmpty(status))
 			{
 				propertiesQuery = propertiesQuery.Where(p => p.Status == status);
 			}
@@ -188,7 +194,12 @@ namespace webapp.Controllers
 				propertiesQuery = propertiesQuery.Where(p => p.Price <= maxPrice.Value);
 			}
 
-			var totalProperties = await propertiesQuery.CountAsync();
+            // Count active properties
+            int activePropertiesCount = await _context.Properties
+                .Where(p => p.ListingStatus == "Active")
+                .CountAsync();
+
+            var totalProperties = await propertiesQuery.CountAsync();
 			var properties = await propertiesQuery
 				.Skip((page - 1) * PageSize)
 				.Take(PageSize)
@@ -201,7 +212,7 @@ namespace webapp.Controllers
 					Id = p.Id,
 					Title = p.Title,
 					Status = p.Status,
-					PropertyType = p.PropertyType,
+                    PropertyType = p.PropertyType,
 					Price = p.Price,
 					Area = p.Area,
 					Bedrooms = p.Bedrooms,
@@ -224,6 +235,7 @@ namespace webapp.Controllers
 				TotalPages = (int)Math.Ceiling(totalProperties / (double)PageSize),
 				Query = query,
 				City = city,
+				state = state,
 				status = status,
 				types = types,
 				Bedrooms = bedrooms,
@@ -235,11 +247,13 @@ namespace webapp.Controllers
 				MinPrice = minPriceAvailable,
 				MaxPrice = maxPriceAvailable,
 				PriceRange = $"{minPrice};{maxPrice}",
-				Cities = await _context.Properties.Select(p => p.Address.City).Distinct().ToListAsync(),
+                
+                states = await _context.Properties.Select(p => p.Address.State).Distinct().ToListAsync(),
+                Cities = await _context.Properties.Select(p => p.Address.City).Distinct().ToListAsync(),
                 statusList = await _context.Properties.Select(p => p.Status).Distinct().ToListAsync(),
-                PropertyTypes = await _context.Properties.Select(p => p.PropertyType).Distinct().ToListAsync()
-			};
-
+                PropertyTypes = await _context.Properties.Select(p => p.PropertyType).Distinct().ToListAsync(),
+                ActivePropertiesCount = activePropertiesCount
+            };
 			return View(viewModel);
 		}
 

@@ -171,11 +171,19 @@
 												<div class="veshm-list-typess bg-danger-subtle text-danger"><span>For Sale</span></div>
 											}
 
-												<h5 class="rlhc-title-name verified"><a href="single-property-1.html" class="prt-link-detail">@property.Title</a></h5>
+												<h5 class="rlhc-title-name verified"><a asp-controller="Property" asp-action="PropertyDetails" asp-route-id="@property.Id" class="prt-link-detail">@property.Title</a></h5>
 												<div class="rlhc-prt-location"><img src="~/img/pin.svg" width="16" class="me-1" alt="">@property.City, @property.State</div>
 										</div>
 										<div class="veshm-list-head-flex">
-											<button class="btn btn-like active" type="button"><i class="fa-solid fa-heart-circle-check"></i></button>
+@* 											<button class="btn btn-like active" type="button"><i class="fa-solid fa-heart-circle-check"></i></button>
+ *@											
+											<form class="savePropertyForm" method="post" data-property-id="@property.Id">
+												@Html.AntiForgeryToken()
+												<input type="hidden" name="propertyId" value="@property.Id" />
+												<button class="btn btn-like" type="submit">
+													<i class="fa-solid fa-heart-circle-check"></i>
+												</button>
+											</form>
 										</div>
 									</div>
 									<div class="veshm-list-middle">
@@ -276,3 +284,56 @@
 
 	</div>
 </section>
+
+@section Scripts{
+	<script>
+		$(document).ready(function () {
+			$('.savePropertyForm').on('submit', function (e) {
+				e.preventDefault();
+
+				var form = $(this);
+				var propertyId = form.data('property-id');
+
+				$.ajax({
+					url: '@Url.Action("SaveProperty", "User")',
+					type: 'POST',
+					data: form.serialize(),
+					success: function (response) {
+						if (response.success) {
+							Swal.fire({
+								icon: 'success',
+								title: 'Success',
+								text: response.message,
+								showConfirmButton: false,
+								timer: 1500
+							}).then(() => {
+								location.reload();
+							});
+						} else {
+							Swal.fire({
+								icon: 'error',
+								title: 'Error',
+								text: response.message,
+								showConfirmButton: false,
+								timer: 1500
+							}).then(() => {
+								location.reload();
+							});
+						}
+					},
+					error: function () {
+						Swal.fire({
+							icon: 'error',
+							title: 'Error',
+							text: 'An error occurred while processing your request.',
+							showConfirmButton: false,
+							timer: 1500
+						}).then(() => {
+							location.reload();
+						});
+					}
+				});
+			});
+		});
+	</script>
+}
