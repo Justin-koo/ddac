@@ -1307,7 +1307,7 @@
 																</select>
 															</div>
 
-															<div class="form-group row">
+															@* <div class="form-group">
 																<div class="col-6">
 																	<button onclick="setTourType(true) type="radio" class="btn-check" name="meeting" id="person-meeting" autocomplete="off" checked>
 																	<label class="full-width btn btn-outline-success" for="person-meeting"><i class="fa-regular fa-user me-2"></i>In Person</label>
@@ -1317,7 +1317,18 @@
 																	<label class="full-width btn btn-outline-success" for="video-meeting"><i class="fa-solid fa-video me-2"></i>Video Chat</label>
 																</div>
 																<input name="IsInPerson" asp-for="InquiryModel.IsInPerson" type="hidden" />
+															</div> *@
+														<div class="form-group row">
+															<div class="col-6">
+														<input type="radio" class="btn-check" name="meeting" id="person-meeting" autocomplete="off" checked onclick="setTourType(true)">
+																<label class="full-width btn btn-outline-success" for="person-meeting"><i class="fa-regular fa-user me-2"></i>In Person</label>
 															</div>
+															<div class="col-6">
+														<input type="radio" class="btn-check" name="meeting" id="video-meeting" autocomplete="off" onclick="setTourType(false)">
+																<label class="full-width btn btn-outline-success" for="video-meeting"><i class="fa-solid fa-video me-2"></i>Video Chat</label>
+															</div>
+															<input name="IsInPerson" asp-for="InquiryModel.IsInPerson" type="hidden" />
+														</div>
 														</div>
 														<div class="sides-widget-body simple-form">
 															<div class="form-group">

@@ -32,6 +32,6 @@
 
 		public string Location { get; set; }
 
-		public string ProfilePicture { get; set; }
+		public string? ProfilePicture { get; set; }
 	}
 }

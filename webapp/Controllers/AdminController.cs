@@ -450,28 +450,128 @@ namespace webapp.Controllers
 
             return View(model);
         }
-            
-		[HttpGet]
-		public async Task<IActionResult> PropertyReport()
-		{
-			var currentUser = await _userManager.GetUserAsync(User);
-			var currentUserId = currentUser?.Id;
 
-			var reports = await _context.ReportProperty.ToListAsync();
-			var userIds = reports.Select(r => r.UserId).Distinct();
-			var users = await _userManager.Users.Where(u => userIds.Contains(u.Id)).ToDictionaryAsync(u => u.Id, u => u.UserName);
+        //[HttpGet]
+        //public async Task<IActionResult> PropertyReport()
+        //{
+        //	var currentUser = await _userManager.GetUserAsync(User);
+        //	var currentUserId = currentUser?.Id;
 
-			var reportViewModels = reports.Select(report => new ReportPropertyViewModel
-			{
-				Reason = report.Reason,
-				ReportDate = report.ReportDate,
-				PropertyId = report.PropertyId,
-				UserName = report.UserId == currentUserId ? "Me" : _userManager.FindByIdAsync(report.UserId).Result.UserName,
-				IsCurrentUser = report.UserId == currentUserId  // Set this property
-			}).ToList();
+        //	var reports = await _context.ReportProperty.ToListAsync();
+        //	var userIds = reports.Select(r => r.UserId).Distinct();
+        //	var users = await _userManager.Users.Where(u => userIds.Contains(u.Id)).ToDictionaryAsync(u => u.Id, u => u.UserName);
+
+        //	Console.WriteLine("Null before");
+
+        //	var reportViewModels = reports.Select(report => new ReportPropertyViewModel
+        //	{
+        //		Reason = report.Reason,
+        //		ReportDate = report.ReportDate,
+        //		PropertyId = report.PropertyId,
+        //		UserName = report.UserId == currentUserId ? "Me" : _userManager.FindByIdAsync(report.UserId).Result.UserName,
+        //		IsCurrentUser = report.UserId == currentUserId  // Set this property
+        //	}).ToList();
+
+        //          Console.WriteLine("Null now");
+
+        //          if (!reportViewModels.Any())
+        //	{
+        //		Console.WriteLine("Null");
+        //	}
+        //	else {
+        //              Console.WriteLine("Not Null");
+        //          }
+
+        //	return View(reportViewModels);
+        //}
 
 
-			return View(reportViewModels);
-		}
-	}
+        [HttpGet]
+        public async Task<IActionResult> PropertyReport()
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null)
+            {
+                return Unauthorized();
+            }
+
+            var currentUserId = currentUser.Id;
+
+            var reports = await _context.ReportProperty.ToListAsync();
+            if (reports == null || !reports.Any())
+            {
+                return View("NoReports"); // or any other appropriate action
+            }
+
+            var userIds = reports.Select(r => r.UserId).Distinct();
+            var users = await _userManager.Users.Where(u => userIds.Contains(u.Id)).ToDictionaryAsync(u => u.Id, u => u.UserName);
+
+            Console.WriteLine("Null before");
+
+            var reportViewModels = new List<ReportPropertyViewModel>();
+
+            foreach (var report in reports)
+            {
+                try
+                {
+                    if (report == null)
+                    {
+                        Console.WriteLine("Report is null");
+                        continue;
+                    }
+
+                    if (string.IsNullOrEmpty(report.UserId))
+                    {
+                        Console.WriteLine($"Report UserId is null or empty for PropertyId: {report.PropertyId}");
+                        continue;
+                    }
+
+                    string userName;
+                    if (report.UserId == currentUserId)
+                    {
+                        userName = "Me";
+                    }
+                    else if (users.ContainsKey(report.UserId))
+                    {
+                        userName = users[report.UserId];
+                    }
+                    else
+                    {
+                        var user = await _userManager.FindByIdAsync(report.UserId);
+                        userName = user?.UserName ?? "Unknown User";
+                    }
+
+                    reportViewModels.Add(new ReportPropertyViewModel
+                    {
+                        Reason = report.Reason,
+                        ReportDate = report.ReportDate,
+                        PropertyId = report.PropertyId,
+                        UserName = userName,
+                        IsCurrentUser = report.UserId == currentUserId
+                    });
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Exception occurred for Report with PropertyId: {report?.PropertyId}, UserId: {report?.UserId}. Exception: {ex}");
+                }
+            }
+
+            Console.WriteLine("Null now");
+
+            if (!reportViewModels.Any())
+            {
+                Console.WriteLine("ReportViewModels is empty");
+            }
+            else
+            {
+                Console.WriteLine($"ReportViewModels count: {reportViewModels.Count}");
+                foreach (var viewModel in reportViewModels)
+                {
+                    Console.WriteLine($"PropertyId: {viewModel.PropertyId}, UserName: {viewModel.UserName}");
+                }
+            }
+
+            return View(reportViewModels);
+        }
+    }
 }
