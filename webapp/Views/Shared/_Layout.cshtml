@@ -166,11 +166,10 @@
 							<div class="footer-widget">
 								<h4 class="widget-title">Navigations</h4>
 								<ul class="footer-menu">
-									<li><a href="about-us.html">About Us</a></li>
-									<li><a href="faq.html">FAQs Page</a></li>
-									<li><a href="checkout.html">Checkout</a></li>
-									<li><a href="contact.html">Contact</a></li>
-									<li><a href="blog.html">Blog</a></li>
+									<li><a asp-controller="Home" asp-action="About">About Us</a></li>
+									<li><a asp-controller="Home" asp-action="Faq">FAQs Page</a></li>
+									<li><a asp-controller="Home" asp-action="Privacy">Terms & Privacy</a></li>
+									<li><a asp-controller="Home" asp-action="Contact">Contact</a></li>
 								</ul>
 							</div>
 						</div>
@@ -180,7 +179,7 @@
 								<h4 class="widget-title">The Highlights</h4>
 								<ul class="footer-menu">
 									<li><a href="JavaScript:Void(0);">Apartment</a></li>
-									<li><a href="JavaScript:Void(0);">My Houses</a></li>
+									<li><a href="JavaScript:Void(0);">Houses</a></li>
 									<li><a href="JavaScript:Void(0);">Restaurant</a></li>
 									<li><a href="JavaScript:Void(0);">Nightlife</a></li>
 									<li><a href="JavaScript:Void(0);">Villas</a></li>
@@ -192,11 +191,8 @@
 							<div class="footer-widget">
 								<h4 class="widget-title">My Account</h4>
 								<ul class="footer-menu">
-									<li><a href="JavaScript:Void(0);">My Profile</a></li>
-									<li><a href="JavaScript:Void(0);">My account</a></li>
-									<li><a href="JavaScript:Void(0);">My Property</a></li>
-									<li><a href="JavaScript:Void(0);">Favorites</a></li>
-									<li><a href="JavaScript:Void(0);">Cart</a></li>
+									<li><a asp-area="Identity" asp-page="/Account/Manage/Index">My Profile</a></li>
+									<li><a asp-controller="User" asp-action="SavePropertyList">Favorites</a></li>
 								</ul>
 							</div>
 						</div>

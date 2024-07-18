@@ -159,13 +159,14 @@
 		</div>
 
 		<div class="row justify-content-center gx-3 gy-4">
-			@foreach (var property in Model.HomepagePropertyViewModel) 
+			@foreach (var property in Model.HomepagePropertyViewModel)
 			{
 				@if (property.ListingStatus == "Active")
-					{<!-- Single Property -->
+				{
+					<!-- Single Property -->
 					<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
 						<div class="veshm-list-wraps">
-							@if(property.Status == "Rent")
+							@if (property.Status == "Rent")
 							{
 								<div class="veshm-type">
 									<span>For @property.Status</span>
@@ -179,7 +180,6 @@
 							}
 
 							<div class="veshm-list-thumb">
-@* 								<button type="button" class="compare-btn"><i class="fa-solid fa-repeat"></i>Compare</button> *@
 								<div class="veshm-list-img-slide">
 									<div class="veshm-list-click">
 										@if (property.GalleryPath.All(string.IsNullOrWhiteSpace))
@@ -190,8 +190,8 @@
 												</a>
 											</div>
 										}
-										@foreach (var img in property.GalleryPath) {
-
+										@foreach (var img in property.GalleryPath)
+										{
 											<div>
 												<a asp-controller="Property" asp-action="PropertyDetails" asp-route-id="@property.Id">
 													<img src="/uploads/property/@(property.GalleryFolder)/@img" class="slick-img mx-auto" alt="">
@@ -206,9 +206,14 @@
 								<div class="veshm-list-head">
 									<div class="veshm-list-head-caption">
 										<div class="rlhc-price">
-											<h4 class="rlhc-price-name theme-cl">@property.Price.ToString("C")
-												@if(property.Status == "Rent") {<span class="monthly">/Months</span>}
-												else {
+											<h4 class="rlhc-price-name theme-cl">
+												@property.Price.ToString("C")
+												@if (property.Status == "Rent")
+												{
+													<span class="monthly">/Months</span>
+												}
+												else
+												{
 													<span class="monthly">One Time</span>
 												}
 											</h4>
@@ -219,7 +224,13 @@
 										</div>
 									</div>
 									<div class="veshm-list-head-flex">
-										<button class="btn btn-like" type="button"><i class="fa-solid fa-heart-circle-check"></i></button>
+										<form class="savePropertyForm" method="post" data-property-id="@property.Id">
+											@Html.AntiForgeryToken()
+											<input type="hidden" name="propertyId" value="@property.Id" />
+											<button class="btn btn-like" type="submit">
+												<i class="fa-solid fa-heart-circle-check"></i>
+											</button>
+										</form>
 									</div>
 								</div>
 
@@ -239,6 +250,7 @@
 					<!-- End Single Property -->
 				}
 			}
+
 		</div>
 
 	</div>
@@ -356,9 +368,10 @@
 				<div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12">
 					<div class="veshm-location-prt">
 						<div class="veshm-location-lists">@state.PropertyCount Lists</div>
-						<a href="search-property.html" class="veshm-location-figure">
+						<a asp-controller="Home" asp-action="SearchResults" asp-route-state="@state.State" class="veshm-location-figure">
 							<img src="~/img/state/@(state.State).jpg" style="height: 425px; width: 325px; object-fit: cover" class="img-fluid" alt="">
 						</a>
+
 						<div class="veshm-location-content">
 							<h4>@state.State</h4>
 							<span class="resy-98">Malaysia</span>
@@ -808,6 +821,57 @@
 			function performSearch(query) {
 				window.location.href = `/Home/SearchResults?query=${query}`;
 			}
+
+			
+		});
+
+		$(document).ready(function () {
+			$('.savePropertyForm').on('submit', function (e) {
+				e.preventDefault();
+
+				var form = $(this);
+				var propertyId = form.data('property-id');
+
+				$.ajax({
+					url: '@Url.Action("SaveProperty", "User")',
+					type: 'POST',
+					data: form.serialize(),
+					success: function (response) {
+						if (response.success) {
+							Swal.fire({
+								icon: 'success',
+								title: 'Success',
+								text: response.message,
+								showConfirmButton: false,
+								timer: 1500
+							}).then(() => {
+								location.reload();
+							});
+						} else {
+							Swal.fire({
+								icon: 'error',
+								title: 'Error',
+								text: response.message,
+								showConfirmButton: false,
+								timer: 1500
+							}).then(() => {
+								location.reload();
+							});
+						}
+					},
+					error: function () {
+						Swal.fire({
+							icon: 'error',
+							title: 'Error',
+							text: 'An error occurred while processing your request.',
+							showConfirmButton: false,
+							timer: 1500
+						}).then(() => {
+							location.reload();
+						});
+					}
+				});
+			});
 		});
 	</script>
 }

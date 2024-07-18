@@ -98,7 +98,7 @@ namespace webapp.Controllers
                 return NotFound();
             }
 
-            var savedProperties = await _context.PropertySave
+                var savedProperties = await _context.PropertySave
                 .Where(ps => ps.UserId == user.Id)
                 .Include(ps => ps.Property)
                 .ThenInclude(p => p.Address)
@@ -116,7 +116,8 @@ namespace webapp.Controllers
                 AddressLine = ps.Property?.Address?.AddressLine ?? "No Address",
                 State = ps.Property?.Address?.State ?? "Unknown",
                 GalleryFolder = ps.Property != null ? ps.PropertyId.ToString().ToSHA256String() : string.Empty,
-                ListingStatus = ps.Property?.ListingStatus ?? "Unknown"
+                ListingStatus = ps.Property?.ListingStatus ?? "Unknown",
+                Id = ps.PropertyId
             }).ToList();
 
             ViewData["Title"] = "My Property";

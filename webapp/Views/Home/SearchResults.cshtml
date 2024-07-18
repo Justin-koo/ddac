@@ -39,6 +39,16 @@
                                 </div>
 
                                 <div class="form-group">
+                                    <select id="state" name="state" class="select-normal">
+                                        <option value="">Choose State</option>
+                                        @foreach (var state in Model.states)
+                                        {
+                                            <option value="@state">@state</option>
+                                        }
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
                                     <select id="status" name="status" class="select-normal">
                                         <option value="">Rent or Sale</option>
                                         @foreach (var status in Model.statusList)
@@ -120,7 +130,7 @@
 
                                 <div class="col-lg-12 col-md-12 col-sm-12 pt-4">
                                     <h3>Other Features</h3>
-                                    <div id="featuresinfo" class="panel-collapse mx-2" aria-labelledby="featuresinfo">
+                                    <div id="featuresinfo" class="panel-collapse" aria-labelledby="featuresinfo">
                                         <div class="vesh-detail-bloc-body">
                                             @foreach (var category in Model.Features.GroupBy(f => f.Category))
                                             {
@@ -130,17 +140,17 @@
                                                             <h6>@category.Key</h6>
                                                         </div>
                                                     </div>
-                                                    <div class="row p-0 m-0">
+                                                    <ul class="row p-0 m-0">
                                                         @foreach (var feature in category)
                                                         {
-                                                            <div class="col-lg-6 col-md-6 p-0">
-                                                                <div class="lvs-caption">
+                                                            <li class="col-lg-6 col-md-6 p-0">
+                                                                <div class="form-check form-check-inline">
                                                                     <input name="features" type="checkbox" value="@feature.FeatureID" class="form-check-input" id="feature-@feature.FeatureID">
                                                                     <label class="form-check-label" for="feature-@feature.FeatureID">@feature.FeatureName</label>
                                                                 </div>
-                                                            </div>
+                                                            </li>
                                                         }
-                                                    </div>
+                                                    </ul>
                                                 </div>
                                             }
                                         </div>
@@ -163,7 +173,7 @@
                         <div class="item-shorting-box">
                             <div class="item-shorting clearfix">
                                 <div class="left-column">
-                                    <h4 class="m-0"><span>@Model.Properties.Count()</span> Results Found</h4>
+                                    <h4 class="m-0"><span>@Model.ActivePropertiesCount</span> Results Found</h4>
                                 </div>
                             </div>
                         </div>
@@ -200,25 +210,56 @@
                                     <div class="veshm-list-prty-caption">
                                         <div class="veshm-list-kygf">
                                             <div class="veshm-list-kygf-flex">
-                                                <div class="rlhc-price mb-2">
-                                                    <h4 class="rlhc-price-name theme-cl">@property.Price.ToString("C")</h4>
-                                                </div>
-                                                <h5 class="rlhc-title-name verified">
-                                                    <a asp-controller="Property" asp-action="PropertyDetails" asp-route-id="@property.Id" class="prt-link-detail">@property.Title</a>
-                                                </h5>
+                                                @if (property.Status == "Rent")
+                                                {
+                                                    <div class="veshm-list-typess rent"><span>For Rent</span></div>
+                                                }
+                                                else if (property.Status == "Sale")
+                                                {
+                                                    <div class="veshm-list-typess bg-danger-subtle text-danger"><span>For Sale</span></div>
+                                                }
+
+                                                <h5 class="rlhc-title-name verified"><a asp-controller="Property" asp-action="PropertyDetails" asp-route-id="@property.Id" class="prt-link-detail">@property.Title</a></h5>
+                                                <div class="rlhc-prt-location"><img src="~/img/pin.svg" width="16" class="me-1" alt="">@property.City, @property.State</div>
+                                            </div>
+                                            <div class="veshm-list-head-flex">
+                                                @* 											<button class="btn btn-like active" type="button"><i class="fa-solid fa-heart-circle-check"></i></button>
+                                        *@
+                                                <form class="savePropertyForm" method="post" data-property-id="@property.Id">
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="propertyId" value="@property.Id" />
+                                                    <button class="btn btn-like" type="submit">
+                                                        <i class="fa-solid fa-heart-circle-check"></i>
+                                                    </button>
+                                                </form>
                                             </div>
                                         </div>
                                         <div class="veshm-list-middle">
-                                            <p class="text-mid">@property.AddressLine, @property.City, @property.State</p>
-                                        </div>
-                                        <div class="veshm-list-footers">
                                             <div class="veshm-list-icons">
                                                 <ul>
                                                     <li><i class="fa-solid fa-bed"></i><span>@property.Bedrooms Bed</span></li>
                                                     <li><i class="fa-solid fa-bath"></i><span>@property.Bathrooms Ba</span></li>
                                                     <li><i class="fa-solid fa-vector-square"></i><span>@property.Area Sqft</span></li>
-                                                    <li><i class="fa-solid fa-calendar-days"></i><span>Built @property.BuildingAge</span></li>
+                                                    @* <li><i class="fa-solid fa-calendar-days"></i><span>Built 2020</span></li> *@
                                                 </ul>
+                                            </div>
+                                        </div>
+                                        <div class="veshm-list-footers">
+                                            <div class="veshm-list-ftr786">
+                                                <div class="rlhc-price">
+                                                    <h4 class="rlhc-price-name theme-cl">
+                                                        @property.Price.ToString("C")
+                                                        @{
+                                                            if (property.Status == "Rent")
+                                                            {
+                                                                <span class="monthly">/Months</span>
+                                                            }
+                                                        }
+                                                    </h4>
+                                                </div>
+                                            </div>
+                                            <div class="veshm-list-ftr1707">
+                                                <a asp-controller="Property" asp-action="PropertyDetails" asp-route-id="@property.Id" class="btn btn-md btn-primary font--medium">View</a>
                                             </div>
                                         </div>
                                     </div>
@@ -269,6 +310,7 @@
             // Set the input values from the ViewModel
             $('#query').val('@Model.Query');
             $('#city').val('@Model.City');
+            $('#state').val('@Model.state');
             $('#status').val('@Model.status');
             $('#types').val('@Model.types');
             $('#bedrooms').val('@Model.Bedrooms');
@@ -283,6 +325,55 @@
 
             $('#minPrice').val("@Model.PriceRange".split(';')[0] || "");
             $('#maxPrice').val("@Model.PriceRange".split(';')[1] || "");
+        });
+
+        $(document).ready(function () {
+            $('.savePropertyForm').on('submit', function (e) {
+                e.preventDefault();
+
+                var form = $(this);
+                var propertyId = form.data('property-id');
+
+                $.ajax({
+                    url: '@Url.Action("SaveProperty", "User")',
+                    type: 'POST',
+                    data: form.serialize(),
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: response.message,
+                                showConfirmButton: false,
+                                timer: 1500
+                            }).then(() => {
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: response.message,
+                                showConfirmButton: false,
+                                timer: 1500
+                            }).then(() => {
+                                location.reload();
+                            });
+                        }
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'An error occurred while processing your request.',
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(() => {
+                            location.reload();
+                        });
+                    }
+                });
+            });
         });
     </script>
 }
