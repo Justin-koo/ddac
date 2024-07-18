@@ -135,13 +135,9 @@
                                         <div class="_leads_action d-md-flex">
                                             <form asp-action="UnsaveProperty" asp-controller="User" asp-route-encryptedId="@property.EncryptedId" method="post" class="unsave-property-form" style="display:inline;">
                                                 @Html.AntiForgeryToken()
-<<<<<<< Updated upstream:webapp/Views/User/SavePropertyList.cshtml
-                                                <button class="unsave-property-button _leads_item">
-                                                    <i class=""></i>
-=======
+
                                                 <button type="submit" class="unsave-property-button _leads_item">
                                                     <i class="fas fa-trash-alt"></i> 
->>>>>>> Stashed changes:webapp/Views/Shared/savePropertyList.cshtml
                                                 </button>
                                             </form>
                                         </div>
