@@ -1,4 +1,4 @@
-﻿@using Microsoft.AspNetCore.Identity
+﻿﻿@using Microsoft.AspNetCore.Identity
 @using webapp.Areas.Identity.Data
 
 @inject SignInManager<webappUser> SignInManager
@@ -25,7 +25,7 @@
 			{
 				fixedNav = "position-fixed w-100";
 			}
-			
+
 		}
 	}
 }
@@ -33,13 +33,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="author" content="Themezhub" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<meta charset="utf-8" />
+	<meta name="author" content="Themezhub" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
-    <title>@ViewData["Title"] - Residence & Real Estate</title>
+	<title>@ViewData["Title"] - Residence & Real Estate</title>
 
-    <!-- Custom CSS -->
+	<!-- Custom CSS -->
 	<link href="~/css/styles.css" rel="stylesheet" asp-append-version="true" />
 	<link href="~/css/site.css" rel="stylesheet" asp-append-version="true" />
 	<link href="https://unpkg.com/filepond/dist/filepond.css" rel="stylesheet" />
@@ -61,8 +61,8 @@
 </head> *@
 
 <body>
-    <div id="preloader"><div class="preloader"><span></span><span></span></div></div>
-    <div id="main-wrapper">
+	<div id="preloader"><div class="preloader"><span></span><span></span></div></div>
+	<div id="main-wrapper">
 		<div class="header @fixedNav header-light head-shadow">
 			<div class="container">
 				<nav id="navigation" class="navigation navigation-landscape">
@@ -121,108 +121,108 @@
 
 		@if (ViewData["IsAdminPage"] == null || !(bool)ViewData["IsAdminPage"])
 		{
-		<section class="bg-cover call-action-container dark" style="background:#065eb5 url('@Url.Content("~/img/footer-bg-dark.png")') no-repeat;">
-			<div class="container">
-				<div class="row justify-content-center">
-					<div class="col-xl-7 col-lg-10 col-md-12 col-sm-12">
+			<section class="bg-cover call-action-container dark" style="background:#065eb5 url('@Url.Content("~/img/footer-bg-dark.png")') no-repeat;">
+				<div class="container">
+					<div class="row justify-content-center">
+						<div class="col-xl-7 col-lg-10 col-md-12 col-sm-12">
 
-						<div class="call-action-wrap">
-							<div class="call-action-caption">
-								<h2 class="text-light">Are You Already Working With Us?</h2>
-								<p class="text-light">Interested in Partnering with Us? Join Our Network of Trusted Agents</p>
+							<div class="call-action-wrap">
+								<div class="call-action-caption">
+									<h2 class="text-light">Are You Already Working With Us?</h2>
+									<p class="text-light">Interested in Partnering with Us? Join Our Network of Trusted Agents</p>
+								</div>
+								<div class="call-action-form">
+									<form>
+										<div class="newsltr-form">
+											<input type="text" class="form-control" placeholder="Enter Your email">
+											<button type="button" class="btn btn-subscribe">Subscribe</button>
+										</div>
+									</form>
+								</div>
 							</div>
-							<div class="call-action-form">
-								<form>
-									<div class="newsltr-form">
-										<input type="text" class="form-control" placeholder="Enter Your email">
-										<button type="button" class="btn btn-subscribe">Subscribe</button>
+
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<footer class="skin-light-footer">
+				<div>
+					<div class="container">
+						<div class="row">
+
+							<div class="col-lg-3 col-md-4">
+								<div class="footer-widget">
+									<img src="~/img/logo-ddac.png" class="img-footer" alt="">
+									<div class="footer-add">
+										<p>Collins Street West, Victoria 8007, Australia.</p>
+										<p><span class="ftp-info"><i class="fa fa-phone" aria-hidden="true"></i>+1 246-345-0695</span></p>
+										<p><span class="ftp-info"><i class="fa fa-envelope" aria-hidden="true"></i>info@example.com</span></p>
 									</div>
-								</form>
-							</div>
-						</div>
 
-					</div>
-				</div>
-			</div>
-		</section>
-
-		<footer class="skin-light-footer">
-			<div>
-				<div class="container">
-					<div class="row">
-
-						<div class="col-lg-3 col-md-4">
-							<div class="footer-widget">
-								<img src="~/img/logo-ddac.png" class="img-footer" alt="">
-								<div class="footer-add">
-									<p>Collins Street West, Victoria 8007, Australia.</p>
-									<p><span class="ftp-info"><i class="fa fa-phone" aria-hidden="true"></i>+1 246-345-0695</span></p>
-									<p><span class="ftp-info"><i class="fa fa-envelope" aria-hidden="true"></i>info@example.com</span></p>
-								</div>
-
-							</div>
-						</div>
-						<div class="col-lg-2 col-md-4">
-							<div class="footer-widget">
-								<h4 class="widget-title">Navigations</h4>
-								<ul class="footer-menu">
-									<li><a asp-controller="Home" asp-action="About">About Us</a></li>
-									<li><a asp-controller="Home" asp-action="Faq">FAQs Page</a></li>
-									<li><a asp-controller="Home" asp-action="Privacy">Terms & Privacy</a></li>
-									<li><a asp-controller="Home" asp-action="Contact">Contact</a></li>
-								</ul>
-							</div>
-						</div>
-
-						<div class="col-lg-2 col-md-4">
-							<div class="footer-widget">
-								<h4 class="widget-title">The Highlights</h4>
-								<ul class="footer-menu">
-										<li><a asp-controller="Home" asp-action="SearchResults" asp-route-types="Apartment">Apartment</a></li>
-										<li><a asp-controller="Home" asp-action="SearchResults" asp-route-types="Houses">Houses</a></li>
-										<li><a asp-controller="Home" asp-action="SearchResults" asp-route-types="Restaurant">Restaurant</a></li>
-										<li><a asp-controller="Home" asp-action="SearchResults" asp-route-types="Nightlife">Nightlife</a></li>
-										<li><a asp-controller="Home" asp-action="SearchResults" asp-route-types="SaVillasle">Villas</a></li>
-								</ul>
-							</div>
-						</div>
-
-						<div class="col-lg-2 col-md-6">
-							<div class="footer-widget">
-								<h4 class="widget-title">My Account</h4>
-								<ul class="footer-menu">
-									<li><a asp-area="Identity" asp-page="/Account/Manage/Index">My Profile</a></li>
-										<li><a asp-controller="User" asp-action="savePropertyList" asp-route-username="@user.UserName">Favorites</a></li>
-								</ul>
-							</div>
-						</div>
-
-						<div class="col-lg-3 col-md-6">
-							<div class="footer-widget">
-								<h4 class="widget-title">Download Apps</h4>
-								<div class="app-wrap">
-									<p><a href="JavaScript:Void(0);"><img src="~/img/light-play.png" class="img-fluid" alt=""></a></p>
-									<p><a href="JavaScript:Void(0);"><img src="~/img/light-ios.png" class="img-fluid" alt=""></a></p>
 								</div>
 							</div>
-						</div>
+							<div class="col-lg-2 col-md-4">
+								<div class="footer-widget">
+									<h4 class="widget-title">Navigations</h4>
+									<ul class="footer-menu">
+										<li><a asp-controller="Home" asp-action="About">About Us</a></li>
+										<li><a asp-controller="Home" asp-action="Faq">FAQs Page</a></li>
+										<li><a asp-controller="Home" asp-action="Privacy">Terms & Privacy</a></li>
+										<li><a asp-controller="Home" asp-action="Contact">Contact</a></li>
+									</ul>
+								</div>
+							</div>
 
+							<div class="col-lg-2 col-md-4">
+								<div class="footer-widget">
+									<h4 class="widget-title">The Highlights</h4>
+									<ul class="footer-menu">
+										<li><a href="JavaScript:Void(0);">Apartment</a></li>
+										<li><a href="JavaScript:Void(0);">Houses</a></li>
+										<li><a href="JavaScript:Void(0);">Restaurant</a></li>
+										<li><a href="JavaScript:Void(0);">Nightlife</a></li>
+										<li><a href="JavaScript:Void(0);">Villas</a></li>
+									</ul>
+								</div>
+							</div>
+
+							<div class="col-lg-2 col-md-6">
+								<div class="footer-widget">
+									<h4 class="widget-title">My Account</h4>
+									<ul class="footer-menu">
+										<li><a asp-area="Identity" asp-page="/Account/Manage/Index">My Profile</a></li>
+										<li><a asp-controller="User" asp-action="SavePropertyList">Favorites</a></li>
+									</ul>
+								</div>
+							</div>
+
+							<div class="col-lg-3 col-md-6">
+								<div class="footer-widget">
+									<h4 class="widget-title">Download Apps</h4>
+									<div class="app-wrap">
+										<p><a href="JavaScript:Void(0);"><img src="~/img/light-play.png" class="img-fluid" alt=""></a></p>
+										<p><a href="JavaScript:Void(0);"><img src="~/img/light-ios.png" class="img-fluid" alt=""></a></p>
+									</div>
+								</div>
+							</div>
+
+						</div>
 					</div>
 				</div>
-			</div>
 
-			<div class="footer-bottom">
-				<div class="container">
-					<div class="row align-items-center">
+				<div class="footer-bottom">
+					<div class="container">
+						<div class="row align-items-center">
 
-						<div class="col-lg-12 col-md-12">
-							<p class="mb-0">© 2023 Veshm. Designd By <a href="https://themezhub.com">Themez Hub</a> All Rights Reserved</p>
+							<div class="col-lg-12 col-md-12">
+								<p class="mb-0">© 2023 Veshm. Designd By <a href="https://themezhub.com">Themez Hub</a> All Rights Reserved</p>
+							</div>
+
 						</div>
-
 					</div>
 				</div>
-			</div>
-		</footer>
+			</footer>
 		}
 		<div class="modal fade" id="message" tabindex="-1" role="dialog" aria-labelledby="messagemodal" aria-hidden="true">
 			<div class="modal-dialog modal-dialog-centered message-pop-form" role="document">
@@ -360,41 +360,41 @@
 		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 		<script src="https://code.jquery.com/ui/1.14.0-beta.2/jquery-ui.min.js" integrity="sha256-E7PeZTkHU61hmvmEMwtUMgm9Aff574wswy5F1Y0oIRA=" crossorigin="anonymous"></script>
 
-@*     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">webapp</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+		@*     <header>
+		<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+		<div class="container-fluid">
+		<a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">webapp</a>
+		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+		aria-expanded="false" aria-label="Toggle navigation">
+		<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+		<ul class="navbar-nav flex-grow-1">
+		<li class="nav-item">
+		<a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+		</li>
+		<li class="nav-item">
+		<a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+		</li>
+		</ul>
+		</div>
+		</div>
+		</nav>
+		</header>
+		<div class="container">
+		<main role="main" class="pb-3">
+		@RenderBody()
+		</main>
+		</div>
 
-    @* <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2024 - webapp - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script> *@
-    @await RenderSectionAsync("Scripts", required: false)
+		@* <footer class="border-top footer text-muted">
+		<div class="container">
+		&copy; 2024 - webapp - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+		</div>
+		</footer>
+		<script src="~/lib/jquery/dist/jquery.min.js"></script>
+		<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+		<script src="~/js/site.js" asp-append-version="true"></script> *@
+		@await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
