@@ -27,7 +27,7 @@
 
     @if (TempData["Message"] != null)
     {
-        var statusMessageClass = TempData["Message"]?.ToString()?.StartsWith("Error") == true ? "danger" : "success";
+        var statusMessageClass = TempData["Message"]?.ToString()?.StartsWith("Unauthorized") == true ? "danger" : "success";
         <div class="alert alert-@statusMessageClass alert-dismissible" role="alert">
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             @TempData["Message"]
@@ -135,21 +135,24 @@
                                         <div class="_leads_action d-md-flex">
                                             <form asp-action="UnsaveProperty" asp-controller="User" asp-route-encryptedId="@property.EncryptedId" method="post" class="unsave-property-form" style="display:inline;">
                                                 @Html.AntiForgeryToken()
+<<<<<<< Updated upstream:webapp/Views/User/SavePropertyList.cshtml
                                                 <button class="unsave-property-button _leads_item">
                                                     <i class=""></i>
+=======
+                                                <button type="submit" class="unsave-property-button _leads_item">
+                                                    <i class="fas fa-trash-alt"></i> 
+>>>>>>> Stashed changes:webapp/Views/Shared/savePropertyList.cshtml
                                                 </button>
                                             </form>
                                         </div>
                                     </td>
                                 </tr>
                             }
-
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-
     </div>
 
     <div class="row align-items-center">
@@ -227,81 +230,10 @@
 
         // $(document).on('click', '.unsave-property-button', function (e) {
         //     e.preventDefault();
-        //     const title = "Unsave Property?"
-        //     const text = "Are you sure you want to unsave this property?"
+        //     const title = "Unsave Property?";
+        //     const text = "Are you sure you want to unsave this property?";
         //     handleAction($(this), 'unsave', title, text);
         // });
-
-        let table = new DataTable('#propertyTable', {
-            order: [[3, 'desc']],
-            layout: null,
-            columnDefs: [
-                {
-                    orderable: false,
-                    searchable: false,
-                    targets: -1,
-                },
-                {
-                    orderSequence: ['asc', 'desc'],
-                    targets: "_all"
-                }
-            ]
-        });
-
-        $('#dt-length').on('change', function () {
-            table.page.len(this.value).draw();
-            updateTableInfo();
-            updatePagination();
-        });
-
-        $('#dt-search').on('keyup', function () {
-            table.search(this.value).draw();
-        });
-
-        function updateTableInfo() {
-            var info = table.page.info();
-            $('#tableInfo').html(
-                'Currently showing page ' + (info.page + 1) + ' of ' + info.pages + ' pages'
-            );
-        }
-
-        function updatePagination() {
-            var info = table.page.info();
-            var pages = [];
-            for (var i = 0; i < info.pages; i++) {
-                pages.push('<li class="page-item ' + (info.page === i ? 'active' : '') + '"><a class="page-link" href="#">' + (i + 1) + '</a></li>');
-            }
-            $('#tablePaginate').html('<li class="page-item"><a class="page-link" href="#" id="prevPage">«</a></li>' + pages.join('') + '<li class="page-item"><a class="page-link" href="#" id="nextPage">»</a></li>');
-
-            $('#prevPage').on('click', function () {
-                if (info.page > 0) {
-                    table.page('previous').draw('page');
-                    updateTableInfo();
-                    updatePagination();
-                }
-            });
-
-            $('#nextPage').on('click', function () {
-                if (info.page < info.pages - 1) {
-                    table.page('next').draw('page');
-                    updateTableInfo();
-                    updatePagination();
-                }
-            });
-
-            $('#tablePaginate .page-link').on('click', function (e) {
-                e.preventDefault();
-                var pageNum = parseInt($(this).text()) - 1;
-                if (!isNaN(pageNum)) {
-                    table.page(pageNum).draw('page');
-                    updateTableInfo();
-                    updatePagination();
-                }
-            });
-        }
-
-        updateTableInfo();
-        updatePagination();
     </script>
 }
 
