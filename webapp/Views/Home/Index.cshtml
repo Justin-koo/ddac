@@ -424,7 +424,7 @@
 									}
 								</div>
 								<div class="veshm-agent-content">
-									<h4 class="vesh-content-title">@agent.UserName</h4>
+									<h4 class="vesh-content-title">@agent.Name</h4>
 									<div class="vesh-aget-rates">
 										@* <i class="fa-solid fa-star"></i>
 										<i class="fa-solid fa-star"></i>
@@ -434,7 +434,7 @@
 										<span class="resy-98">@agent.PhoneNumber</span>
 									</div>
 									<div class="vesh-contact">
-										<a href="agent-detail.html" class="btn rounded btn-light-success full-width">Contact Agent</a>
+										<a asp-controller="Agent" asp-action="AgentList" asp-route-Name="@agent.Name" class="btn rounded btn-light-success full-width">Contact Agent</a>
 									</div>
 								</div>
 								<div class="veshm-agent-footer">
