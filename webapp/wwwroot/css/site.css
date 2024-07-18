@@ -245,3 +245,7 @@
         display: none;
     }
 }
+
+.picker{
+    z-index: 11 !important;
+}
