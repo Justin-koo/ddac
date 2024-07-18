@@ -7,6 +7,7 @@
 @{
 	webappUser user = null;
 	bool isAdmin = false;
+	var fixedNav = "";
 
 	if (SignInManager.IsSignedIn(User))
 	{
@@ -17,7 +18,15 @@
 			var roles = await UserManager.GetRolesAsync(user);
 			isAdmin = roles.Contains("Admin");
 		}
-		
+
+		if (ViewData["IsAdminPage"] != null)
+		{
+			if ((bool)ViewData["IsAdminPage"])
+			{
+				fixedNav = "position-fixed w-100";
+			}
+			
+		}
 	}
 }
 
@@ -54,7 +63,7 @@
 <body>
     <div id="preloader"><div class="preloader"><span></span><span></span></div></div>
     <div id="main-wrapper">
-		<div class="header header-light head-shadow">
+		<div class="header @fixedNav header-light head-shadow">
 			<div class="container">
 				<nav id="navigation" class="navigation navigation-landscape">
 					<div class="nav-header">
