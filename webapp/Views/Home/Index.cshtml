@@ -407,6 +407,51 @@
 				<div class="side-slide">
 
 					<!-- Single Slide -->
+					@foreach (var agent in Model.Agents)
+					{
+						<div class="single-slide">
+							<div class="veshm-agent-wrap">
+@* 								<button class="btn btn-like" type="button"><i class="fa-solid fa-heart-circle-check"></i></button> *@
+								<div class="veshm-list-75"><span>@agent.PropertyCount Property</span></div>
+								<div class="veshm-agent-thumb">
+									@if (!string.IsNullOrEmpty(agent.ProfilePicture))
+									{
+										<img src="~/uploads/user/@(agent.ProfilePicture)" class="img-fluid circle" alt="">
+									}
+									else
+									{
+										<img src="~/uploads/user/default-user.png" class="img-fluid circle" alt="">
+									}
+								</div>
+								<div class="veshm-agent-content">
+									<h4 class="vesh-content-title">@agent.UserName</h4>
+									<div class="vesh-aget-rates">
+										@* <i class="fa-solid fa-star"></i>
+										<i class="fa-solid fa-star"></i>
+										<i class="fa-solid fa-star"></i>
+										<i class="fa-solid fa-star"></i>
+										<i class="fa-solid fa-star"></i> *@
+										<span class="resy-98">@agent.PhoneNumber</span>
+									</div>
+									<div class="vesh-contact">
+										<a href="agent-detail.html" class="btn rounded btn-light-success full-width">Contact Agent</a>
+									</div>
+								</div>
+								<div class="veshm-agent-footer">
+									<div class="rlhc-prt-location"><i class="fa-solid fa-location-dot me-1"></i>@agent.Location</div>
+@* 									<div class="veshm-agent-social">
+										<ul>
+											<li><a href="JavaScript:Void(0);"><i class="fa-brands fa-facebook-f"></i></a></li>
+											<li><a href="JavaScript:Void(0);"><i class="fa-brands fa-instagram"></i></a></li>
+											<li><a href="JavaScript:Void(0);"><i class="fa-brands fa-linkedin-in"></i></a></li>
+										</ul>
+									</div> *@
+								</div>
+							</div>
+						</div>
+					}
+
+@* 					<!-- Single Slide -->
 					<div class="single-slide">
 						<div class="veshm-agent-wrap">
 							<button class="btn btn-like" type="button"><i class="fa-solid fa-heart-circle-check"></i></button>
@@ -439,9 +484,9 @@
 								</div>
 							</div>
 						</div>
-					</div>
+					</div> *@
 
-					<!-- Single Slide -->
+					@* <!-- Single Slide -->
 					<div class="single-slide">
 						<div class="veshm-agent-wrap">
 							<button class="btn btn-like" type="button"><i class="fa-solid fa-heart-circle-check"></i></button>
@@ -614,7 +659,7 @@
 								</div>
 							</div>
 						</div>
-					</div>
+					</div> *@
 
 				</div>
 			</div>

@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using webapp.Areas.Identity.Data;
 using webapp.Services;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 
 namespace webapp.Areas.Identity.Pages.Account
 {
@@ -101,6 +102,61 @@ namespace webapp.Areas.Identity.Pages.Account
             return new ChallengeResult(provider, properties);
         }
 
+        //public async Task<IActionResult> OnGetCallbackAsync(string returnUrl = null, string remoteError = null)
+        //{
+        //	returnUrl = returnUrl ?? Url.Content("~/");
+        //	if (remoteError != null)
+        //	{
+        //		ErrorMessage = $"Error from external provider: {remoteError}";
+        //		return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
+        //	}
+        //	var info = await _signInManager.GetExternalLoginInfoAsync();
+        //	if (info == null)
+        //	{
+        //		ErrorMessage = "Error loading external login information.";
+        //		return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
+        //	}
+
+        //	// Check if the email claim exists in the external login data
+        //	var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+        //	if (email != null)
+        //	{
+        //		// Check if a user with this email already exists
+        //		var user = await _userManager.FindByEmailAsync(email);
+        //		if (user != null)
+        //		{
+        //			// Check if the user already has this login
+        //			var existingLogin = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
+        //			if (existingLogin == null)
+        //			{
+        //				// Link the external login to the existing user account if not linked
+        //				var linkResult = await _userManager.AddLoginAsync(user, info);
+        //				if (linkResult.Succeeded)
+        //				{
+        //					await _signInManager.SignInAsync(user, isPersistent: false, info.LoginProvider);
+        //					return LocalRedirect(returnUrl);
+        //				}
+        //				else
+        //				{
+        //					// Handle errors, such as failed to link accounts
+        //				}
+        //			}
+        //		}
+        //	}
+
+        //	// If the user does not have an account, then ask the user to create an account.
+        //	ReturnUrl = returnUrl;
+        //	ProviderDisplayName = info.ProviderDisplayName;
+        //	if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Email))
+        //	{
+        //		Input = new InputModel
+        //		{
+        //			Email = info.Principal.FindFirstValue(ClaimTypes.Email)
+        //		};
+        //	}
+        //	return Page();
+        //}
+
         public async Task<IActionResult> OnGetCallbackAsync(string returnUrl = null, string remoteError = null)
         {
             returnUrl = returnUrl ?? Url.Content("~/");
@@ -134,10 +190,38 @@ namespace webapp.Areas.Identity.Pages.Account
                 ProviderDisplayName = info.ProviderDisplayName;
                 if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Email))
                 {
-                    Input = new InputModel
-                    {
-                        Email = info.Principal.FindFirstValue(ClaimTypes.Email)
-                    };
+                    var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+					var user = await _userManager.FindByEmailAsync(email);
+
+					if (user != null)
+					{
+						// User with this email already exists
+						var existingLogin = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
+						if (existingLogin == null)
+						{
+							// Link the external login to the existing user account
+							var linkResult = await _userManager.AddLoginAsync(user, info);
+							if (linkResult.Succeeded)
+							{
+								await _signInManager.SignInAsync(user, isPersistent: false);
+								return LocalRedirect(returnUrl);
+							}
+							// Handle error when linking accounts
+							ErrorMessage = "Error linking external login.";
+							return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
+						}
+						// The account is already linked, just sign in
+						await _signInManager.SignInAsync(user, isPersistent: false);
+						return LocalRedirect(returnUrl);
+					}
+					else
+					{
+						// No user exists with this email, prepare to register a new user
+						Input = new InputModel
+						{
+							Email = email
+						};
+					}
                 }
                 return Page();
             }
