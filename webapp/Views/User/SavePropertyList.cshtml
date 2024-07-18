@@ -135,9 +135,9 @@
                                         <div class="_leads_action d-md-flex">
                                             <form asp-action="UnsaveProperty" asp-controller="User" asp-route-encryptedId="@property.EncryptedId" method="post" class="unsave-property-form" style="display:inline;">
                                                 @Html.AntiForgeryToken()
-                                                <a role="button" class="unsave-property-button _leads_item">
+                                                <button class="unsave-property-button _leads_item">
                                                     <i class=""></i>
-                                                </a>
+                                                </button>
                                             </form>
                                         </div>
                                     </td>
