@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using webapp.Data;
 
@@ -11,9 +12,11 @@ using webapp.Data;
 namespace webapp.Migrations
 {
     [DbContext(typeof(webappContext))]
-    partial class webappContextModelSnapshot : ModelSnapshot
+    [Migration("20240717185728_CreatePropertySave")]
+    partial class CreatePropertySave
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -159,30 +162,6 @@ namespace webapp.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("PropertySave", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("PropertyId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PropertyId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("PropertySave");
-                });
-
             modelBuilder.Entity("webapp.Areas.Identity.Data.webappUser", b =>
                 {
                     b.Property<string>("Id")
@@ -302,8 +281,9 @@ namespace webapp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("Area")
-                        .HasColumnType("int");
+                    b.Property<string>("Area")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Bathrooms")
                         .HasColumnType("int");
@@ -604,6 +584,28 @@ namespace webapp.Migrations
                         });
                 });
 
+            modelBuilder.Entity("webapp.Models.PropertySave", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("PropertyId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("PropertySave");
+                });
+
             modelBuilder.Entity("webapp.Models.PropertyUpdate", b =>
                 {
                     b.Property<int>("Id")
@@ -628,34 +630,6 @@ namespace webapp.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("PropertyUpdate");
-                });
-
-            modelBuilder.Entity("webapp.Models.ReportProperty", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("PropertyId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Reason")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("ReportDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ReportProperty");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -709,25 +683,6 @@ namespace webapp.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PropertySave", b =>
-                {
-                    b.HasOne("webapp.Models.Property", "Property")
-                        .WithMany()
-                        .HasForeignKey("PropertyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("webapp.Areas.Identity.Data.webappUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Property");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("webapp.Models.Property", b =>
                 {
                     b.HasOne("webapp.Areas.Identity.Data.webappUser", "Agent")
@@ -759,6 +714,17 @@ namespace webapp.Migrations
                         .IsRequired();
 
                     b.Navigation("Property");
+                });
+
+            modelBuilder.Entity("webapp.Models.PropertySave", b =>
+                {
+                    b.HasOne("webapp.Areas.Identity.Data.webappUser", "user")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("user");
                 });
 
             modelBuilder.Entity("webapp.Models.Property", b =>

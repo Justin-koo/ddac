@@ -7,7 +7,6 @@
 @{
 	webappUser user = null;
 	bool isAdmin = false;
-	string fixedNav = "";
 
 	if (SignInManager.IsSignedIn(User))
 	{
@@ -17,11 +16,6 @@
 		{
 			var roles = await UserManager.GetRolesAsync(user);
 			isAdmin = roles.Contains("Admin");
-		}
-
-		if (isAdmin)
-		{
-			fixedNav = "position-fixed w-100";
 		}
 		
 	}
@@ -60,7 +54,7 @@
 <body>
     <div id="preloader"><div class="preloader"><span></span><span></span></div></div>
     <div id="main-wrapper">
-		<div class="header @fixedNav header-light head-shadow">
+		<div class="header header-light head-shadow">
 			<div class="container">
 				<nav id="navigation" class="navigation navigation-landscape">
 					<div class="nav-header">
@@ -73,11 +67,11 @@
 					<div class="nav-menus-wrapper" style="transition-property: none;">
 						<ul class="nav-menu">
 							<li>
-								<a href="#">Buy</a>
+								<a asp-controller="Home" asp-action="SearchResults" asp-route-status="Sale">Buy</a>
 							</li>
 
 							<li>
-								<a href="#">Rent</a>
+								<a asp-controller="Home" asp-action="SearchResults" asp-route-status="Rent">Rent</a>
 							</li>
 
 							<li>
@@ -102,18 +96,21 @@
 							}
 
 						</ul>
+
 						<partial name="_LoginPartial" />
+
 					</div>
 				</nav>
 			</div>
 		</div>
+
 
 		<div class="clearfix"></div>
 
 		@RenderBody()
 
 
-		@if (!isAdmin)
+		@if (ViewData["IsAdminPage"] == null || !(bool)ViewData["IsAdminPage"])
 		{
 		<section class="bg-cover call-action-container dark" style="background:#065eb5 url('@Url.Content("~/img/footer-bg-dark.png")') no-repeat;">
 			<div class="container">
