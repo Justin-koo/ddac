@@ -1,21 +1,20 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.EntityFrameworkCore;
 using webapp.Areas.Identity.Data;
+using webapp.Models;
 
-namespace webapp.Models
+public class PropertySave
 {
-	public class PropertySave
-	{
-		[Key]
-		public int Id { get; set; }
-		
-		public String UserId { get; set; }
+    [Key]
+    public int Id { get; set; }
 
-		[ForeignKey("UserId")]
-		public webappUser user { get; set; }
+    public string UserId { get; set; }
 
-		public int PropertyId { get; set; }
+    [ForeignKey("UserId")]
+    public webappUser User { get; set; }
 
-	}
+    public int PropertyId { get; set; }
+
+    [ForeignKey("PropertyId")]
+    public Property Property { get; set; }
 }

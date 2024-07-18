@@ -83,54 +83,107 @@ namespace webapp.Controllers
 
         [HttpGet]
         [Route("{username}/property-save")]
-        public async Task<IActionResult> savePropertyList(string username)
+        public async Task<IActionResult> SavePropertyList(string username)
         {
             var currentUser = await _userManager.GetUserAsync(User);
             if (currentUser.UserName != username)
             {
-                return RedirectToAction(nameof(savePropertyList), new { username = currentUser.UserName });
+                return RedirectToAction(nameof(SavePropertyList), new { username = currentUser.UserName });
             }
 
             var user = await _userManager.Users.SingleOrDefaultAsync(u => u.UserName == username);
 
-            var properties = await _context.Properties
-                .Include(p => p.Address)
-                .Include(p => p.Detail)
-                //.Where(p => user.Id)
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var savedProperties = await _context.PropertySave
+                .Where(ps => ps.UserId == user.Id)
+                .Include(ps => ps.Property)
+                .ThenInclude(p => p.Address)
                 .ToListAsync();
 
-            var propertySaveModels = properties.Select(p => new PropertySaveModel
+            var propertySaveModels = savedProperties.Select(ps => new PropertySaveModel
             {
-                //Id = p.Id,
-                EncryptedId = _encryptionHelper.Encrypt(p.Id.ToString()),
-                Title = p.Title,
-                Status = p.Status,
-                PropertyType = p.PropertyType,
-                Price = p.Price,
-                //Area = p.Area,
-                //Bedrooms = p.Bedrooms,
-                //Bathrooms = p.Bathrooms,
-                GalleryPath = p.GalleryPath.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList(),
-                ListingDate = p.ListingDate,
-                //AgentId = p.AgentId,
-                AddressLine = p.Address.AddressLine,
-                //City = p.Address.City,
-                State = p.Address.State,
-                //ZipCode = p.Address.ZipCode,
-                //Description = p.Detail.Description,
-                //BuildingAge = p.Detail.BuildingAge,
-                //Garage = p.Detail.Garage,
-                //Rooms = p.Detail.Rooms,
-                //Features = p.Detail.OtherFeatures?.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList() ?? new List<string>(),
-                GalleryFolder = p.Id.ToString().ToSHA256String(),
-                ListingStatus = p.ListingStatus,
+                EncryptedId = ps.Property != null ? _encryptionHelper.Encrypt(ps.PropertyId.ToString()) : string.Empty,
+                Title = ps.Property?.Title ?? "No Title",
+                Status = ps.Property?.Status ?? "Unknown",
+                PropertyType = ps.Property?.PropertyType ?? "Unknown",
+                Price = ps.Property?.Price ?? 0,
+                GalleryPath = ps.Property?.GalleryPath?.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList() ?? new List<string>(),
+                ListingDate = ps.Property?.ListingDate ?? DateTime.MinValue,
+                AddressLine = ps.Property?.Address?.AddressLine ?? "No Address",
+                State = ps.Property?.Address?.State ?? "Unknown",
+                GalleryFolder = ps.Property != null ? ps.PropertyId.ToString().ToSHA256String() : string.Empty,
+                ListingStatus = ps.Property?.ListingStatus ?? "Unknown"
             }).ToList();
-
-
 
             ViewData["Title"] = "My Property";
             ViewData["User"] = user;
             return View(propertySaveModels);
         }
+
+
+		[Authorize]
+		[ValidateAntiForgeryToken]
+		[HttpPost]
+		public async Task<IActionResult> SaveProperty(int propertyId)
+		{
+			var user = await _userManager.GetUserAsync(User);
+			if (user == null)
+			{
+				return Unauthorized(new { success = false, message = "Unauthorized" });
+			}
+
+			// Check if the property is already saved by the user
+			var existingPropertySave = await _context.PropertySave
+				.FirstOrDefaultAsync(ps => ps.UserId == user.Id && ps.PropertyId == propertyId);
+
+			if (existingPropertySave != null)
+			{
+				return Json(new { success = false, message = "Property is already saved." });
+			}
+
+			var propertySave = new PropertySave
+			{
+				UserId = user.Id,
+				PropertyId = propertyId
+			};
+
+			_context.PropertySave.Add(propertySave);
+			await _context.SaveChangesAsync();
+
+			return Json(new { success = true, message = "Property saved successfully!" });
+		}
+
+
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public async Task<IActionResult> UnsaveProperty(int encryptedId)
+        {
+            Console.WriteLine(encryptedId);
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return Unauthorized(new { success = false, message = "Unauthorized" });
+            }
+
+            var propertySave = await _context.PropertySave
+                .FirstOrDefaultAsync(ps => ps.UserId == user.Id && ps.PropertyId == encryptedId);
+
+            if (propertySave == null)
+            {
+                return NotFound(new { success = false, message = "Property not found in saved list." });
+            }
+
+            _context.PropertySave.Remove(propertySave);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { success = true, message = "Property unsaved successfully!" });
+        }
+
+
     }
 }

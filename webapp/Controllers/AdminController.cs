@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis.Elfie.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Mono.TextTemplating;
 using webapp.Areas.Identity.Data;
 using webapp.Data;
 using webapp.Helpers;
@@ -28,7 +29,7 @@ namespace webapp.Controllers
             _signInManager = signInManager;
             _roleManager = roleManager;
             _webHostEnvironment = webHostEnvironment;
-        }
+		}
 
 		[HttpGet]
 		public async Task<IActionResult> Index()
@@ -67,6 +68,7 @@ namespace webapp.Controllers
 			ViewBag.RecentlySoldProperties = recentlySoldProperties;
 			ViewBag.RecentAgents = recentAgents;
 
+			ViewData["IsAdminPage"] = true;
 			return View();
 		}
 
@@ -91,7 +93,8 @@ namespace webapp.Controllers
 				});
 			}
 
-            return View(userList);
+			ViewData["IsAdminPage"] = true;
+			return View(userList);
         }
 
 		[HttpGet]
@@ -116,6 +119,7 @@ namespace webapp.Controllers
 				ListedBy = users.FirstOrDefault(u => u.Id == property.AgentId)?.UserName
 			}).ToList();
 
+			ViewData["IsAdminPage"] = true;
 			return View(propertyList);
 		}
 
@@ -123,7 +127,8 @@ namespace webapp.Controllers
 		[HttpGet]
         public async Task<IActionResult> CreateUser()
         {
-            return View();
+			ViewData["IsAdminPage"] = true;
+			return View();
         }
 
         [HttpPost]
@@ -151,23 +156,47 @@ namespace webapp.Controllers
                 return View(model);
             }
 
+			bool AgentCheck = false;
+
             if (model.SelectedRole == "Agent")
             {
 				if (string.IsNullOrEmpty(model.Country))
+				{
 					ModelState.AddModelError("Country", "Country is required for agents.");
+					AgentCheck = true;
+                }
 				if (string.IsNullOrEmpty(model.Address))
+				{
 					ModelState.AddModelError("Address", "Address is required for agents.");
-				if (string.IsNullOrEmpty(model.State))
-					ModelState.AddModelError("State", "State is required for agents.");
-				if (string.IsNullOrEmpty(model.City))
-					ModelState.AddModelError("City", "City is required for agents.");
-				if (!model.Zip.HasValue)
-					ModelState.AddModelError("Zip", "Zip is required for agents.");
-				if (string.IsNullOrEmpty(model.About))
-					ModelState.AddModelError("About", "About is required for agents.");
+                    AgentCheck = true;
+                }
 
-				return View(model);
-			}
+                if (string.IsNullOrEmpty(model.State))
+				{
+                    ModelState.AddModelError("State", "State is required for agents.");
+                    AgentCheck = true;
+                }
+                if (string.IsNullOrEmpty(model.City))
+				{
+                    ModelState.AddModelError("City", "City is required for agents.");
+                    AgentCheck = true;
+                }
+                if (!model.Zip.HasValue)
+				{
+                    ModelState.AddModelError("Zip", "Zip is required for agents.");
+                    AgentCheck = true;
+                }
+                if (string.IsNullOrEmpty(model.About))
+				{
+                    ModelState.AddModelError("About", "About is required for agents.");
+                    AgentCheck = true;
+                }
+
+				if (AgentCheck)
+				{
+                    return View(model);
+                }
+            }
 
 			var user = new webappUser
             {
@@ -180,8 +209,9 @@ namespace webapp.Controllers
                 State = model.State,
                 City = model.City,
                 Zip = model.Zip,
-                About = model.About
-            };
+                About = model.About,
+				EmailConfirmed = true
+			};
 
             var result = await _userManager.CreateAsync(user, model.Password);
 
@@ -201,10 +231,127 @@ namespace webapp.Controllers
                 ModelState.AddModelError(string.Empty, error.Description);
             }
 
-            return View(model);
+			ViewData["IsAdminPage"] = true;
+			return View(model);
         }
 
-		[HttpPost]
+        //[Route("/admin/{username}")]
+        [HttpGet]
+        public async Task<IActionResult> EditUser(string username)
+        {
+            var user = await _userManager.FindByNameAsync(username);
+            if (user == null)
+            {
+                TempData["Message"] = "Error: User not found.";
+                return RedirectToAction(nameof(UserList));
+            }
+
+            var roles = await _userManager.GetRolesAsync(user);
+            string selectedRole = roles.FirstOrDefault();
+
+            var model = new UserEditModel
+            {
+                UserName = user.UserName,
+                Email = user.Email,
+                FullName = user.FullName, // Assuming you have a FullName property
+                PhoneNumber = user.PhoneNumber, // Make sure the user object has a PhoneNumber property
+                Country = user.Country, // Assuming there is a Country property
+                Address = user.Address, // Assuming there is an Address property
+                State = user.State, // Assuming there is a State property
+                City = user.City, // Assuming there is a City property
+                Zip = user.Zip, // Assuming there is a Zip property
+                About = user.About,
+                SelectedRole = selectedRole
+            };
+
+			ViewData["IsAdminPage"] = true;
+			return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditUser(UserEditModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByNameAsync(model.UserName);
+                if (user == null)
+                {
+                    TempData["Message"] = "Error: User not found.";
+                    return RedirectToAction(nameof(UserList));
+                }
+
+                // Update other fields
+                user.Email = model.Email;
+                user.PhoneNumber = model.PhoneNumber;
+                user.UserName = model.UserName;
+                user.Email = model.Email;
+                user.FullName = model.FullName;
+
+                var currentRoles = await _userManager.GetRolesAsync(user);
+                var currentPrimaryRole = currentRoles.FirstOrDefault();
+
+                if (model.SelectedRole != currentPrimaryRole)
+                {
+                    if (!string.IsNullOrEmpty(currentPrimaryRole))
+                    {
+                        var removeResult = await _userManager.RemoveFromRoleAsync(user, currentPrimaryRole);
+                        if (!removeResult.Succeeded)
+                        {
+                            ModelState.AddModelError("", "Failed to remove old role.");
+                            return View(model);
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(model.SelectedRole))
+                    {
+                        var addResult = await _userManager.AddToRoleAsync(user, model.SelectedRole);
+                        if (!addResult.Succeeded)
+                        {
+                            ModelState.AddModelError("", "Failed to add the user to the new role.");
+                            return View(model);
+                        }
+                    }
+                }
+
+                if (model.SelectedRole == "Agent")
+                {
+                    user.Country = model.Country;
+                    user.Address = model.Address;
+                    user.State = model.State;
+                    user.City = model.City; // Assuming there is a City property
+                    user.Zip = model.Zip; // Assuming there is a Zip property
+                    user.About = model.About;
+                }
+
+				if (model.ChangePassword && !string.IsNullOrWhiteSpace(model.Password))
+				{
+					// Generate a password reset token
+					var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+					// Reset the password using the token
+					var resetPassResult = await _userManager.ResetPasswordAsync(user, token, model.Password);
+					if (!resetPassResult.Succeeded)
+					{
+						foreach (var error in resetPassResult.Errors)
+						{
+							ModelState.AddModelError("", error.Description);
+						}
+						return View(model);
+					}
+				}
+
+				await _userManager.UpdateAsync(user);
+
+                return RedirectToAction(nameof(UserList));
+            }
+
+			ViewData["IsAdminPage"] = true;
+			return View(model);
+        }
+
+
+
+        [HttpPost]
 		public async Task<IActionResult> DeleteUser(string username)
 		{
 			var user = await _userManager.FindByNameAsync(username);
@@ -247,6 +394,7 @@ namespace webapp.Controllers
 			await _context.SaveChangesAsync();
 
 			TempData["Message"] = "Property blocked successfully!";
+			ViewData["IsAdminPage"] = true;
 			return RedirectToAction(nameof(PropertyList));
 		}
 
@@ -272,12 +420,14 @@ namespace webapp.Controllers
 			await _context.SaveChangesAsync();
 
 			TempData["Message"] = "Property unblocked successfully!";
+			ViewData["IsAdminPage"] = true;
 			return RedirectToAction(nameof(PropertyList));
 		}
 
 		[HttpGet]
 		public IActionResult ChangePassword()
 		{
+			ViewData["IsAdminPage"] = true;
 			return View();
 		}
 
@@ -308,8 +458,31 @@ namespace webapp.Controllers
                 ModelState.AddModelError(string.Empty, error.Description);
             }
 
-            return View(model);
+			ViewData["IsAdminPage"] = true;
+			return View(model);
         }
+            
+		[HttpGet]
+		public async Task<IActionResult> PropertyReport()
+		{
+			var currentUser = await _userManager.GetUserAsync(User);
+			var currentUserId = currentUser?.Id;
 
-    }
+			var reports = await _context.ReportProperty.ToListAsync();
+			var userIds = reports.Select(r => r.UserId).Distinct();
+			var users = await _userManager.Users.Where(u => userIds.Contains(u.Id)).ToDictionaryAsync(u => u.Id, u => u.UserName);
+
+			var reportViewModels = reports.Select(report => new ReportPropertyViewModel
+			{
+				Reason = report.Reason,
+				ReportDate = report.ReportDate,
+				PropertyId = report.PropertyId,
+				UserName = report.UserId == currentUserId ? "Me" : _userManager.FindByIdAsync(report.UserId).Result.UserName,
+				IsCurrentUser = report.UserId == currentUserId  // Set this property
+			}).ToList();
+
+			ViewData["IsAdminPage"] = true;
+			return View(reportViewModels);
+		}
+	}
 }
