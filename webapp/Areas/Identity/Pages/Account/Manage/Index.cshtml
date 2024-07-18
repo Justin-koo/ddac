@@ -64,7 +64,8 @@
                         <!-- Agent SPECIALTIES option -->
                         <div class="form-group col-md-6">
                             <label asp-for="Input.Specialties" class="form-label"></label>
-                            <select asp-for="Input.Specialties" class="form-control" multiple="multiple">
+                            <select asp-for="Input.Specialties" class="form-control" multiple>
+                                <option value=""> </option>
                                 <option value="Buyer's Agent">Buyer's Agent</option>
                                 <option value="Listing Agent">Listing Agent</option>
                                 <option value="Relocation">Relocation</option>
@@ -78,7 +79,8 @@
                         <!-- Agent languages option -->
                         <div class="form-group col-md-6">
                             <label asp-for="Input.Languages" class="form-label"></label>
-                            <select asp-for="Input.Languages" class="form-control" multiple="multiple">
+                            <select asp-for="Input.Languages" class="form-control" multiple>
+                                <option value=""> </option>
                                 <option value="English">English</option>
                                 <option value="Mandarin">Mandarin</option>
                                 <option value="Cantonese">Cantonese</option>
