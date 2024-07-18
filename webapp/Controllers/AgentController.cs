@@ -258,6 +258,20 @@ namespace webapp.Controllers
         public async Task<IActionResult> SubmitProperty()
         {
 			var currentUser = await _userManager.GetUserAsync(User);
+
+            if (string.IsNullOrEmpty(currentUser.Id) ||
+                string.IsNullOrEmpty(currentUser.UserName) ||
+                string.IsNullOrEmpty(currentUser.FullName) ||
+                string.IsNullOrEmpty(currentUser.Email) ||
+                string.IsNullOrEmpty(currentUser.PhoneNumber) ||
+                string.IsNullOrEmpty(currentUser.About) ||
+                string.IsNullOrEmpty(currentUser.City) ||
+                string.IsNullOrEmpty(currentUser.State))
+            {
+                TempData["Message"] = "Error! Incomplete profile details. Please fill in your profile details first.";
+                TempData["Profile"] = "Error";
+            }
+
             var viewModel = new PropertySubmitViewModel
             {
                 Property = new PropertyViewModel(),
