@@ -1,9 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace webapp.Models.Admin
 {
-    public class UserViewModel
+    public class UserEditModel
     {
         [Required(ErrorMessage = "You must enter the username before submitting your form!")]
         [Display(Name = "Username")]
@@ -22,16 +21,19 @@ namespace webapp.Models.Admin
 
         [Phone]
         [Display(Name = "Phone number")]
-        public string PhoneNumber { get; set; }
+        public string? PhoneNumber { get; set; }
+
+        [Display(Name = "Change Password")]
+        public bool ChangePassword { get; set; }
 
         [DataType(DataType.Password)]
         [Display(Name = "Password")]
-        public string Password { get; set; }
+        public string? Password { get; set; }
 
         [DataType(DataType.Password)]
         [Display(Name = "Confirm Password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
-        public string ConfirmPassword { get; set; }
+        public string? ConfirmPassword { get; set; }
 
         [StringLength(256, ErrorMessage = "You must enter the value between 2 - 256 chars", MinimumLength = 2)]
         [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "The country must only contain alphabetic characters and spaces.")]
@@ -60,5 +62,6 @@ namespace webapp.Models.Admin
 
         [Display(Name = "Role")]
         public string SelectedRole { get; set; }
-	}
+    }
+
 }

@@ -1,5 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Identity
-@model webapp.Models.Admin.UserViewModel
+@model webapp.Models.Admin.UserEditModel
 
 @inject RoleManager<IdentityRole> RoleManager
 @{
@@ -26,16 +26,16 @@
 
 <div class="dashboard-body">
     <div class="dashboard-wraper">
-        <form asp-action="CreateUser" class="frm_submit_block" method="post">
+        <form asp-action="EditUser" class="frm_submit_block" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger mb-4" role="alert"></div>
             <h3>User Information</h3>
             @* <partial name="_StatusMessage" for="StatusMessage" /> *@
             <div class="frm_submit_wrap">
                 <div class="row">
                     <div class="form-group col-md-6">
-                        <label asp-for="@Model.FullName" class="form-label"></label>
-                        <input asp-for="@Model.FullName" class="form-control" />
-                        <span asp-validation-for="@Model.FullName" class="text-danger"></span>
+                        <label asp-for="FullName" class="form-label"></label>
+                        <input asp-for="FullName" class="form-control" />
+                        <span asp-validation-for="FullName" class="text-danger"></span>
                     </div>
                     <div class="form-group col-md-6">
                         <label asp-for="PhoneNumber" class="form-label"></label>
@@ -63,6 +63,14 @@
             <div class="frm_submit_block mt-4">
                 <h3>Password</h3>
                 <div class="frm_submit_wrap">
+                    <div class="row">
+                        <div class="form-group">
+                            <input asp-for="ChangePassword" class="form-check-input" type="checkbox" />
+                            <label asp-for="ChangePassword" class="form-label"></label>
+                            <span asp-validation-for="ChangePassword" class="text-danger"></span>
+                        </div>
+                    </div>
+
                     <div class="row">
                         <div class="form-group col-md-6">
                             <label asp-for="Password" class="form-label"></label>
@@ -120,7 +128,7 @@
             </div>
 
             <div class="form-group col-lg-12 col-md-12 mt-4">
-                <button id="update-profile-button" type="submit" class="btn btn-theme btn-lg">Create</button>
+                <button id="update-profile-button" type="submit" class="btn btn-theme btn-lg">Save Changes</button>
             </div>
         </form>
     </div>
