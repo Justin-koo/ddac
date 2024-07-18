@@ -60,7 +60,5 @@ namespace webapp.Models.Admin
 
         [Display(Name = "Role")]
         public string SelectedRole { get; set; }
-
-
-    }
+	}
 }
