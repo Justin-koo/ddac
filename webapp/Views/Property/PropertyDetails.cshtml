@@ -970,7 +970,7 @@
 								<div class="panel">
 									<div class="vesh-detail-bloc-body">
 										<div class="row">
-											<div class="col-8">
+											<div class="col-md-8 col-12">
 												<div class="row align-items-bottom">
 													@* <div class="col-xl-4 col-lg-4 col-md-6 col-12 mb-3"> *@
 													<div class="col mb-3">
@@ -1051,11 +1051,11 @@
 												</div>
 											</div>
 											@* <div class="col-xl-4 col-lg-4 col-md-6 col-2"> *@
-											<div class="col-4">
+											<div class="col-md-4 col-12">
 												@* <div class="alert alert-warning small mb-3" role="alert">
 													Your Loan to value would be <strong>90%</strong> with a Down Payment of <strong>@((property.Price * (decimal)0.1).ToString("C"))</strong>
 												</div> *@
-												<canvas id="mortgageChart"></canvas>
+												<canvas id="mortgageChart" class="mx-auto" style="height:200px;width:200px;"></canvas>
 											</div>
 										</div>
 @* 										<form id="savePropertyForm" method="post">
@@ -1066,7 +1066,7 @@
 											</button>
 										</form> *@
 										<div class="row align-items-end">
-											<div class="col-xl-12 col-lg-12 col-12 mb-4">
+											<div class="col-xl-12 col-lg-12 col-12 mt-2 mb-1">
 												<p class="m-0 p-0 font--medium small">Mortgage Fee is <strong>included</strong> in the monthly payment.</p>
 											</div>
 										</div>
@@ -1076,19 +1076,19 @@
 												<div class="mortgage-wrp-bloc">
 													<div class="mortgage-wrp-bloc-single">
 														<div class="mrtg-wrp-title">Monthly Payment</div>
-														<div id="monthly-payment" class="mrtg-wrp-subtitle">$799.70</div>
+														<div id="monthly-payment" class="mrtg-wrp-subtitle text-truncate">$799.70</div>
 													</div>
 													<div class="mortgage-wrp-bloc-single">
 														<div class="mrtg-wrp-title">Total Amount Financed</div>
-														<div id="total-amount-financed" class="mrtg-wrp-subtitle">$12,56.4</div>
+														<div id="total-amount-financed" class="mrtg-wrp-subtitle text-truncate">$12,56.4</div>
 													</div>
 													<div class="mortgage-wrp-bloc-single">
 														<div class="mrtg-wrp-title">Total Interest Payable</div>
-														<div id="total-interest-payable" class="mrtg-wrp-subtitle">4.2%</div>
+														<div id="total-interest-payable" class="mrtg-wrp-subtitle text-truncate">4.2%</div>
 													</div>
 													<div class="mortgage-wrp-bloc-single">
 														<div class="mrtg-wrp-title">Total Payable</div>
-														<div id="total-payable" class="mrtg-wrp-subtitle">$72,890</div>
+														<div id="total-payable" class="mrtg-wrp-subtitle text-truncate">$72,890</div>
 													</div>
 												</div>
 											</div>
@@ -1516,6 +1516,26 @@
 				mortgageChart.data.datasets[0].data[0] = loanAmount > 0 ? loanAmount.toFixed(2) : 0;
 				mortgageChart.data.datasets[0].data[1] = totalInterest > 0 ? totalInterest.toFixed(2) : 0;
 				mortgageChart.update();
+
+				var elements = document.querySelectorAll('.text-truncate');
+
+				elements.forEach(function (element) {
+					// Create a temporary span to measure full text width
+					var tempSpan = document.createElement("span");
+					tempSpan.style.visibility = "hidden";
+					tempSpan.style.position = "absolute";
+					tempSpan.innerHTML = element.textContent;
+
+					// Append to the body to get correct width
+					document.body.appendChild(tempSpan);
+					var fullTextWidth = tempSpan.getBoundingClientRect().width;
+					document.body.removeChild(tempSpan);
+
+					// Compare full text width to element's client width
+					if (element.clientWidth < fullTextWidth) {
+						element.setAttribute('title', element.textContent);
+					}
+				});
 			}
 
 			$("input").on("input", function () {
