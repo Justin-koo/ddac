@@ -320,7 +320,7 @@ namespace webapp.Controllers
                 if (model.ChangePassword && !string.IsNullOrWhiteSpace(model.Password))
                 {
                     var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-                    var result = await _userManager.ResetPasswordAsync(user, token, model.Password);
+                    var result = await _userManager.ChangePasswordAsync(user, token, model.Password);
                     if (!result.Succeeded)
                     {
                         ModelState.AddModelError("", "Failed to change password.");
@@ -448,20 +448,24 @@ namespace webapp.Controllers
 		[HttpGet]
 		public async Task<IActionResult> PropertyReport()
 		{
+			var currentUser = await _userManager.GetUserAsync(User);
+			var currentUserId = currentUser?.Id;
+
 			var reports = await _context.ReportProperty.ToListAsync();
+			var userIds = reports.Select(r => r.UserId).Distinct();
+			var users = await _userManager.Users.Where(u => userIds.Contains(u.Id)).ToDictionaryAsync(u => u.Id, u => u.UserName);
 
 			var reportViewModels = reports.Select(report => new ReportPropertyViewModel
 			{
-				// Assuming ReportPropertyViewModel has the same fields as ReportProperty for simplicity
 				Reason = report.Reason,
 				ReportDate = report.ReportDate,
 				PropertyId = report.PropertyId,
-				UserId = report.UserId
-				// Add other fields if there are any additional in the ViewModel
+				UserName = report.UserId == currentUserId ? "Me" : _userManager.FindByIdAsync(report.UserId).Result.UserName,
+				IsCurrentUser = report.UserId == currentUserId  // Set this property
 			}).ToList();
+
 
 			return View(reportViewModels);
 		}
-
 	}
 }
