@@ -158,32 +158,80 @@ namespace webapp.Controllers
 		}
 
 
+        //[Authorize]
+        //[ValidateAntiForgeryToken]
+        //[HttpPost]
+        //public async Task<IActionResult> UnsaveProperty(string encryptedId)
+        //{
+        //    Console.WriteLine(encryptedId);
+        //    var user = await _userManager.GetUserAsync(User);
+        //    if (user == null)
+        //    {
+        //        return Unauthorized(new { success = false, message = "Unauthorized" });
+        //    }
+
+        //    int id;
+        //    try
+        //    {
+        //        id = int.Parse(_encryptionHelper.Decrypt(encryptedId));
+        //    }
+        //    catch
+        //    {
+        //        return NotFound(new { success = false, message = "Property not found in saved list." });
+        //    }
+
+        //    var propertySave = await _context.PropertySave
+        //        .FirstOrDefaultAsync(ps => ps.UserId == user.Id && ps.PropertyId == id);
+
+        //    if (propertySave == null)
+        //    {
+        //        return NotFound(new { success = false, message = "Property not found in saved list." });
+        //    }
+
+        //    _context.PropertySave.Remove(propertySave);
+        //    await _context.SaveChangesAsync();
+
+        //    return Ok(new { success = true, message = "Property unsaved successfully!" });
+        //}
+
+
         [Authorize]
         [ValidateAntiForgeryToken]
         [HttpPost]
-        public async Task<IActionResult> UnsaveProperty(int encryptedId)
+        public async Task<IActionResult> UnsaveProperty(string encryptedId)
         {
-            Console.WriteLine(encryptedId);
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                return Unauthorized(new { success = false, message = "Unauthorized" });
+                TempData["Message"] = "Unauthorized access.";
+                return RedirectToAction("SavePropertyList", new { username = User.Identity.Name });
+            }
+
+            int id;
+            try
+            {
+                id = int.Parse(_encryptionHelper.Decrypt(encryptedId));
+            }
+            catch
+            {
+                return NotFound(new { success = false, message = "Property not found in saved list." });
             }
 
             var propertySave = await _context.PropertySave
-                .FirstOrDefaultAsync(ps => ps.UserId == user.Id && ps.PropertyId == encryptedId);
+                .FirstOrDefaultAsync(ps => ps.UserId == user.Id && ps.PropertyId == id);
 
             if (propertySave == null)
             {
-                return NotFound(new { success = false, message = "Property not found in saved list." });
+                TempData["Message"] = "Property not found in saved list.";
+                return RedirectToAction("SavePropertyList", new { username = User.Identity.Name });
             }
 
             _context.PropertySave.Remove(propertySave);
             await _context.SaveChangesAsync();
 
-            return Ok(new { success = true, message = "Property unsaved successfully!" });
+            TempData["Message"] = "Property unsaved successfully!";
+            return RedirectToAction("SavePropertyList", new { username = User.Identity.Name });
         }
-
 
     }
 }
