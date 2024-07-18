@@ -20,7 +20,9 @@ public class webappContext : IdentityDbContext<webappUser>
     public DbSet<PropertyDetail> PropertyDetails { get; set; }
     public DbSet<PropertyFeatures> Features { get; set; }
 	public DbSet<PropertyUpdate> PropertyUpdate { get; set; }
+	public DbSet<PropertySave> PropertySave { get; set; }
 	public DbSet<ReportProperty> ReportProperty { get; set; }
+
 
 	protected override void OnModelCreating(ModelBuilder builder)
     {
