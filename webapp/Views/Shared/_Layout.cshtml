@@ -7,7 +7,6 @@
 @{
 	webappUser user = null;
 	bool isAdmin = false;
-	string fixedNav = "";
 
 	if (SignInManager.IsSignedIn(User))
 	{
@@ -17,11 +16,6 @@
 		{
 			var roles = await UserManager.GetRolesAsync(user);
 			isAdmin = roles.Contains("Admin");
-		}
-
-		if (isAdmin)
-		{
-			fixedNav = "position-fixed w-100";
 		}
 		
 	}
@@ -60,7 +54,7 @@
 <body>
     <div id="preloader"><div class="preloader"><span></span><span></span></div></div>
     <div id="main-wrapper">
-		<div class="header @fixedNav header-light head-shadow">
+		<div class="header header-light head-shadow">
 			<div class="container">
 				<nav id="navigation" class="navigation navigation-landscape">
 					<div class="nav-header">
@@ -116,7 +110,7 @@
 		@RenderBody()
 
 
-		@if (!isAdmin)
+		@if (isAdmin != null)
 		{
 		<section class="bg-cover call-action-container dark" style="background:#065eb5 url('@Url.Content("~/img/footer-bg-dark.png")') no-repeat;">
 			<div class="container">
