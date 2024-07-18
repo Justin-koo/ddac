@@ -81,26 +81,6 @@
                 </div>
             </div>
 
-            <div class="frm_submit_block mt-4">
-                <h3>Profile Picture</h3>
-                <div class="frm_submit_wrap">
-                    <div class="row">
-                        <div class="form-group col-md-12">
-                            <label>Upload Picture</label>
-                            <input type="file" name="profilepic" id="filepond" multiple>
-                            @* <div class="previews"></div>
-                            <div class="dropzone dz-clickable primary-dropzone" id="agentpicDropzone">
-                            <div class="dz-default dz-message">
-                            <i class="fa-solid fa-images"></i>
-                            <span>Drag & Drop To Upload Images</span>
-                            </div>
-                            <input type="hidden" id="uploadedImageUrl" name="Input.ProfilePicture" value="@Model.Input.ProfilePicture" />
-                            </div> *@
-                        </div>
-                    </div>
-                </div>
-            </div>
-
 			<div class="frm_submit_block mt-4" id="agentFields" style="display:none;">
                 <h3>Agent Information</h3>
                 <div class="frm_submit_wrap">
@@ -157,33 +137,6 @@
     <script src="https://unpkg.com/filepond/dist/filepond.js"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Register the plugins
-            FilePond.registerPlugin(FilePondPluginFileValidateSize);
-            FilePond.registerPlugin(FilePondPluginFileValidateType);
-            FilePond.registerPlugin(FilePondPluginImagePreview);
-            FilePond.registerPlugin(FilePondPluginImageResize);
-            FilePond.registerPlugin(FilePondPluginImageTransform);
-            FilePond.registerPlugin(FilePondPluginImageCrop);
-
-            // Get a reference to the file input element
-            const inputElement = document.querySelector('input[name="profilepic"]');
-
-            // Create a FilePond instance
-            const pond = FilePond.create(inputElement, {
-                storeAsFile: true,
-                name: "profilepic",
-                imageResizeTargetWidth: 650,
-                imageResizeTargetHeight: 650,
-                imageResizeMode: "force",
-                imageCropAspectRatio: 1,
-                imageTransformOutputQuality: 90,
-                // allowMultiple: true,
-                maxFileSize: "5MB",
-                acceptedFileTypes: ['image/*'],
-                instantUpload: false // Disable instant upload to use default form submission
-            });
-        });
 
         var agentFields = document.getElementById('agentFields');
 
