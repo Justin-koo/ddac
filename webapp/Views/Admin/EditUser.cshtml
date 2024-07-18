@@ -4,20 +4,20 @@
 @inject RoleManager<IdentityRole> RoleManager
 @{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
-    ViewData["Title"] = "Create User";
+    ViewData["Title"] = "Edit User";
 
     var roles = RoleManager.Roles.Select(r => new SelectListItem
-        {
-            Value = r.Name,
-            Text = r.Name
-        }).ToList();
+            {
+                Value = r.Name,
+                Text = r.Name
+            }).ToList();
 }
 
 <div class="row align-items-center p-3 mt-3">
     <div class="col-auto">
         <h2>
             <a asp-controller="Admin" asp-action="UserList">
-            <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-left"></i>
             </a>
             @ViewData["Title"]
         </h2>
@@ -33,9 +33,9 @@
             <div class="frm_submit_wrap">
                 <div class="row">
                     <div class="form-group col-md-6">
-                        <label asp-for="FullName" class="form-label"></label>
-                        <input asp-for="FullName" class="form-control" />
-                        <span asp-validation-for="FullName" class="text-danger"></span>
+                        <label asp-for="@Model.FullName" class="form-label"></label>
+                        <input asp-for="@Model.FullName" class="form-control" />
+                        <span asp-validation-for="@Model.FullName" class="text-danger"></span>
                     </div>
                     <div class="form-group col-md-6">
                         <label asp-for="PhoneNumber" class="form-label"></label>
@@ -81,42 +81,42 @@
                 </div>
             </div>
 
-			<div class="frm_submit_block mt-4" id="agentFields" style="display:none;">
+            <div class="frm_submit_block mt-4" id="agentFields" style="display:none;">
                 <h3>Agent Information</h3>
                 <div class="frm_submit_wrap">
-					<div class="row">
-						<div class="form-group col-md-6">
-							<label asp-for="Country" class="form-label"></label>
-							<input asp-for="Country" class="form-control" />
-							<span asp-validation-for="Country" class="text-danger"></span>
-						</div>
-						<div class="form-group col-md-6">
-							<label asp-for="Address" class="form-label"></label>
-							<input asp-for="Address" class="form-control" />
-							<span asp-validation-for="Address" class="text-danger"></span>
-						</div>
-						<div class="form-group col-md-6">
-							<label asp-for="State" class="form-label"></label>
-							<input asp-for="State" class="form-control" />
-							<span asp-validation-for="State" class="text-danger"></span>
-						</div>
-						<div class="form-group col-md-6">
-							<label asp-for="City" class="form-label"></label>
-							<input asp-for="City" class="form-control" />
-							<span asp-validation-for="City" class="text-danger"></span>
-						</div>
-						<div class="form-group col-md-6">
-							<label asp-for="Zip" class="form-label"></label>
-							<input asp-for="Zip" class="form-control" />
-							<span asp-validation-for="Zip" class="text-danger"></span>
-						</div>
-						<div class="form-group col-md-12">
-							<label asp-for="About" class="form-label"></label>
-							<textarea asp-for="About" class="form-control"></textarea>
-							<span asp-validation-for="About" class="text-danger"></span>
-						</div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label asp-for="Country" class="form-label"></label>
+                            <input asp-for="Country" class="form-control" />
+                            <span asp-validation-for="Country" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="Address" class="form-label"></label>
+                            <input asp-for="Address" class="form-control" />
+                            <span asp-validation-for="Address" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="State" class="form-label"></label>
+                            <input asp-for="State" class="form-control" />
+                            <span asp-validation-for="State" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="City" class="form-label"></label>
+                            <input asp-for="City" class="form-control" />
+                            <span asp-validation-for="City" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="Zip" class="form-label"></label>
+                            <input asp-for="Zip" class="form-control" />
+                            <span asp-validation-for="Zip" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label asp-for="About" class="form-label"></label>
+                            <textarea asp-for="About" class="form-control"></textarea>
+                            <span asp-validation-for="About" class="text-danger"></span>
+                        </div>
                     </div>
-				</div>
+                </div>
             </div>
 
             <div class="form-group col-lg-12 col-md-12 mt-4">

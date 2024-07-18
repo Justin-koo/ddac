@@ -151,23 +151,47 @@ namespace webapp.Controllers
                 return View(model);
             }
 
+			bool AgentCheck = false;
+
             if (model.SelectedRole == "Agent")
             {
 				if (string.IsNullOrEmpty(model.Country))
+				{
 					ModelState.AddModelError("Country", "Country is required for agents.");
+					AgentCheck = true;
+                }
 				if (string.IsNullOrEmpty(model.Address))
+				{
 					ModelState.AddModelError("Address", "Address is required for agents.");
-				if (string.IsNullOrEmpty(model.State))
-					ModelState.AddModelError("State", "State is required for agents.");
-				if (string.IsNullOrEmpty(model.City))
-					ModelState.AddModelError("City", "City is required for agents.");
-				if (!model.Zip.HasValue)
-					ModelState.AddModelError("Zip", "Zip is required for agents.");
-				if (string.IsNullOrEmpty(model.About))
-					ModelState.AddModelError("About", "About is required for agents.");
+                    AgentCheck = true;
+                }
 
-				return View(model);
-			}
+                if (string.IsNullOrEmpty(model.State))
+				{
+                    ModelState.AddModelError("State", "State is required for agents.");
+                    AgentCheck = true;
+                }
+                if (string.IsNullOrEmpty(model.City))
+				{
+                    ModelState.AddModelError("City", "City is required for agents.");
+                    AgentCheck = true;
+                }
+                if (!model.Zip.HasValue)
+				{
+                    ModelState.AddModelError("Zip", "Zip is required for agents.");
+                    AgentCheck = true;
+                }
+                if (string.IsNullOrEmpty(model.About))
+				{
+                    ModelState.AddModelError("About", "About is required for agents.");
+                    AgentCheck = true;
+                }
+
+				if (AgentCheck)
+				{
+                    return View(model);
+                }
+            }
 
 			var user = new webappUser
             {
@@ -203,6 +227,30 @@ namespace webapp.Controllers
 
             return View(model);
         }
+
+		[HttpGet]
+		public async Task<IActionResult> EditUser(String username)
+		{
+			var user = await _userManager.FindByNameAsync(username);
+			if (user == null)
+			{
+				TempData["Message"] = "Error: User not found.";
+				return RedirectToAction(nameof(UserList));
+			}
+
+			var model = new UserViewModel
+			{
+    //            UserName = user.UserName,
+    //            Email = user.Email,
+    //            FullName = user.Email,
+    //            PhoneNumber = ,
+				//Country
+
+
+            };
+
+			return View(model);
+		}
 
 		[HttpPost]
 		public async Task<IActionResult> DeleteUser(string username)
