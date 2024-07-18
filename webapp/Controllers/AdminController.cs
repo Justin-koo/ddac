@@ -317,18 +317,24 @@ namespace webapp.Controllers
                     user.About = model.About;
                 }
 
-                if (model.ChangePassword && !string.IsNullOrWhiteSpace(model.Password))
-                {
-                    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-                    var result = await _userManager.ResetPasswordAsync(user, token, model.Password);
-                    if (!result.Succeeded)
-                    {
-                        ModelState.AddModelError("", "Failed to change password.");
-                        return View(model);
-                    }
-                }
+				if (model.ChangePassword && !string.IsNullOrWhiteSpace(model.Password))
+				{
+					// Generate a password reset token
+					var token = await _userManager.GeneratePasswordResetTokenAsync(user);
 
-                await _userManager.UpdateAsync(user);
+					// Reset the password using the token
+					var resetPassResult = await _userManager.ResetPasswordAsync(user, token, model.Password);
+					if (!resetPassResult.Succeeded)
+					{
+						foreach (var error in resetPassResult.Errors)
+						{
+							ModelState.AddModelError("", error.Description);
+						}
+						return View(model);
+					}
+				}
+
+				await _userManager.UpdateAsync(user);
 
                 return RedirectToAction(nameof(UserList));
             }
@@ -448,20 +454,24 @@ namespace webapp.Controllers
 		[HttpGet]
 		public async Task<IActionResult> PropertyReport()
 		{
+			var currentUser = await _userManager.GetUserAsync(User);
+			var currentUserId = currentUser?.Id;
+
 			var reports = await _context.ReportProperty.ToListAsync();
+			var userIds = reports.Select(r => r.UserId).Distinct();
+			var users = await _userManager.Users.Where(u => userIds.Contains(u.Id)).ToDictionaryAsync(u => u.Id, u => u.UserName);
 
 			var reportViewModels = reports.Select(report => new ReportPropertyViewModel
 			{
-				// Assuming ReportPropertyViewModel has the same fields as ReportProperty for simplicity
 				Reason = report.Reason,
 				ReportDate = report.ReportDate,
 				PropertyId = report.PropertyId,
-				UserId = report.UserId
-				// Add other fields if there are any additional in the ViewModel
+				UserName = report.UserId == currentUserId ? "Me" : _userManager.FindByIdAsync(report.UserId).Result.UserName,
+				IsCurrentUser = report.UserId == currentUserId  // Set this property
 			}).ToList();
+
 
 			return View(reportViewModels);
 		}
-
 	}
 }
