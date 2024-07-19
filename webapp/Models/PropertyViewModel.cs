@@ -80,7 +80,7 @@
 
         public string? EncryptedId { get; set; }
 
-		public List<int> SavedPropertyIds { get; set; }
+		public List<int>? SavedPropertyIds { get; set; }
 
 	}
 }

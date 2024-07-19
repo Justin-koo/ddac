@@ -8,7 +8,7 @@
     "environment"    : "webapp-dev",
     "enable-xray"    : false,
     "enhanced-health-type" : "basic",
-    "additional-options"   : "\"aws:autoscaling:launchconfiguration,SecurityGroups\"=\"sg-0b8a7e457468ed599,sg-0b3e69cc62ca3014f\";\"aws:ec2:vpc,Subnets\"=\"subnet-0538bd26d7b6ce311\"",
+    "additional-options"   : "",
     "solution-stack"       : "64bit Amazon Linux 2 v2.8.0 running .NET Core",
     "environment-type"     : "SingleInstance",
     "cname"                : "webapp-dev",

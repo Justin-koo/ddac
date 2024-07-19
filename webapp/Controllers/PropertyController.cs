@@ -44,6 +44,11 @@ namespace webapp.Controllers
 				return NotFound();
 			}
 
+			if (property.ListingStatus == "Blocked")
+			{
+				return RedirectToAction("Index", "Home");
+			}
+
 			var savedPropertyIds = new List<int>();
 			var users = await _userManager.GetUserAsync(User);
 

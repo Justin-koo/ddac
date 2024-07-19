@@ -1154,8 +1154,8 @@
 												</div>
 												<input asp-for="ReportProperty.Reason" type="hidden" id="selectedReasonRadio" name="selectedReasonRadio">
 												<input asp-for="ReportProperty.PropertyId" type="hidden" id="propertyIdRadio" name="propertyIdRadio" value="@Model.Property.Id">
-											
-												<button type="button" class="btn w-100 btn-danger mt-3">Report</button>
+
+												<button type="submit" onclick="submitReportForm()" class="btn w-100 btn-danger mt-3">Report</button>
 											</form>
 										</div>
 										@* <div class="modal-footer">
@@ -1276,6 +1276,8 @@
 
 
 														@* This is to fking reinput the missing value when submit form to the sohai idiot model *@
+															<input asp-for="Property.Area" type="hidden" value="@Model.Property.Area" />
+															<input asp-for="Property.Price" type="hidden" value="@Model.Property.Price" />
 															<input asp-for="Property.Id" type="hidden" value="@Model.Property.Id" />
 															<input asp-for="Property.Title" type="hidden" value="@Model.Property.Title" />
 															<input asp-for="Property.AddressLine" type="hidden" value="@Model.Property.AddressLine" />
@@ -1641,6 +1643,8 @@
 		}
 
 		function submitReportForm() {
+			event.preventDefault();
+
 			const selectedRadio = document.querySelector('input[name="customRadio"]:checked');
 			if (selectedRadio) {
 				document.getElementById('selectedReasonRadio').value = selectedRadio.value;

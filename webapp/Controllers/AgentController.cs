@@ -312,7 +312,8 @@ namespace webapp.Controllers
 
                 foreach (var error in errors)
                 {
-                    Console.WriteLine(error);
+					ModelState.AddModelError(string.Empty, error);
+					Console.WriteLine(error);
                 }
 
                 return View(model);

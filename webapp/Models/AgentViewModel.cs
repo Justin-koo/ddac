@@ -34,7 +34,7 @@
 
 		public string? ProfilePicture { get; set; }
 
-		public List<int> SavedPropertyIds { get; set; }
+		public List<int>? SavedPropertyIds { get; set; }
 
 
 	}

@@ -52,7 +52,7 @@ namespace webapp.Areas.Identity.Pages.Account.Manage
 			[Required(ErrorMessage = "You must enter the username before submitting your form!")]
 			[StringLength(256, ErrorMessage = "You must enter the value between 6 - 256 chars", MinimumLength = 6)]
 			// Regular expression to allow letters, numbers, dots, underscores, and hyphens, but no spaces
-			[RegularExpression(@"^[a-zA-Z0-9._-]+$", ErrorMessage = "The username must only contain alphanumeric characters, dots, underscores, and hyphens.")]
+			[RegularExpression(@"^[a-zA-Z0-9._@-]+$", ErrorMessage = "The username must only contain alphanumeric characters, dots, underscores, hyphens, and the @ symbol.")]
 			[Display(Name = "Username")]
 			public string UserName { get; set; }
 
