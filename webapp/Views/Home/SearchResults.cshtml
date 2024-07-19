@@ -28,7 +28,7 @@
                                     <input type="text" id="query" name="query" class="form-control" placeholder="Location">
                                 </div>
 
-                                <div class="form-group">
+                                @* <div class="form-group">
                                     <select id="city" name="city" class="select-normal">
                                         <option value="">Choose City</option>
                                         @foreach (var city in Model.Cities)
@@ -36,7 +36,7 @@
                                             <option value="@city">@city</option>
                                         }
                                     </select>
-                                </div>
+                                </div> *@
 
                                 <div class="form-group">
                                     <select id="state" name="state" class="select-normal">
@@ -61,20 +61,29 @@
                                 <div class="form-group">
                                     <select id="status" name="status" class="select-normal">
                                         <option value="">Rent or Sale</option>
-                                        @foreach (var status in Model.statusList)
+                                        <option value="Rent">Rent</option>
+                                        <option value="Sale">Sale</option>
+                                        @* @foreach (var status in Model.statusList)
                                         {
                                             <option value="@status">@status</option>
-                                        }
+                                        } *@
                                     </select>
                                 </div>
 
                                 <div class="form-group">
                                     <select id="types" name="types" class="select-normal">
                                         <option value="">Property Types</option>
-                                        @foreach (var types in Model.PropertyTypes)
+                                        <option value="Houses">Houses</option>
+                                        <option value="Apartment">Apartment</option>
+                                        <option value="Villas">Villas</option>
+                                        <option value="Commercial">Commercial</option>
+                                        <option value="Offices">Offices</option>
+                                        <option value="Garage">Garage</option>
+                                        @* @foreach (var types in Model.PropertyTypes)
                                         {
                                             <option value="@types">@types</option>
-                                        }
+                                        } *@
+
                                     </select>
                                 </div>
 
@@ -142,26 +151,33 @@
                                     <h3>Other Features</h3>
                                     <div id="featuresinfo" class="panel-collapse" aria-labelledby="featuresinfo">
                                         <div class="vesh-detail-bloc-body">
-                                            @foreach (var category in Model.Features.GroupBy(f => f.Category))
+                                            @if (Model.Features.Any())
                                             {
-                                                <div class="lvs-detail mb-4">
-                                                    <div class="row">
-                                                        <div class="col-xl-12 col-lg-12 col-md-12">
-                                                            <h6>@category.Key</h6>
+                                                @foreach (var category in Model.Features.GroupBy(f => f.Category))
+                                                {
+                                                    <div class="lvs-detail mb-4">
+                                                        <div class="row">
+                                                            <div class="col-xl-12 col-lg-12 col-md-12">
+                                                                <h6>@category.Key</h6>
+                                                            </div>
                                                         </div>
+                                                        <ul class="row p-0 m-0">
+                                                            @foreach (var feature in category)
+                                                            {
+                                                                <li class="col-lg-6 col-md-6 p-0">
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input name="features" type="checkbox" value="@feature.FeatureID" class="form-check-input" id="feature-@feature.FeatureID">
+                                                                        <label class="form-check-label" for="feature-@feature.FeatureID">@feature.FeatureName</label>
+                                                                    </div>
+                                                                </li>
+                                                            }
+                                                        </ul>
                                                     </div>
-                                                    <ul class="row p-0 m-0">
-                                                        @foreach (var feature in category)
-                                                        {
-                                                            <li class="col-lg-6 col-md-6 p-0">
-                                                                <div class="form-check form-check-inline">
-                                                                    <input name="features" type="checkbox" value="@feature.FeatureID" class="form-check-input" id="feature-@feature.FeatureID">
-                                                                    <label class="form-check-label" for="feature-@feature.FeatureID">@feature.FeatureName</label>
-                                                                </div>
-                                                            </li>
-                                                        }
-                                                    </ul>
-                                                </div>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                @* <h1 class="m-0">No Features Found</h1> *@
                                             }
                                         </div>
                                     </div>
@@ -190,61 +206,63 @@
                     </div>
                 </div>
                 <div class="row gx-3 gy-4">
-                    @foreach (var property in Model.Properties)
+                    @if (Model.Properties.Any())
                     {
-                        if (property.ListingStatus == "Active")
+                        @foreach (var property in Model.Properties)
                         {
-                            var isSaved = @Model.SavedPropertyIds.Contains(property.Id);
-                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                                <div class="veshm-list-prty">
-                                    <div class="veshm-list-prty-figure">
-                                        <div class="veshm-list-img-slide">
-                                            <div class="veshm-list-click">
-                                                @if (property.GalleryPath.Any())
-                                                {
-                                                    @foreach (var imgPath in property.GalleryPath)
+                            if (property.ListingStatus == "Active")
+                            {
+                                var isSaved = @Model.SavedPropertyIds.Contains(property.Id);
+                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                                    <div class="veshm-list-prty">
+                                        <div class="veshm-list-prty-figure">
+                                            <div class="veshm-list-img-slide">
+                                                <div class="veshm-list-click">
+                                                    @if (property.GalleryPath.Any())
                                                     {
-                                                        <div>
-                                                            <a asp-controller="Property" asp-action="PropertyDetails" asp-route-id="@property.Id" class="prt-link-detail">
-                                                                <img src="~/uploads/property/@property.GalleryFolder/@imgPath" class="img-fluid mx-auto" alt="">
-                                                            </a>
-                                                        </div>
+                                                        @foreach (var imgPath in property.GalleryPath)
+                                                        {
+                                                            <div>
+                                                                <a asp-controller="Property" asp-action="PropertyDetails" asp-route-id="@property.Id" class="prt-link-detail">
+                                                                    <img src="~/uploads/property/@property.GalleryFolder/@imgPath" class="img-fluid mx-auto" alt="">
+                                                                </a>
+                                                            </div>
+                                                        }
                                                     }
-                                                }
-                                                else
-                                                {
-                                                    <a asp-controller="Property" asp-action="PropertyDetails" asp-route-id="@property.Id">
-                                                        <img src="uploads/property/default/default_property.jpeg" class="slick-img mx-auto" alt="">
-                                                    </a>
-                                                }
+                                                    else
+                                                    {
+                                                        <a asp-controller="Property" asp-action="PropertyDetails" asp-route-id="@property.Id">
+                                                            <img src="uploads/property/default/default_property.jpeg" class="slick-img mx-auto" alt="">
+                                                        </a>
+                                                    }
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="veshm-list-prty-caption">
-                                        <div class="veshm-list-kygf">
-                                            <div class="veshm-list-kygf-flex">
-                                                @if (property.Status == "Rent")
-                                                {
-                                                    <div class="veshm-list-typess rent"><span>For Rent</span></div>
-                                                }
-                                                else if (property.Status == "Sale")
-                                                {
-                                                    <div class="veshm-list-typess bg-danger-subtle text-danger"><span>For Sale</span></div>
-                                                }
+                                        <div class="veshm-list-prty-caption">
+                                            <div class="veshm-list-kygf">
+                                                <div class="veshm-list-kygf-flex">
+                                                    @if (property.Status == "Rent")
+                                                    {
+                                                        <div class="veshm-list-typess rent"><span>For Rent</span></div>
+                                                    }
+                                                    else if (property.Status == "Sale")
+                                                    {
+                                                        <div class="veshm-list-typess bg-danger-subtle text-danger"><span>For Sale</span></div>
+                                                    }
 
-                                                <h5 class="rlhc-title-name verified"><a asp-controller="Property" asp-action="PropertyDetails" asp-route-id="@property.Id" class="prt-link-detail">@property.Title</a></h5>
-                                                <div class="rlhc-prt-location"><img src="~/img/pin.svg" width="16" class="me-1" alt="">@property.City, @property.State</div>
-                                            </div>
-                                            <div class="veshm-list-head-flex">
+                                                    <h5 class="rlhc-title-name verified"><a asp-controller="Property" asp-action="PropertyDetails" asp-route-id="@property.Id" class="prt-link-detail">@property.Title</a></h5>
+                                                    <div class="rlhc-prt-location"><img src="~/img/pin.svg" width="16" class="me-1" alt="">@property.City, @property.State</div>
+                                                </div>
+                                                <div class="veshm-list-head-flex">
                                                     @if (isSaved == true)
                                                     {
-                                                    <form asp-action="JsonUnsaveProperty" asp-controller="User" asp-route-id="@property.Id" method="post" class="unsave-property-form" style="display:inline;">
-                                                        @Html.AntiForgeryToken()
+                                                        <form asp-action="JsonUnsaveProperty" asp-controller="User" asp-route-id="@property.Id" method="post" class="unsave-property-form" style="display:inline;">
+                                                            @Html.AntiForgeryToken()
 
-                                                        <button class="btn btn-like text-danger" type="submit">
-                                                            <i class="fa-solid fa-heart-circle-xmark"></i>
-                                                        </button>
-                                                    </form>
+                                                            <button class="btn btn-like text-danger" type="submit">
+                                                                <i class="fa-solid fa-heart-circle-xmark"></i>
+                                                            </button>
+                                                        </form>
                                                     }
                                                     else
                                                     {
@@ -255,40 +273,46 @@
                                                             </button>
                                                         </form>
                                                     }
-                                            </div>
-                                        </div>
-                                        <div class="veshm-list-middle">
-                                            <div class="veshm-list-icons">
-                                                <ul>
-                                                    <li><i class="fa-solid fa-bed"></i><span>@property.Bedrooms Bed</span></li>
-                                                    <li><i class="fa-solid fa-bath"></i><span>@property.Bathrooms Ba</span></li>
-                                                    <li><i class="fa-solid fa-vector-square"></i><span>@property.Area Sqft</span></li>
-                                                    @* <li><i class="fa-solid fa-calendar-days"></i><span>Built 2020</span></li> *@
-                                                </ul>
-                                            </div>
-                                        </div>
-                                        <div class="veshm-list-footers">
-                                            <div class="veshm-list-ftr786">
-                                                <div class="rlhc-price">
-                                                    <h4 class="rlhc-price-name theme-cl">
-                                                        @property.Price.ToString("C")
-                                                        @{
-                                                            if (property.Status == "Rent")
-                                                            {
-                                                                <span class="monthly">/Months</span>
-                                                            }
-                                                        }
-                                                    </h4>
                                                 </div>
                                             </div>
-                                            <div class="veshm-list-ftr1707">
-                                                <a asp-controller="Property" asp-action="PropertyDetails" asp-route-id="@property.Id" class="btn btn-md btn-primary font--medium">View</a>
+                                            <div class="veshm-list-middle">
+                                                <div class="veshm-list-icons">
+                                                    <ul>
+                                                        <li><i class="fa-solid fa-bed"></i><span>@property.Bedrooms Bed</span></li>
+                                                        <li><i class="fa-solid fa-bath"></i><span>@property.Bathrooms Ba</span></li>
+                                                        <li><i class="fa-solid fa-vector-square"></i><span>@property.Area Sqft</span></li>
+                                                        @* <li><i class="fa-solid fa-calendar-days"></i><span>Built 2020</span></li> *@
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <div class="veshm-list-footers">
+                                                <div class="veshm-list-ftr786">
+                                                    <div class="rlhc-price">
+                                                        <h4 class="rlhc-price-name theme-cl">
+                                                            @property.Price.ToString("C")
+                                                            @{
+                                                                if (property.Status == "Rent")
+                                                                {
+                                                                    <span class="monthly">/Months</span>
+                                                                }
+                                                            }
+                                                        </h4>
+                                                    </div>
+                                                </div>
+                                                <div class="veshm-list-ftr1707">
+                                                    <a asp-controller="Property" asp-action="PropertyDetails" asp-route-id="@property.Id" class="btn btn-md btn-primary font--medium">View</a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            }
                         }
+                    }
+                    else
+                    {
+                        @* <h1 class="m-0">No Results Found</h1> *@
+                        
                     }
                 </div>
                 <!-- Pagination -->

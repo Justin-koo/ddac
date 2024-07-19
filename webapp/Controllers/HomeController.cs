@@ -154,7 +154,7 @@ namespace webapp.Controllers
 		}
 
         [HttpGet]
-        public async Task<IActionResult> SearchResults(string query, string liststatus,string city, string state, string status, string types, int bedrooms, int bathrooms, int garage, string builtYear, List<int> features, decimal? minPrice, decimal? maxPrice, int page = 1)
+        public async Task<IActionResult> SearchResults(string query, string liststatus, string city, string state, string status, string types, int bedrooms, int bathrooms, int garage, string builtYear, List<int> features, decimal? minPrice, decimal? maxPrice, int page = 1)
         {
             var savedPropertyIds = new List<int>();
             var user = await _userManager.GetUserAsync(User);
@@ -180,30 +180,30 @@ namespace webapp.Controllers
 
                 foreach (var term in queryTerms)
                 {
-                    propertiesQuery = propertiesQuery.Where(p => p.Address.City.Contains(term) ||
-                                                                 p.Address.State.Contains(term) ||
-                                                                 p.Address.AddressLine.Contains(term));
+                    propertiesQuery = propertiesQuery.Where(p => p.Address.City.ToLower().Contains(term) ||
+                                                                 p.Address.State.ToLower().Contains(term) ||
+                                                                 p.Address.AddressLine.ToLower().Contains(term));
                 }
             }
 
             if (!string.IsNullOrEmpty(city))
             {
-                propertiesQuery = propertiesQuery.Where(p => p.Address.City == city);
+                propertiesQuery = propertiesQuery.Where(p => p.Address.City.ToLower() == city.ToLower());
             }
 
             if (!string.IsNullOrEmpty(state))
             {
-                propertiesQuery = propertiesQuery.Where(p => p.Address.State == state);
+                propertiesQuery = propertiesQuery.Where(p => p.Address.State.ToLower() == state.ToLower());
             }
 
             if (!string.IsNullOrEmpty(status))
             {
-                propertiesQuery = propertiesQuery.Where(p => p.Status == status);
+                propertiesQuery = propertiesQuery.Where(p => p.Status.ToLower() == status.ToLower());
             }
 
             if (!string.IsNullOrEmpty(types))
             {
-                propertiesQuery = propertiesQuery.Where(p => p.PropertyType == types);
+                propertiesQuery = propertiesQuery.Where(p => p.PropertyType.ToLower() == types.ToLower());
             }
 
             if (bedrooms > 0)
@@ -252,6 +252,7 @@ namespace webapp.Controllers
                 .Take(PageSize)
                 .ToListAsync();
 
+            // Ensure the view model is constructed even if there are no properties
             var viewModel = new SearchResultViewModel
             {
                 Properties = properties.Select(p => new PropertyViewModel
@@ -291,8 +292,8 @@ namespace webapp.Controllers
                 BuiltYear = builtYear,
                 SelectedFeatures = features ?? new List<int>(),
                 Features = await _context.Features.ToListAsync(),
-                MinPrice = await propertiesQuery.MinAsync(p => p.Price),
-                MaxPrice = await propertiesQuery.MaxAsync(p => p.Price),
+                MinPrice = propertiesQuery.Any() ? await propertiesQuery.MinAsync(p => p.Price) : 0,
+                MaxPrice = propertiesQuery.Any() ? await propertiesQuery.MaxAsync(p => p.Price) : 0,
                 PriceRange = $"{minPrice};{maxPrice}",
                 SavedPropertyIds = savedPropertyIds,
                 states = await _context.Properties.Select(p => p.Address.State).Distinct().ToListAsync(),
@@ -303,7 +304,6 @@ namespace webapp.Controllers
             };
             return View(viewModel);
         }
-
 
 
 
