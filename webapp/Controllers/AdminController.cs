@@ -77,18 +77,19 @@ namespace webapp.Controllers
         {
 			var currentUserId = _userManager.GetUserId(User);
 			var users = _userManager.Users.Where(u => u.Id != currentUserId).ToList();
-			var userList = new List<UserViewModel>();
+			var userList = new List<UserListModel>();
 
 			foreach (var user in users)
 			{
 				var roles = await _userManager.GetRolesAsync(user);
                 var role = roles.FirstOrDefault();
-                userList.Add(new UserViewModel
+                userList.Add(new UserListModel
 				{
                     Id = user.Id,
                     UserName = user.UserName,
 					Email = user.Email,
 					FullName = user.FullName,
+                    PhoneNumber = user.PhoneNumber,
                     SelectedRole = role
 				});
 			}
@@ -132,9 +133,11 @@ namespace webapp.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateUser(UserViewModel model, List<IFormFile> profilepic)
+        public async Task<IActionResult> CreateUser(UserCreateModel model, List<IFormFile> profilepic)
         {
-            if (!ModelState.IsValid)
+			ViewData["IsAdminPage"] = true;
+
+			if (!ModelState.IsValid)
             {
                 foreach (var state in ModelState)
 				{
@@ -142,10 +145,11 @@ namespace webapp.Controllers
 					var errors = state.Value.Errors;
 					foreach (var error in errors)
 					{
+						//ModelState.AddModelError(string.Empty, error.ErrorMessage);
 						Console.WriteLine($"Key: {key}, Error: {error.ErrorMessage}");
 					}
 				}
-
+				//ModelState.AddModelError(string.Empty, error.ErrorMessage);
 				return View(model);
             }
 
@@ -231,7 +235,6 @@ namespace webapp.Controllers
                 ModelState.AddModelError(string.Empty, error.Description);
             }
 
-			ViewData["IsAdminPage"] = true;
 			return View(model);
         }
 
@@ -239,6 +242,8 @@ namespace webapp.Controllers
         [HttpGet]
         public async Task<IActionResult> EditUser(string id)
         {
+			ViewData["IsAdminPage"] = true;
+
 			var user = await _userManager.FindByIdAsync(id);
 			if (user == null)
             {
@@ -265,14 +270,15 @@ namespace webapp.Controllers
                 SelectedRole = selectedRole
             };
 
-			ViewData["IsAdminPage"] = true;
 			return View(model);
         }
 
         [HttpPost]
         public async Task<IActionResult> EditUser(UserEditModel model)
         {
-            if (ModelState.IsValid)
+			ViewData["IsAdminPage"] = true;
+
+			if (ModelState.IsValid)
             {
 				var user = await _userManager.FindByIdAsync(model.Id);
 				if (user == null)
@@ -347,7 +353,6 @@ namespace webapp.Controllers
                 return RedirectToAction(nameof(UserList));
             }
 
-			ViewData["IsAdminPage"] = true;
 			return View(model);
         }
 
@@ -356,6 +361,8 @@ namespace webapp.Controllers
         [HttpPost]
 		public async Task<IActionResult> DeleteUser(string username)
 		{
+			ViewData["IsAdminPage"] = true;
+
 			var user = await _userManager.FindByNameAsync(username);
 			if (user == null)
 			{
@@ -378,6 +385,8 @@ namespace webapp.Controllers
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> BlockProperty(int id)
 		{
+			ViewData["IsAdminPage"] = true;
+
 			var property = await _context.Properties.FindAsync(id);
 			if (property == null)
 			{
@@ -396,7 +405,6 @@ namespace webapp.Controllers
 			await _context.SaveChangesAsync();
 
 			TempData["Message"] = "Property blocked successfully!";
-			ViewData["IsAdminPage"] = true;
 			return RedirectToAction(nameof(PropertyList));
 		}
 
@@ -404,6 +412,8 @@ namespace webapp.Controllers
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> UnblockProperty(int id)
 		{
+			ViewData["IsAdminPage"] = true;
+
 			var property = await _context.Properties.FindAsync(id);
 			if (property == null)
 			{
@@ -422,7 +432,6 @@ namespace webapp.Controllers
 			await _context.SaveChangesAsync();
 
 			TempData["Message"] = "Property unblocked successfully!";
-			ViewData["IsAdminPage"] = true;
 			return RedirectToAction(nameof(PropertyList));
 		}
 
@@ -436,7 +445,9 @@ namespace webapp.Controllers
         [HttpPost]
         public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
         {
-            if (!ModelState.IsValid)
+			ViewData["IsAdminPage"] = true;
+
+			if (!ModelState.IsValid)
             {
                 return View(model);
             }
@@ -460,7 +471,6 @@ namespace webapp.Controllers
                 ModelState.AddModelError(string.Empty, error.Description);
             }
 
-			ViewData["IsAdminPage"] = true;
 			return View(model);
         }
 
@@ -502,7 +512,9 @@ namespace webapp.Controllers
         [HttpGet]
         public async Task<IActionResult> PropertyReport()
         {
-            var currentUser = await _userManager.GetUserAsync(User);
+			ViewData["IsAdminPage"] = true;
+
+			var currentUser = await _userManager.GetUserAsync(User);
             if (currentUser == null)
             {
                 return Unauthorized();
@@ -511,10 +523,10 @@ namespace webapp.Controllers
             var currentUserId = currentUser.Id;
 
             var reports = await _context.ReportProperty.ToListAsync();
-            if (reports == null || !reports.Any())
-            {
-                return View("NoReports"); // or any other appropriate action
-            }
+            //if (reports == null || !reports.Any())
+            //{
+            //    return View("NoReports"); // or any other appropriate action
+            //}
 
             var userIds = reports.Select(r => r.UserId).Distinct();
             var users = await _userManager.Users.Where(u => userIds.Contains(u.Id)).ToDictionaryAsync(u => u.Id, u => u.UserName);

@@ -3,10 +3,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace webapp.Models.Admin
 {
-    public class UserViewModel
+    public class UserCreateModel
     {
-        [Required]
-        public string Id { get; set; }
 
         [Required(ErrorMessage = "You must enter the username before submitting your form!")]
         [Display(Name = "Username")]

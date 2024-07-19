@@ -1,4 +1,4 @@
-﻿@model IEnumerable<webapp.Models.Admin.UserViewModel>
+﻿@model IEnumerable<webapp.Models.Admin.UserListModel>
 
 @{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
@@ -34,6 +34,7 @@
 						<th scope="col">User Name</th>
 						<th scope="col">Email</th>
 						<th scope="col">Full Name</th>
+						<th scope="col">Phone Number</th>
 						<th scope="col">Roles</th>
 						<th scope="col">Actions</th>
 					</tr>
@@ -45,6 +46,7 @@
 							<td>@user.UserName</td>
 							<td>@user.Email</td>
 							<td>@user.FullName</td>
+							<td>@user.PhoneNumber</td>
 							<td>
 								<div class="_leads_status">
 									@if (user.SelectedRole == "Agent")
