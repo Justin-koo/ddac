@@ -64,9 +64,13 @@
 									<td>
 										<div class="dash_prt_wrap">
 											<div class="dash_prt_thumb">
-												@if (property.GalleryPath.Any())
+												@if (property.ImageUrls.Any())
 												{
-													<img src="~/uploads/property/@property.GalleryFolder/@property.GalleryPath.First()" class="img-fluid" alt=" ">
+													@foreach (var imageUrl in property.ImageUrls)
+													{
+														<img src="@imageUrl" class="img-fluid" alt="@property.Title">
+													}
+													@* <img src="~/uploads/property/@property.GalleryFolder/@property.GalleryPath.First()" class="img-fluid" alt=" "> *@
 													@* <img src="~/uploads/property/@property.HashedId/@path" alt="Property Image" /> *@
 												}
 												else

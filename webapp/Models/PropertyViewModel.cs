@@ -74,6 +74,8 @@
 
 		public string? GalleryFolder { get; set; }
 
+		public List<string> ImageUrls { get; set; } = new List<string>();
+
 		public string? ListingStatus { get; set; }
 
 		public int Id { get; set; }

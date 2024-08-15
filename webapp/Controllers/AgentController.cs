@@ -10,6 +10,8 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp.Formats.Jpeg;
 using webapp.Helpers; //used only for the Jpeg encoder below
+using Amazon.S3;
+using Amazon.S3.Model;
 
 namespace webapp.Controllers
 {
@@ -19,14 +21,16 @@ namespace webapp.Controllers
 		private readonly webappContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly EncryptionHelper _encryptionHelper;
+		private readonly S3Service _s3Service;
 
-        public AgentController(UserManager<webappUser> userManager, webappContext context, IWebHostEnvironment webHostEnvironment, EncryptionHelper encryptionHelper)
+		public AgentController(S3Service s3Service, UserManager<webappUser> userManager, webappContext context, IWebHostEnvironment webHostEnvironment, EncryptionHelper encryptionHelper)
         {
             _userManager = userManager;
             _context = context;
             _webHostEnvironment = webHostEnvironment;
             _encryptionHelper = encryptionHelper;
-        }
+			_s3Service = s3Service;
+		}
 
         [Route("agents", Name ="AgentList")]
         [HttpGet]
@@ -344,45 +348,48 @@ namespace webapp.Controllers
             _context.Properties.Add(property);
             await _context.SaveChangesAsync();
 
-            var propertyIdString = property.Id.ToString();
+			string folderPath = $"property/{property.Id.ToString()}";
+			var uploadUrls = await _s3Service.UploadFilesToS3(files, folderPath);
 
-            //Console.WriteLine("Files: " + (files != null ? files.Count.ToString() : "null"));
-            var uploadUrls = new List<string>();
-             var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "property", propertyIdString.ToSHA256String());
+			//var propertyIdString = property.Id.ToString();
 
-            if (!Directory.Exists(uploadsFolder))
-            {
-                Directory.CreateDirectory(uploadsFolder);
-            }
-            foreach (var file in files)
-            {
-                //Console.WriteLine("In handle file");
-                if (file.Length > 0)
-                {
-                    var uniqueFileName = Guid.NewGuid().ToString() + ".jpeg";
-                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+			//         //Console.WriteLine("Files: " + (files != null ? files.Count.ToString() : "null"));
+			//         var uploadUrls = new List<string>();
+			//          var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "property", propertyIdString.ToSHA256String());
 
-                    using (var inStream = file.OpenReadStream())
-                    using (Image image = Image.Load(inStream))
-                    {
-                        image.Mutate(x => x.Resize(1920, 1250));
+			//         if (!Directory.Exists(uploadsFolder))
+			//         {
+			//             Directory.CreateDirectory(uploadsFolder);
+			//         }
+			//         foreach (var file in files)
+			//         {
+			//             //Console.WriteLine("In handle file");
+			//             if (file.Length > 0)
+			//             {
+			//                 var uniqueFileName = Guid.NewGuid().ToString() + ".jpeg";
+			//                 var filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
-                        var encoder = new JpegEncoder
-                        {
-                            Quality = 75
-                        };
+			//                 using (var inStream = file.OpenReadStream())
+			//                 using (Image image = Image.Load(inStream))
+			//                 {
+			//                     image.Mutate(x => x.Resize(1920, 1250));
 
-                        using (var fileStream = new FileStream(filePath, FileMode.Create))
-                        {
-                            await image.SaveAsJpegAsync(fileStream, encoder);
-                        }
-                    }
-                    uploadUrls.Add(uniqueFileName); // or a URL if needed
-                }
-            }
+			//                     var encoder = new JpegEncoder
+			//                     {
+			//                         Quality = 75
+			//                     };
 
-            // Update property with gallery path
-            property.GalleryPath = string.Join(";", uploadUrls);
+			//                     using (var fileStream = new FileStream(filePath, FileMode.Create))
+			//                     {
+			//                         await image.SaveAsJpegAsync(fileStream, encoder);
+			//                     }
+			//                 }
+			//                 uploadUrls.Add(uniqueFileName); // or a URL if needed
+			//             }
+			//         }
+
+			// Update property with gallery path
+			property.GalleryPath = string.Join(";", uploadUrls);
             _context.Properties.Update(property);
             await _context.SaveChangesAsync();
 
@@ -438,8 +445,8 @@ namespace webapp.Controllers
             //return View(model);
         }
 
-        //[Authorize(Roles = "Agent")]
-        [HttpGet]
+		//[Authorize(Roles = "Agent")]
+		[HttpGet]
         [Route("{username}/property-listing")]
         public async Task<IActionResult> AgentPropertyList(string username)
         {
@@ -495,6 +502,8 @@ namespace webapp.Controllers
                 GalleryFolder = p.Id.ToString().ToSHA256String(),
                 ListingStatus = p.ListingStatus,
 				SavedPropertyIds = savedPropertyIds,
+				ImageUrls = p.GalleryPath.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
+					.Select(path => _s3Service.GeneratePresignedURL(path)).ToList()
 
 			}).ToList();
 
@@ -912,7 +921,21 @@ namespace webapp.Controllers
                 return RedirectToAction(nameof(AgentPropertyList), new { username = currentUser.UserName });
             }
 
-            _context.Properties.Remove(property);
+			if (!string.IsNullOrEmpty(property.GalleryPath))
+			{
+				var fileKeys = property.GalleryPath.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+				foreach (var fileKey in fileKeys)
+				{
+					bool deleteResult = await _s3Service.DeleteFileFromS3(fileKey);
+					if (!deleteResult)
+					{
+						TempData["Message"] = "Error: Failed to delete one or more files from S3.";
+						return RedirectToAction(nameof(AgentPropertyList), new { username = currentUser.UserName });
+					}
+				}
+			}
+
+			_context.Properties.Remove(property);
             await _context.SaveChangesAsync();
 
             TempData["Message"] = "Property deleted successfully!";

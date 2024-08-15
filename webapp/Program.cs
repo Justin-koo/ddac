@@ -1,4 +1,5 @@
 using System.Globalization;
+using Amazon.S3;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using webapp.Areas.Identity.Data;
@@ -7,6 +8,7 @@ using webapp.Helpers;
 using webapp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddScoped<S3Service>();
 builder.Services.AddAuthentication().AddGoogle(googleOptions =>
 {
     googleOptions.ClientId = "447416333378-64fobuh34m3fjov20j229163uipua7sv.apps.googleusercontent.com";
@@ -42,7 +44,8 @@ builder.Services.AddTransient<SendEmailService>();
 // Configure Data Protection
 builder.Services.AddDataProtection();
 builder.Services.AddSingleton<EncryptionHelper>();
-
+builder.Services.AddDefaultAWSOptions(builder.Configuration.GetAWSOptions());
+builder.Services.AddAWSService<IAmazonS3>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
